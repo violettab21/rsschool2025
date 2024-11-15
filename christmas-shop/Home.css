@@ -1,0 +1,146 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Montserrat;
+  font-size: 16px;
+  background-color: #ffffff;
+}
+
+.container {
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.wrapper {
+  width: 1276px;
+  margin: 0 auto;
+}
+
+.header {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15.6px;
+  color: #181c29;
+  text-transform: uppercase;
+  background-color: #ffffff;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 12px 0;
+}
+
+.header a {
+  text-decoration: none;
+  color: #181c29;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+}
+.logo span {
+  display: inline-block;
+  padding-left: 2px;
+}
+
+.navigation li {
+  display: inline-block;
+}
+
+h1 {
+  font-family: Montserrat;
+  font-size: 32px;
+  line-height: 48px;
+  font-weight: 600;
+  padding-top: 12px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+p {
+  font-family: Montserrat;
+  font-size: 16px;
+  line-height: 23.68px;
+  font-weight: 400;
+}
+
+.navigation a {
+  padding: 12px 20px;
+}
+
+header,
+section,
+footer {
+  background-color: #ff4646;
+}
+
+.hero-content {
+  width: 426px;
+  margin: auto;
+  text-align: center;
+  padding: 60px 0;
+}
+
+.hero-content p {
+  padding-top: 60px;
+}
+
+.button {
+  background-color: #181c29;
+  color: #ffffff;
+  text-align: center;
+  padding: 20px 32px;
+  border-radius: 20px;
+  border: none;
+  font-family: Montserrat;
+}
+
+.button.button + p {
+  padding-top: 12px;
+  padding-bottom: 60px;
+}
+
+.about-wrapper {
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.about-content {
+  width: 50%;
+  padding: 160px 152px 160px 60px;
+}
+.santa-image {
+  background-image: url("images/santa.png");
+  width: 50%;
+  height: 528px;
+  border-radius: 20px;
+}
+
+.caption-red {
+  color: red;
+}
+
+.caption {
+  font-family: Allura;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 24px;
+}
+h2 {
+  font-family: Montserrat;
+  font-size: 24px;
+  line-height: 36.48px;
+  font-weight: 600;
+  color: #181c29;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  padding: 20px 0;
+}
