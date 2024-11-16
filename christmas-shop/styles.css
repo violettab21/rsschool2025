@@ -45,6 +45,7 @@ body {
   align-items: center;
   padding: 8px 20px;
 }
+
 .logo span {
   display: inline-block;
   padding-left: 8px;
@@ -79,7 +80,6 @@ p {
   padding: 12px 20px;
 }
 
-header,
 section,
 footer {
   background-color: #ff4646;
@@ -89,6 +89,7 @@ footer {
   background-size: cover;
   background-position: center;
   height: 524px;
+  border-radius: 20px 20px 0 0;
 }
 
 .hero-content {
@@ -240,6 +241,9 @@ h2 {
 .card-gifts {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  /*align-items: start;*/
 }
 
 .card-gift {
@@ -262,6 +266,7 @@ h2 {
 .card-gift-text-container h3 {
   padding-top: 8px;
 }
+
 h4 {
   font-family: Montserrat;
   font-weight: 600;
@@ -269,16 +274,25 @@ h4 {
   font-size: 12px;
   text-transform: uppercase;
 }
+.tag-work .gifts-image-container {
+  background-image: url("images/image.png");
+}
+.tag-health .gifts-image-container {
+  background-image: url("images/snowman-ball.png");
+}
+.tag-harmony .gifts-image-container {
+  background-image: url("images/tree-ball.png");
+}
 
-.tag-work {
+.tag-work h4 {
   color: #4361ff;
 }
 
-.tag-heath {
+.tag-health h4 {
   color: #06a44f;
 }
 
-.tag-harmony {
+.tag-harmony h4 {
   color: #ff43f7;
 }
 
@@ -288,9 +302,42 @@ h3 {
   line-height: 24.32px;
   letter-spacing: 1px;
 }
+
+.gifts h1 {
+  margin: auto;
+  width: 426px;
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+.gifts-tags {
+  display: flex;
+  margin: auto;
+  justify-content: space-between;
+  width: 474px;
+  list-style: none;
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 15.6px;
+  font-size: 12px;
+  color: #ffffff;
+  text-transform: uppercase;
+  gap: 8px;
+  padding-bottom: 12px;
+}
+.gifts-tags li {
+  padding: 8px 12px;
+  letter-spacing: 1px;
+}
+.gifts.gifts-background {
+  background-image: url("images/bg-garland.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-y: top;
+}
 .cta {
   background-image: url("images/snow.png"), url("images/forest.png");
   background-size: cover;
+  border-radius: 0 0 20px 20px;
 }
 .wrapper-cta {
   /*height: 668px;*/
