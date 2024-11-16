@@ -41,11 +41,14 @@ body {
   color: #181c29;
 }
 .logo {
+  display: block;
   display: flex;
   align-items: center;
   padding: 8px 20px;
 }
-
+.logo:hover {
+  cursor: pointer;
+}
 .logo span {
   display: inline-block;
   padding-left: 8px;
@@ -79,7 +82,12 @@ p {
 .navigation a {
   padding: 12px 20px;
 }
-
+.navigation a:hover {
+  padding: 12px 20px;
+  background-color: rgba(255, 70, 70, 0.1);
+  border-radius: 12px;
+  color: #ff4646;
+}
 section,
 footer {
   background-color: #ff4646;
@@ -107,11 +115,30 @@ footer {
   background-color: #181c29;
   color: #ffffff;
   text-align: center;
-  padding: 20px 32px;
+  padding: 20px 0px;
   border-radius: 20px;
   border: none;
   font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 400;
   text-transform: uppercase;
+  cursor: pointer;
+}
+.button a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 20px 32px;
+}
+.button:hover {
+  background-color: #ffffff;
+  color: #181c29;
+}
+.button:hover a {
+  color: #181c29;
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .hero .button {
   margin: 12px auto;
@@ -207,12 +234,12 @@ h2 {
   top: 2px;
 }
 
-.icon-obj {
-  width: 12.5px;
-  height: 12px;
+.arrow-icon {
+  width: 24px;
+  height: 24px;
   display: inline-block;
 }
-.arrow {
+.arrow-button {
   box-sizing: border-box;
   display: inline-flex;
   border: 1px solid #ffffff;
@@ -223,7 +250,26 @@ h2 {
   align-items: center;
   justify-content: center;
 }
-
+.arrow-button:hover {
+  background-color: #ffffff;
+  cursor: pointer;
+}
+.arrow-button:hover .arrow-icon path {
+  stroke: red;
+}
+.arrow-button.inactive {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.arrow-button.inactive:hover {
+  background-color: #ff4646;
+}
+.inactive path {
+  stroke-opacity: 0.4;
+}
+.arrow-button.inactive:hover .arrow-icon path {
+  stroke: white;
+  stroke-opacity: 0.4;
+}
 .arrows {
   text-align: right;
   padding-top: 12px;
@@ -250,6 +296,12 @@ h2 {
   width: 310px;
   background-color: #ecf3f8;
   border-radius: 20px;
+}
+.card-gift:hover {
+  cursor: pointer;
+}
+.card-gift:hover h3 {
+  color: #ff4646;
 }
 
 .gifts-image-container {
@@ -435,6 +487,10 @@ footer {
   border-radius: 20px;
   padding: 20px;
 }
+.contact-card a {
+  text-decoration: none;
+  color: black;
+}
 .contact-icon {
   height: 80px;
   width: 80px;
@@ -461,9 +517,11 @@ footer {
   padding: 12px 0;
   letter-spacing: 5px;
 }
-.contact-card p a {
-  text-decoration: none;
-  color: black;
+
+.contact-card:hover,
+.contact-card:hover a {
+  color: #ff4646;
+  cursor: pointer;
 }
 .footer-social {
   padding-top: 60px;
@@ -483,7 +541,12 @@ footer {
   align-items: center;
   justify-content: center;
 }
-
+.social li:hover {
+  cursor: pointer;
+}
+.social li:hover path {
+  stroke: #ff4646;
+}
 .social-icon {
   width: 24px;
   height: 24px;
@@ -499,4 +562,13 @@ footer {
 footer .caption {
   color: #181c29;
   padding-top: 12px;
+}
+
+footer .caption a {
+  text-decoration: none;
+  color: #181c29;
+}
+
+footer .caption a:hover {
+  color: #ff4646;
 }
