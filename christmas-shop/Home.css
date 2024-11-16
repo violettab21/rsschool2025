@@ -47,11 +47,15 @@ body {
 }
 .logo span {
   display: inline-block;
-  padding-left: 2px;
+  padding-left: 8px;
 }
-
+/*.navigation {
+  display: flex;
+  justify-content: space-between;
+}*/
 .navigation li {
   display: inline-block;
+  margin-left: 8px;
 }
 
 h1 {
@@ -59,10 +63,10 @@ h1 {
   font-size: 32px;
   line-height: 48px;
   font-weight: 600;
-  padding-top: 12px;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 5px;
+  padding-top: 12px;
 }
 p {
   font-family: Montserrat;
@@ -80,17 +84,23 @@ section,
 footer {
   background-color: #ff4646;
 }
+.hero {
+  background-image: url(images/snow.png), url(images/tree-decor.png);
+  background-size: cover;
+  background-position: center;
+  height: 524px;
+}
 
 .hero-content {
   width: 426px;
-  margin: auto;
   text-align: center;
-  padding: 60px 0;
+  padding: 120px 0;
+  margin: 0px auto;
 }
 
-.hero-content p {
+/*.hero-content p {
   padding-top: 60px;
-}
+}*/
 
 .button {
   background-color: #181c29;
@@ -100,19 +110,28 @@ footer {
   border-radius: 20px;
   border: none;
   font-family: Montserrat;
+  text-transform: uppercase;
 }
-
-.button.button + p {
-  padding-top: 12px;
-  padding-bottom: 60px;
+.hero .button {
+  margin: 12px auto;
 }
-
+.about,
+.slider,
+.gifts {
+  background-image: url(images/snow.png);
+  background-size: cover;
+  background-position: center;
+}
+.about {
+  padding: 60px 0;
+}
 .about-wrapper {
   background-color: #ffffff;
   border-radius: 20px;
   display: flex;
   justify-content: space-between;
 }
+
 .about-content {
   width: 50%;
   padding: 160px 152px 160px 60px;
@@ -124,23 +143,313 @@ footer {
   border-radius: 20px;
 }
 
-.caption-red {
-  color: red;
-}
-
 .caption {
   font-family: Allura;
   font-size: 24px;
   font-weight: 400;
   line-height: 24px;
+  color: #ffffff;
 }
 h2 {
   font-family: Montserrat;
   font-size: 24px;
   line-height: 36.48px;
   font-weight: 600;
-  color: #181c29;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 5px;
+  /*padding: 20px 0;*/
+}
+.caption-red {
+  color: red;
+}
+
+.carousel {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.about h2 {
+  color: #181c29;
   padding: 20px 0;
+}
+
+.carousel-cards {
+  height: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  overflow: clip;
+}
+.carousel-cards li {
+  display: inline-block;
+  /*list-style-type: none;*/
+}
+.carousel h2 {
+  color: #181c29;
+  padding: 12px 0;
+}
+
+.carousel-card.text {
+  font-family: Montserrat;
+  font-size: 80px;
+  line-height: 97.52px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.carousel-image {
+  border-radius: 20px;
+  height: 200px;
+  position: relative;
+  top: 2px;
+}
+
+.icon-obj {
+  width: 12.5px;
+  height: 12px;
+  display: inline-block;
+}
+.arrow {
+  box-sizing: border-box;
+  display: inline-flex;
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  margin-left: 20px;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrows {
+  text-align: right;
+  padding-top: 12px;
+}
+
+.wrapper-gifts {
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+.wrapper-gifts h2 {
+  padding-top: 12px;
+  padding-bottom: 20px;
+}
+.card-gifts {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-gift {
+  width: 310px;
+  background-color: #ecf3f8;
+  border-radius: 20px;
+}
+
+.gifts-image-container {
+  height: 230px;
+}
+
+.card-gift-text-container {
+  background-color: #ffffff;
+  height: 112px;
+  border-radius: 20px;
+  text-align: left;
+  padding: 20px;
+}
+.card-gift-text-container h3 {
+  padding-top: 8px;
+}
+h4 {
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 15.6px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.tag-work {
+  color: #4361ff;
+}
+
+.tag-heath {
+  color: #06a44f;
+}
+
+.tag-harmony {
+  color: #ff43f7;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-size: 16px;
+  line-height: 24.32px;
+  letter-spacing: 1px;
+}
+.cta {
+  background-image: url("images/snow.png"), url("images/forest.png");
+  background-size: cover;
+}
+.wrapper-cta {
+  /*height: 668px;*/
+  text-align: center;
+  padding: 60px 0;
+}
+
+.cta-content {
+  width: 426px;
+  margin: auto;
+  text-align: center;
+  padding: 120px 0;
+  box-sizing: border-box;
+}
+.cta-content .caption {
+  padding-bottom: 8px;
+}
+
+.cta .button {
+  margin: 20px auto;
+}
+.timer {
+  display: flex;
+  width: 344px;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.4);
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  border-radius: 20px;
+  margin: auto;
+}
+
+.timer div {
+  display: flex;
+  width: 80px;
+  /*font-family: Montserrat;
+  font-weight: 600;
+  line-height: 15.6px;
+  font-size: 12px;*/
+  text-transform: uppercase;
+  color: #ffffff;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: column;
+  height: 52px;
+}
+
+.timer .separator {
+  height: 20px;
+  width: 1px;
+  border-left: 1px solid;
+  border-color: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  top: 14px;
+  left: -6px;
+}
+
+.timer div h2 {
+  /*text-align: center;*/
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 36.48px;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.timer div h4 {
+  /*text-align: center;*/
+  letter-spacing: 1px;
+  /*padding-top: 10px;*/
+  font-weight: 400;
+  line-height: 15.6px;
+  font-size: 12px;
+}
+
+footer {
+  background-color: #ffffff;
+  text-align: center;
+}
+.wrapper-footer {
+  padding: 60px 0;
+}
+
+.contacts-3-columns {
+  display: flex;
+  justify-content: space-between;
+}
+.contact-card {
+  width: 33%;
+  text-align: center;
+  background-color: rgba(236, 243, 248, 1);
+  border-radius: 20px;
+  padding: 20px;
+}
+.contact-icon {
+  height: 80px;
+  width: 80px;
+  display: block;
+
+  margin: auto;
+}
+.santa {
+  background-image: url("images/santa-claus.svg");
+}
+.tree {
+  background-image: url("images/christmas-tree.svg");
+}
+.snake {
+  background-image: url("images/snake.svg");
+}
+
+.contact-card p {
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 36.48px;
+  font-size: 24px;
+  text-transform: uppercase;
+  padding: 12px 0;
+  letter-spacing: 5px;
+}
+.contact-card p a {
+  text-decoration: none;
+  color: black;
+}
+.footer-social {
+  padding-top: 60px;
+}
+.social {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 196px;
+  margin: 0 auto;
+}
+
+.social li {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-social p {
+  padding-top: 12px;
+}
+
+footer .caption {
+  color: #181c29;
+  padding-top: 12px;
 }
