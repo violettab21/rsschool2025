@@ -1,0 +1,671 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Montserrat;
+  font-size: 16px;
+
+  background-color: #ffffff;
+}
+
+.container {
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.wrapper {
+  width: 1276px;
+  margin: 0 auto;
+}
+
+/*header*/
+
+.header {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 130%;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #181c29;
+
+  background-color: #ffffff;
+
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 64px;
+  padding: 12px 0;
+}
+
+.header a {
+  text-decoration: none;
+  color: #181c29;
+}
+
+.logo {
+  display: block;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+}
+
+.logo:hover {
+  cursor: pointer;
+}
+
+.logo span {
+  /*display: inline-block;*/
+  padding-left: 8px;
+}
+
+.navigation li {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.navigation a {
+  padding: 12px 20px;
+}
+
+.navigation a:hover {
+  padding: 12px 20px;
+  background-color: rgba(255, 70, 70, 0.1);
+  border-radius: 12px;
+  color: #ff4646;
+  transition: background-color 1s ease, color 1s ease;
+}
+
+.navigation .current-link a {
+  background-color: rgba(255, 70, 70, 0.1);
+  border-radius: 12px;
+  color: #ff4646;
+}
+
+.navigation .current-link:hover,
+.navigation .current-link a:hover
+ {
+  cursor: default;
+ }
+
+h1 {
+  font-family: Montserrat;
+  font-size: 32px;
+  line-height: 150%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 5.76px;
+
+  color: #ffffff;
+  padding-top: 12px;
+}
+
+p {
+  font-family: Montserrat;
+  font-size: 16px;
+  line-height: 23.68px;
+  font-weight: 400;
+}
+
+section,
+footer {
+  background-color: #ff4646;
+}
+
+/*hero section*/
+
+.hero {
+  background-image: url(images/snow.png), url(images/tree-decor.png);
+  background-size: cover;
+  background-position: center;
+  /*height: 524px;*/
+  border-radius: 20px 20px 0 0;
+}
+
+.hero-content {
+  width: 30%;
+  text-align: center;
+  padding: 120px 0;
+  margin: 0px auto;
+}
+
+.button {
+  background-color: #181c29;
+  width: 55.5%;
+  border-radius: 20px;
+  border: none;
+
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  text-align: center;
+  line-height: 130%;
+
+  padding: 20px 0px;
+}
+
+.button a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 20px 32px;
+}
+
+.button:hover {
+  background-color: #ffffff;
+  transition: background-color 0.5s ease-in, color 0.5s ease-in;
+}
+.button:hover a {
+  color: #181c29;
+  cursor: pointer;
+  transition: color 1s ease;
+
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 600;
+}
+.hero .button {
+  margin: 12px auto;
+}
+
+.about,
+.slider,
+.gifts {
+  background-image: url(images/snow.png);
+  background-size: cover;
+  background-position: center;
+}
+
+/*About section*/
+.about {
+  padding: 60px 0;
+}
+
+.about-wrapper {
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-content {
+  width: 50%;
+  padding: 160px 152px 160px 60px;
+}
+
+.santa-image {
+  background-image: url("images/santa.png");
+  width: 50%;
+  height: 528px;
+  border-radius: 20px;
+}
+
+.caption {
+  font-family: Allura;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 100%;
+  color: #ffffff;
+  letter-spacing: 1.2px;
+}
+
+h2 {
+  font-family: Montserrat;
+  font-size: 24px;
+  line-height: 152%;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3.84px;
+}
+
+.about h2 {
+  color: #181c29;
+  padding: 20px 0;
+}
+
+.caption-red {
+  color: red;
+}
+
+/*Slider section*/
+.carousel {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.carousel-cards {
+  height: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 21px;
+  overflow: clip;
+}
+
+.carousel-cards li {
+ list-style-type: none;
+}
+
+.carousel h2 {
+  color: #ffffff;
+  padding-top: 12px;
+  padding-bottom: 20px;
+}
+
+.carousel-card.text {
+  font-family: Montserrat;
+  font-size: 80px;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.carousel-image {
+  border-radius: 20px;
+  height: 200px;
+  position: relative;
+  top: 2px;
+}
+
+/*Arrows buttons*/
+.arrows {
+  text-align: right;
+  padding-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.arrow-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.arrow-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-button:hover {
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: background-color 1s ease;
+}
+
+.arrow-button:hover .arrow-icon path {
+  stroke: red;
+  transition: stroke 1s ease;
+}
+
+.arrow-button.inactive {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.arrow-button.inactive:hover {
+  background-color: #ff4646;
+}
+
+.inactive path {
+  stroke-opacity: 0.4;
+}
+
+.arrow-button.inactive:hover .arrow-icon path {
+  stroke: white;
+  stroke-opacity: 0.4;
+  transition: stroke 1s ease, stroke-opacity 1s ease;
+}
+
+/*Gifts section*/
+.wrapper-gifts {
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.wrapper-gifts h2 {
+  padding-top: 12px;
+  padding-bottom: 20px;
+}
+
+.card-gifts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-gift {
+  width: 310px;
+  background-color: #ecf3f8;
+  border-radius: 20px;
+}
+
+.card-gift:hover {
+  cursor: pointer;
+}
+
+.card-gift:hover h3 {
+  color: #ff4646;
+  transition: color 1s ease;
+}
+
+.card-image-container {
+  height: 230px;
+}
+
+.card-text-container {
+  background-color: #ffffff;
+  height: 112px;
+  border-radius: 20px;
+  text-align: left;
+  padding: 20px;
+}
+
+.card-text-container h3 {
+  padding-top: 8px;
+}
+
+h4 {
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 130%;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.tag-work .card-image-container {
+  background-image: url("images/image.png");
+}
+
+.tag-health .card-image-container {
+  background-image: url("images/snowman-ball.png");
+}
+
+.tag-harmony .card-image-container {
+  background-image: url("images/tree-ball.png");
+}
+
+.tag-work h4 {
+  color: #4361ff;
+}
+
+.tag-health h4 {
+  color: #06a44f;
+}
+
+.tag-harmony h4 {
+  color: #ff43f7;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-size: 16px;
+  line-height: 152%;
+  letter-spacing: 1.28px;
+  font-weight: 600;
+}
+
+/*Addition for Gifts section for Gifts page*/
+.gifts h1 {
+  margin: auto;
+  width: 426px;
+  padding-top: 0;
+  padding-bottom: 20px;
+}
+
+.gifts-tags {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  list-style: none;
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 15.6px;
+  font-size: 12px;
+  color: #ffffff;
+  text-transform: uppercase;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.gifts-tags li {
+  padding: 12px 20px;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+}
+
+.gifts-tags li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  transition: background-color 1s;
+}
+
+.gifts-tags .current-tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+}
+.gifts-tags .current-tag:hover {
+ cursor: default;
+}
+.gifts.gifts-background {
+  background-image: url("images/bg-garland.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-y: top;
+  border-radius: 20px;
+}
+
+/*CTA section*/
+
+.cta {
+  background-image: url("images/snow.png"), url("images/forest.png");
+  background-size: cover;
+  border-radius: 0 0 20px 20px;
+}
+
+.wrapper-cta {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.cta-content {
+  width: 426px;
+  margin: auto;
+  text-align: center;
+  padding: 120px 0;
+  box-sizing: border-box;
+}
+
+.cta-content .caption {
+  padding-bottom: 8px;
+}
+
+.cta .button {
+  margin: 20px auto;
+}
+
+.timer {
+  display: flex;
+  width: 344px;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.4);
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  border-radius: 20px;
+  margin: auto;
+}
+
+.timer div {
+  display: flex;
+  width: 80px;
+  text-transform: uppercase;
+  color: #ffffff;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+
+.timer .separator {
+  height: 20px;
+  width: 1px;
+  border-left: 1px solid;
+  border-color: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  top: 13px;
+  left: -2px;
+}
+
+.timer div {
+  padding-bottom: 2px;
+}
+
+.timer div h4 {
+  letter-spacing: 1px;
+  font-weight: 400;
+  line-height: 15.6px;
+  font-size: 12px;
+}
+
+/*footer*/
+
+footer {
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.wrapper-footer {
+  padding: 60px 0;
+}
+
+.contacts-3-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contact-card {
+  width: 33.3%;
+  text-align: center;
+  background-color: rgba(236, 243, 248, 1);
+  border-radius: 20px;
+
+}
+
+.contact-card a {
+  text-decoration: none;
+  color: black;
+  display: block;
+  padding: 20px;
+}
+
+.contact-icon {
+  height: 80px;
+  width: 80px;
+  display: block;
+
+  margin: auto;
+}
+
+.santa {
+  background-image: url("images/santa-claus.svg");
+}
+
+.tree {
+  background-image: url("images/christmas-tree.svg");
+}
+
+.snake {
+  background-image: url("images/snake.svg");
+}
+
+.contact-card p {
+  font-family: Montserrat;
+  font-weight: 600;
+  line-height: 36.48px;
+  font-size: 24px;
+  text-transform: uppercase;
+  padding: 12px 0;
+  letter-spacing: 3.84px;
+}
+
+.contact-card:hover,
+.contact-card:hover a {
+  color: #ff4646;
+  cursor: pointer;
+  transition: color 1s ease;
+}
+
+.footer-social {
+  padding-top: 60px;
+}
+
+.social {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 196px;
+  margin: 0 auto;
+}
+
+.social li {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social li:hover {
+  cursor: pointer;
+}
+
+.social li:hover path {
+  stroke: #ff4646;
+  transition: stroke 1s ease;
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-social p {
+  padding-top: 12px;
+}
+
+footer .caption {
+  color: #181c29;
+  padding-top: 12px;
+}
+
+footer .caption a {
+  text-decoration: none;
+  color: #181c29;
+}
+
+footer .caption a:hover {
+  color: #ff4646;
+  transition: color 1s ease;
+}
