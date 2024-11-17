@@ -87,6 +87,12 @@ p {
   background-color: rgba(255, 70, 70, 0.1);
   border-radius: 12px;
   color: #ff4646;
+  transition: background-color 1s ease, color 1s ease;
+}
+.navigation .current-link a {
+  background-color: rgba(255, 70, 70, 0.1);
+  border-radius: 12px;
+  color: #ff4646;
 }
 section,
 footer {
@@ -132,6 +138,7 @@ footer {
 .button:hover {
   background-color: #ffffff;
   color: #181c29;
+  transition: background-color 0.5s ease-in, color 0.5s ease-in;
 }
 .button:hover a {
   color: #181c29;
@@ -139,6 +146,7 @@ footer {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: color 1s ease;
 }
 .hero .button {
   margin: 12px auto;
@@ -215,7 +223,7 @@ h2 {
   /*list-style-type: none;*/
 }
 .carousel h2 {
-  color: #181c29;
+  color: #ffffff;
   padding: 12px 0;
 }
 
@@ -253,9 +261,11 @@ h2 {
 .arrow-button:hover {
   background-color: #ffffff;
   cursor: pointer;
+  transition: background-color 1s ease;
 }
 .arrow-button:hover .arrow-icon path {
   stroke: red;
+  transition: stroke 1s ease;
 }
 .arrow-button.inactive {
   border-color: rgba(255, 255, 255, 0.4);
@@ -269,6 +279,7 @@ h2 {
 .arrow-button.inactive:hover .arrow-icon path {
   stroke: white;
   stroke-opacity: 0.4;
+  transition: stroke 1s ease, stroke-opacity 1s ease;
 }
 .arrows {
   text-align: right;
@@ -302,6 +313,7 @@ h2 {
 }
 .card-gift:hover h3 {
   color: #ff4646;
+  transition: color 1s ease;
 }
 
 .gifts-image-container {
@@ -365,7 +377,7 @@ h3 {
   display: flex;
   margin: auto;
   justify-content: space-between;
-  width: 474px;
+  width: 500px;
   list-style: none;
   font-family: Montserrat;
   font-weight: 600;
@@ -377,8 +389,18 @@ h3 {
   padding-bottom: 12px;
 }
 .gifts-tags li {
-  padding: 8px 12px;
+  padding: 12px 20px;
   letter-spacing: 1px;
+  cursor: pointer;
+}
+.gifts-tags li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  transition: background-color 1s;
+}
+.gifts-tags .current-tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
 }
 .gifts.gifts-background {
   background-image: url("images/bg-garland.png");
@@ -386,6 +408,7 @@ h3 {
   background-repeat: no-repeat;
   background-position-y: top;
 }
+
 .cta {
   background-image: url("images/snow.png"), url("images/forest.png");
   background-size: cover;
@@ -522,6 +545,7 @@ footer {
 .contact-card:hover a {
   color: #ff4646;
   cursor: pointer;
+  transition: color 1s ease;
 }
 .footer-social {
   padding-top: 60px;
@@ -546,6 +570,7 @@ footer {
 }
 .social li:hover path {
   stroke: #ff4646;
+  transition: stroke 1s ease;
 }
 .social-icon {
   width: 24px;
@@ -571,4 +596,5 @@ footer .caption a {
 
 footer .caption a:hover {
   color: #ff4646;
+  transition: color 1s ease;
 }
