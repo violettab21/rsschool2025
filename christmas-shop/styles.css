@@ -20,7 +20,10 @@ body {
   width: 1276px;
   margin: 0 auto;
 }
-
+.background{
+  background: #ff4646;
+  border-radius: 20px;
+}
 /*header*/
 
 .header {
@@ -113,19 +116,12 @@ p {
   font-weight: 400;
 }
 
-section,
-footer {
-  background-color: #ff4646;
-}
-
 /*hero section*/
 
 .hero {
   background-image: url(images/snow.png), url(images/tree-decor.png);
   background-size: cover;
   background-position: center;
-  /*height: 524px;*/
-  border-radius: 20px 20px 0 0;
 }
 
 .hero-content {
@@ -469,6 +465,7 @@ h3 {
   background-repeat: no-repeat;
   background-position-y: top;
   border-radius: 20px;
+  background-color: #ff4646;
 }
 
 /*CTA section*/
@@ -476,7 +473,6 @@ h3 {
 .cta {
   background-image: url("images/snow.png"), url("images/forest.png");
   background-size: cover;
-  border-radius: 0 0 20px 20px;
 }
 
 .wrapper-cta {
