@@ -12,12 +12,12 @@ body {
 }
 
 .container {
-  width: 1440px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
 .wrapper {
-  width: 1276px;
+  max-width: 1276px;
   margin: 0 auto;
 }
 .background{
@@ -133,7 +133,7 @@ p {
 
 .button {
   background-color: #181c29;
-  width: 55.5%;
+  width: 235px;
   border-radius: 20px;
   border: none;
 
@@ -146,6 +146,7 @@ p {
   line-height: 130%;
 
   padding: 20px 0px;
+  white-space: nowrap;
 }
 
 .button a {
@@ -184,11 +185,13 @@ p {
   padding: 60px 0;
 }
 
-.about-wrapper {
+.about-block {
   background-color: #ffffff;
   border-radius: 20px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  /*width: 100%;*/
 }
 
 .about-content {
@@ -198,9 +201,13 @@ p {
 
 .santa-image {
   background-image: url("images/santa.png");
+  min-width: 160px;
   width: 50%;
-  height: 528px;
+  min-height: 528px;
   border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
 }
 
 .caption {
@@ -666,3 +673,137 @@ footer .caption a:hover {
   color: #ff4646;
   transition: color 1s ease;
 }
+
+
+
+
+.hamburger {
+  height: 40px;
+  width: 40px;
+  display: none;
+  /*flex-direction: column;
+  align-items: center;
+  justify-content: space-around;*/
+  position: relative;
+}
+
+.hamburger__line {
+  width: 20px;
+  height: 1px;
+  background-color: #181C29;
+  display: inline-block;
+
+}
+
+.hamburger__line_line1{
+  position: absolute;
+  top: calc(50% - 1px);
+    left: 10px;
+}
+
+.hamburger__line_line2{
+  position: absolute;
+  top: 13px;
+    left: 10px;
+}
+
+@media screen and (max-width: 768px){
+  .hamburger {
+    display: block;
+  }
+  .navigation{
+    display: none;
+  }
+  .header-wrapper{
+    padding: 0 8px;
+  }
+  .hero-content{
+    width: 429px;
+  }
+  .about-wrapper{
+    padding: 0 8px;
+  }
+  .about-block>div{
+    padding: 106px 60px;
+  }
+  .wrapper-slider{
+    padding: 0 8px;
+  }
+  .card-gifts{
+    justify-content: center;
+  }
+  .contact-cards{
+    flex-direction: column;
+  }
+  .contact-card{
+    width: 100%;
+  }
+  .wrapper-footer{
+    padding: 60px 8px;
+  }
+
+}
+@media screen and (max-width: 430px){
+  .about-wrapper{
+    padding: 0 8px;
+  }
+  .about-block{
+    flex-direction: column;
+  }
+  .about-block>div{
+    padding: 60px 20px;
+    width: 100%;
+  }
+
+}
+
+@media screen and (max-width: 380px){
+  .hamburger {
+    display: block;
+  }
+  .navigation{
+    display: none;
+  }
+  .header-wrapper{
+    padding: 0 8px;
+  }
+  .hero-content{
+    width: 100%;
+  }
+  .about-wrapper{
+    padding: 0 8px;
+  }
+  .about-block{
+    flex-direction: column;
+  }
+  .about-block>div{
+    padding: 60px 20px;
+    width: 100%;
+  }
+  .wrapper-slider{
+    padding: 0 8px;
+  }
+  .card-gifts{
+    justify-content: center;
+  }
+  .contact-cards{
+    flex-direction: column;
+  }
+  .contact-card{
+    width: 100%;
+  }
+  .wrapper-footer{
+    padding: 60px 8px;
+  }
+  .cta-content{
+    width: 364px;
+  }
+  .button {
+    width: 235px;
+  }
+  .wrapper-cta{
+    padding: 0 8px;
+  }
+
+}
+
