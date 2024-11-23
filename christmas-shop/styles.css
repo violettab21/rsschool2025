@@ -742,6 +742,7 @@ footer .caption a:hover {
     padding: 60px 8px;
   }
 
+
 }
 @media screen and (max-width: 430px){
   .about-wrapper{
@@ -804,6 +805,20 @@ footer .caption a:hover {
   .wrapper-cta{
     padding: 0 8px;
   }
-
+  .gifts h1{
+    width: 364px;
+  }
+  .gifts-tags{
+    width: 364px;
+  }
+  .wrapper-gifts{
+    padding: 60px 8px;
+  }
+  .gifts-tags{
+    gap: 0;
+  }
+  .gifts-tags li{
+    padding: 12px 8px;
+  }
 }
 
