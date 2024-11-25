@@ -3,21 +3,27 @@
   margin: 0;
   box-sizing: border-box;
 }
-
+html{
+  font-size: 10px;
+  scroll-behavior: smooth;
+}
 body {
   font-family: Montserrat;
-  font-size: 16px;
+  font-size: 1.6rem;
 
   background-color: #ffffff;
 }
 
 .container {
-  width: 1440px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
 .wrapper {
-  width: 1276px;
+ max-width: 1296px;
+  padding: 0 10px;
+ /*max-width: 1276px;*/
+
   margin: 0 auto;
 }
 .background{
@@ -27,7 +33,7 @@ body {
 /*header*/
 
 .header {
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 600;
   line-height: 130%;
   text-transform: uppercase;
@@ -44,10 +50,10 @@ body {
   align-items: center;
 
   height: 64px;
-  padding: 12px 0;
+  padding: 12px 10px;
 }
 
-.header a {
+.navigation__link, .logo {
   text-decoration: none;
   color: #181c29;
 }
@@ -63,7 +69,7 @@ body {
   cursor: pointer;
 }
 
-.logo span {
+.logo__text {
   /*display: inline-block;*/
   padding-left: 8px;
 }
@@ -73,11 +79,11 @@ body {
   margin-left: 4px;
 }
 
-.navigation a {
+.navigation__link {
   padding: 12px 20px;
 }
 
-.navigation a:hover {
+.navigation__link:hover {
   padding: 12px 20px;
   background-color: rgba(255, 70, 70, 0.1);
   border-radius: 12px;
@@ -97,9 +103,9 @@ body {
   cursor: default;
  }
 
-h1 {
+ .hero-content__title, .gifts__title {
   font-family: Montserrat;
-  font-size: 32px;
+  font-size: 3.2rem;
   line-height: 150%;
   font-weight: 600;
   text-transform: uppercase;
@@ -111,7 +117,7 @@ h1 {
 
 p {
   font-family: Montserrat;
-  font-size: 16px;
+  font-size: 1.6rem;
   line-height: 23.68px;
   font-weight: 400;
 }
@@ -125,20 +131,20 @@ p {
 }
 
 .hero-content {
-  width: 30%;
+  width: 31%;
   text-align: center;
-  padding: 120px 0;
+  padding: 120px 8px;
   margin: 0px auto;
 }
 
 .button {
   background-color: #181c29;
-  width: 55.5%;
+  width: 235px;
   border-radius: 20px;
   border: none;
 
   font-family: Montserrat;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -146,6 +152,7 @@ p {
   line-height: 130%;
 
   padding: 20px 0px;
+  white-space: nowrap;
 }
 
 .button a {
@@ -164,7 +171,7 @@ p {
   transition: color 1s ease;
 
   font-family: Montserrat;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 .hero .button {
@@ -184,28 +191,34 @@ p {
   padding: 60px 0;
 }
 
-.about-wrapper {
+.about-block {
   background-color: #ffffff;
   border-radius: 20px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  /*width: 100%;*/
 }
 
-.about-content {
+.about__content {
   width: 50%;
   padding: 160px 152px 160px 60px;
 }
 
-.santa-image {
+.about__image {
   background-image: url("images/santa.png");
+  min-width: 160px;
   width: 50%;
-  height: 528px;
+  min-height: 528px;
   border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
 }
 
 .caption {
   font-family: Allura;
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: 400;
   line-height: 100%;
   color: #ffffff;
@@ -214,8 +227,8 @@ p {
 
 h2 {
   font-family: Montserrat;
-  font-size: 24px;
-  line-height: 152%;
+  font-size: 2.4rem;
+  line-height: 151%;
   font-weight: 600;
   color: #ffffff;
   text-transform: uppercase;
@@ -243,7 +256,8 @@ h2 {
   justify-content: space-between;
   align-items: center;
   gap: 21px;
-  overflow: clip;
+  overflow: hidden;
+  margin-left: 82px;
 }
 
 .carousel-cards li {
@@ -256,15 +270,15 @@ h2 {
   padding-bottom: 20px;
 }
 
-.carousel-card.text {
+.carousel-card__text {
   font-family: Montserrat;
-  font-size: 80px;
+  font-size: 8rem;
   color: #ffffff;
   font-weight: 600;
   text-transform: uppercase;
 }
 
-.carousel-image {
+.carousel-card__image {
   border-radius: 20px;
   height: 200px;
   position: relative;
@@ -272,12 +286,13 @@ h2 {
 }
 
 /*Arrows buttons*/
-.arrows {
+.slider__arrows {
   text-align: right;
   padding-top: 20px;
   display: flex;
   justify-content: flex-end;
   gap: 20px;
+
 }
 
 .arrow-icon {
@@ -308,19 +323,19 @@ h2 {
   transition: stroke 1s ease;
 }
 
-.arrow-button.inactive {
+.arrow-button_inactive {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.arrow-button.inactive:hover {
+.arrow-button_inactive:hover {
   background-color: #ff4646;
 }
 
-.inactive path {
+.arrow-button_inactive path {
   stroke-opacity: 0.4;
 }
 
-.arrow-button.inactive:hover .arrow-icon path {
+.arrow-button_inactive:hover .arrow-icon path {
   stroke: white;
   stroke-opacity: 0.4;
   transition: stroke 1s ease, stroke-opacity 1s ease;
@@ -338,33 +353,33 @@ h2 {
   padding-bottom: 20px;
 }
 
-.card-gifts {
+.gifts-cards {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-.card-gift {
+.gift-card {
   width: 310px;
   background-color: #ecf3f8;
   border-radius: 20px;
 }
 
-.card-gift:hover {
+.gift-card:hover {
   cursor: pointer;
 }
 
-.card-gift:hover h3 {
+.gift-card:hover h3 {
   color: #ff4646;
   transition: color 1s ease;
 }
 
-.card-image-container {
+.gift-card__image {
   height: 230px;
 }
 
-.card-text-container {
+.gift-card__text {
   background-color: #ffffff;
   height: 112px;
   border-radius: 20px;
@@ -372,7 +387,7 @@ h2 {
   padding: 20px;
 }
 
-.card-text-container h3 {
+.gift-card__text h3 {
   padding-top: 8px;
 }
 
@@ -380,38 +395,38 @@ h4 {
   font-family: Montserrat;
   font-weight: 600;
   line-height: 130%;
-  font-size: 12px;
+  font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
 
-.tag-work .card-image-container {
+.gift-tag_work .gift-card__image {
   background-image: url("images/image.png");
 }
 
-.tag-health .card-image-container {
+.gift-tag_health .gift-card__image{
   background-image: url("images/snowman-ball.png");
 }
 
-.tag-harmony .card-image-container {
+.gift-tag_harmony .gift-card__image {
   background-image: url("images/tree-ball.png");
 }
 
-.tag-work h4 {
+.gift-tag_work h4 {
   color: #4361ff;
 }
 
-.tag-health h4 {
+.gift-tag_health h4 {
   color: #06a44f;
 }
 
-.tag-harmony h4 {
+.gift-tag_harmony h4 {
   color: #ff43f7;
 }
 
 h3 {
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 1.6rem;
   line-height: 152%;
   letter-spacing: 1.28px;
   font-weight: 600;
@@ -433,7 +448,7 @@ h3 {
   font-family: Montserrat;
   font-weight: 600;
   line-height: 15.6px;
-  font-size: 12px;
+  font-size: 1.2rem;
   color: #ffffff;
   text-transform: uppercase;
   gap: 10px;
@@ -452,11 +467,11 @@ h3 {
   transition: background-color 1s;
 }
 
-.gifts-tags .current-tag {
+.gift-tag_current {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
 }
-.gifts-tags .current-tag:hover {
+.gift-tag_current:hover {
  cursor: default;
 }
 .gifts.gifts-background {
@@ -510,7 +525,7 @@ h3 {
   margin: auto;
 }
 
-.timer div {
+.timer__block {
   display: flex;
   width: 80px;
   text-transform: uppercase;
@@ -519,9 +534,10 @@ h3 {
   align-items: center;
   justify-content: flex-end;
   flex-direction: column;
+  padding-bottom: 2px;
 }
 
-.timer .separator {
+.timer__separator {
   height: 20px;
   width: 1px;
   border-left: 1px solid;
@@ -531,15 +547,11 @@ h3 {
   left: -2px;
 }
 
-.timer div {
-  padding-bottom: 2px;
-}
-
-.timer div h4 {
+.timer__block h4 {
   letter-spacing: 1px;
   font-weight: 400;
   line-height: 15.6px;
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 
 /*footer*/
@@ -549,11 +561,11 @@ footer {
   text-align: center;
 }
 
-.wrapper-footer {
-  padding: 60px 0;
+.footer__wrapper {
+  padding: 60px 10px;
 }
 
-.contacts-3-columns {
+.layout-3-columns {
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -582,23 +594,23 @@ footer {
   margin: auto;
 }
 
-.santa {
+.contact-icon_santa {
   background-image: url("images/santa-claus.svg");
 }
 
-.tree {
+.contact-icon_tree {
   background-image: url("images/christmas-tree.svg");
 }
 
-.snake {
+.contact-icon_snake {
   background-image: url("images/snake.svg");
 }
 
-.contact-card p {
+.contact-card__text {
   font-family: Montserrat;
   font-weight: 600;
-  line-height: 36.48px;
-  font-size: 24px;
+  line-height: 3.648rem;
+  font-size: 2.4rem;
   text-transform: uppercase;
   padding: 12px 0;
   letter-spacing: 3.84px;
@@ -648,7 +660,7 @@ footer {
   justify-content: center;
 }
 
-.footer-social p {
+.footer-social__text {
   padding-top: 12px;
 }
 
@@ -666,3 +678,201 @@ footer .caption a:hover {
   color: #ff4646;
   transition: color 1s ease;
 }
+
+
+
+
+.hamburger {
+  height: 40px;
+  width: 40px;
+  display: none;
+  position: relative;
+}
+
+.hamburger__line {
+  width: 20px;
+  height: 2px;
+  background-color: #181c297a;
+  display: inline-block;
+
+}
+
+.hamburger__line_line1{
+  position: absolute;
+  top: calc(50% - 5px);
+    left: 10px;
+}
+
+.hamburger__line_line2{
+  position: absolute;
+  top: 23px;
+    left: 10px;
+}
+
+@media screen and (max-width: 1295px){
+  .gifts-cards{
+    justify-content: center;
+    width: 650px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 1060px){
+  .contact-cards{
+    flex-direction: column;
+  }
+  .contact-card{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px){
+  .hamburger {
+    display: block;
+  }
+
+  .navigation {
+    display: none;
+  }
+
+  .header-wrapper {
+    padding: 0 8px;
+  }
+
+  .hero-content {
+    width: 429px;
+  }
+
+  .about-wrapper {
+    padding: 0 8px;
+  }
+
+  .about__content {
+    padding: 106px 60px;
+  }
+
+  .wrapper-slider {
+    padding-left: 8px;
+  }
+
+  .carousel-cards {
+    margin-left: 0;
+  }
+
+  .slider__arrows {
+    padding-right: 8px;
+  }
+
+  .gifts-cards {
+    width: auto;
+    justify-content: center;
+  }
+
+  .footer__wrapper{
+    padding: 60px 8px;
+  }
+
+  .logo.hover{
+    pointer-events: none;
+  }
+
+  .button:hover{
+    pointer-events: none;
+  }
+
+  .arrow-button:hover{
+    pointer-events: none;
+  }
+
+  .gift-card:hover{
+    pointer-events: none;
+  }
+
+  .contact-card:hover{
+    pointer-events: none;
+  }
+
+  .social li:hover{
+    pointer-events: none;
+  }
+
+  footer .caption a:hover{
+    pointer-events: none;
+  }
+
+  .gifts-tags li:hover{
+    pointer-events: none;
+  }
+
+  .wrapper-gifts{
+    padding: 60px 8px;
+  }
+}
+
+@media screen and (max-width: 620px){
+.about-block {
+  flex-direction: column;
+}
+.about-block>div {
+  padding: 60px 20px;
+  width: 100%;
+}
+}
+
+@media screen and (max-width: 430px){
+  .hero-content {
+    width: 100%;
+  }
+
+  .about__content {
+    padding: 60px 20px;
+    width: 100%;
+  }
+
+  .gifts-cards {
+    width: auto;
+    justify-content: center;
+  }
+
+  .gifts h1 {
+    width: 100%;
+  }
+
+  .cta-content {
+    width: 100%;
+  }
+
+  .wrapper-cta {
+    padding: 0 8px;
+  }
+
+  .gifts-tags {
+    width: 100%;
+  }
+  .wrapper-gifts {
+    padding: 60px 8px;
+  }
+
+  .gifts-tags {
+    gap: 0;
+  }
+
+  .gifts-tags li {
+    padding: 12px 8px;
+  }
+}
+
+@media screen and (max-width: 380px){
+  .footer__wrapper {
+    padding: 60px 8px;
+  }
+
+  .button {
+    width: 235px;
+  }
+
+  .cta-content {
+    padding: 180px 0;
+  }
+}
+
