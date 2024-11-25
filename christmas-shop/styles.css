@@ -2,6 +2,8 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  outline: none;
+  border-collapse: collapse;
 }
 html{
   font-size: 10px;
@@ -22,7 +24,6 @@ body {
 .wrapper {
  max-width: 1296px;
   padding: 0 10px;
- /*max-width: 1276px;*/
 
   margin: 0 auto;
 }
@@ -70,7 +71,6 @@ body {
 }
 
 .logo__text {
-  /*display: inline-block;*/
   padding-left: 8px;
 }
 
@@ -131,7 +131,7 @@ p {
 }
 
 .hero-content {
-  width: 31%;
+  width: 446px;
   text-align: center;
   padding: 120px 8px;
   margin: 0px auto;
@@ -161,19 +161,6 @@ p {
   padding: 20px 32px;
 }
 
-.button:hover {
-  background-color: #ffffff;
-  transition: background-color 0.5s ease-in, color 0.5s ease-in;
-}
-.button:hover a {
-  color: #181c29;
-  cursor: pointer;
-  transition: color 1s ease;
-
-  font-family: Montserrat;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
 .hero .button {
   margin: 12px auto;
 }
@@ -197,7 +184,6 @@ p {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  /*width: 100%;*/
 }
 
 .about__content {
@@ -312,17 +298,6 @@ h2 {
   justify-content: center;
 }
 
-.arrow-button:hover {
-  background-color: #ffffff;
-  cursor: pointer;
-  transition: background-color 1s ease;
-}
-
-.arrow-button:hover .arrow-icon path {
-  stroke: red;
-  transition: stroke 1s ease;
-}
-
 .arrow-button_inactive {
   border-color: rgba(255, 255, 255, 0.4);
 }
@@ -364,15 +339,6 @@ h2 {
   width: 310px;
   background-color: #ecf3f8;
   border-radius: 20px;
-}
-
-.gift-card:hover {
-  cursor: pointer;
-}
-
-.gift-card:hover h3 {
-  color: #ff4646;
-  transition: color 1s ease;
 }
 
 .gift-card__image {
@@ -458,13 +424,6 @@ h3 {
 .gifts-tags li {
   padding: 12px 20px;
   letter-spacing: 0.6px;
-  cursor: pointer;
-}
-
-.gifts-tags li:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  transition: background-color 1s;
 }
 
 .gift-tag_current {
@@ -488,7 +447,7 @@ h3 {
 .cta {
   background-image: url("images/snow.png"), url("images/forest.png");
   background-size: cover;
-  background-position: center;
+  background-position: top;
 }
 
 .wrapper-cta {
@@ -616,13 +575,6 @@ footer {
   letter-spacing: 3.84px;
 }
 
-.contact-card:hover,
-.contact-card:hover a {
-  color: #ff4646;
-  cursor: pointer;
-  transition: color 1s ease;
-}
-
 .footer-social {
   padding-top: 60px;
 }
@@ -641,15 +593,6 @@ footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.social li:hover {
-  cursor: pointer;
-}
-
-.social li:hover path {
-  stroke: #ff4646;
-  transition: stroke 1s ease;
 }
 
 .social-icon {
@@ -673,14 +616,6 @@ footer .caption a {
   text-decoration: none;
   color: #181c29;
 }
-
-footer .caption a:hover {
-  color: #ff4646;
-  transition: color 1s ease;
-}
-
-
-
 
 .hamburger {
   height: 40px;
@@ -707,6 +642,71 @@ footer .caption a:hover {
   position: absolute;
   top: 23px;
     left: 10px;
+}
+
+@media (hover:hover){
+  .button:hover {
+    background-color: #ffffff;
+    transition: background-color 0.5s ease-in, color 0.5s ease-in;
+  }
+
+  .button:hover a {
+    color: #181c29;
+    cursor: pointer;
+    transition: color 1s ease;
+
+    font-family: Montserrat;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .arrow-button:hover {
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: background-color 1s ease;
+  }
+
+  .arrow-button:hover .arrow-icon path {
+    stroke: red;
+    transition: stroke 1s ease;
+  }
+
+  .gift-card:hover {
+    cursor: pointer;
+  }
+
+  .gift-card:hover h3 {
+    color: #ff4646;
+    transition: color 1s ease;
+  }
+
+  .gifts-tags li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    transition: background-color 1s;
+    cursor: pointer;
+  }
+
+  .contact-card:hover,
+  .contact-card:hover a {
+  color: #ff4646;
+  cursor: pointer;
+  transition: color 1s ease;
+}
+
+  .social li:hover {
+    cursor: pointer;
+  }
+
+  .social li:hover path {
+    stroke: #ff4646;
+    transition: stroke 1s ease;
+  }
+
+  footer .caption a:hover {
+    color: #ff4646;
+    transition: color 1s ease;
+  }
 }
 
 @media screen and (max-width: 1295px){
@@ -740,7 +740,7 @@ footer .caption a:hover {
   }
 
   .hero-content {
-    width: 429px;
+    width: 446px;
   }
 
   .about-wrapper {
@@ -772,42 +772,12 @@ footer .caption a:hover {
     padding: 60px 8px;
   }
 
-  .logo.hover{
-    pointer-events: none;
-  }
-
-  .button:hover{
-    pointer-events: none;
-  }
-
-  .arrow-button:hover{
-    pointer-events: none;
-  }
-
-  .gift-card:hover{
-    pointer-events: none;
-  }
-
-  .contact-card:hover{
-    pointer-events: none;
-  }
-
-  .social li:hover{
-    pointer-events: none;
-  }
-
-  footer .caption a:hover{
-    pointer-events: none;
-  }
-
-  .gifts-tags li:hover{
-    pointer-events: none;
-  }
-
   .wrapper-gifts{
     padding: 60px 8px;
   }
 }
+
+
 
 @media screen and (max-width: 620px){
 .about-block {
@@ -815,6 +785,9 @@ footer .caption a:hover {
 }
 .about-block>div {
   padding: 60px 20px;
+  width: 100%;
+}
+.hero-content {
   width: 100%;
 }
 }
@@ -859,6 +832,12 @@ footer .caption a:hover {
 
   .gifts-tags li {
     padding: 12px 8px;
+  }
+  .cta-content {
+    padding: 180px 0;
+  }
+  .footer__wrapper {
+    padding: 60px 8px;
   }
 }
 
