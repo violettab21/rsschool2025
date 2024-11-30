@@ -1,7 +1,7 @@
 //Hamburger
         burgerHandler();
         linkHandler();
-
+        categoryHandler();
         function burgerHandler(){
 
          document.querySelector('.hamburger').addEventListener('click', () => {
@@ -181,3 +181,41 @@ function setTimer(){
 function updateTimer(){
     setInterval(setTimer, 1000);
 }
+
+//Category switch
+
+function categoryHandler() {
+    document.querySelector('.gifts-tags').addEventListener('click', (event) => {
+
+        if(event.target.classList.contains('gift-tag')){
+            console.log('tag clicked');
+            let tag = event.target.innerText;
+            showCardsBySelectedTag(tag);
+            highlightSelectedTag(event.target);
+        }
+    });
+}
+
+function showCardsBySelectedTag(tag){
+    let listOfCards = document.querySelectorAll('.gift-card');
+    listOfCards.forEach(card => {
+        if (tag !== 'ALL'){
+        card.hidden = false;
+        console.log(card.getElementsByTagName('h4')[1]);
+        if(card.getElementsByTagName('h4')[0].innerText !== tag){
+            card.hidden = true;
+        }
+    }
+    else card.hidden = false;
+
+    })
+}
+
+function highlightSelectedTag(tag){
+    let listOfTags = document.querySelectorAll('.gift-tag');
+    listOfTags.forEach(element => {
+        element.classList.remove('gift-tag_current');
+    })
+    tag.classList.add('gift-tag_current');
+}
+
