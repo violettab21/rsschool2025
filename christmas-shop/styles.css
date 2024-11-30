@@ -636,12 +636,14 @@ footer .caption a {
   position: absolute;
   top: calc(50% - 5px);
     left: 10px;
+    transition: all 0.2s;
 }
 
 .hamburger__line_line2{
   position: absolute;
   top: 23px;
     left: 10px;
+    transition: all 0.2s;
 }
 
 @media (hover:hover){
@@ -775,6 +777,42 @@ footer .caption a {
   .wrapper-gifts{
     padding: 60px 8px;
   }
+  .closeButton__line1{
+    top: 50%;
+    rotate:45deg;
+    transition: all 0.2s;
+  }
+  .closeButton__line2{
+    top: 20px;
+    rotate:-45deg;
+    transition: all 0.2s;
+  }
+  .hamburger__menu{
+    width: 100%;
+    height: calc(100% - 64px);
+    position: fixed;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    transition: all 2s;
+
+  }
+
+  .hamburger__menu li{
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .hamburger__menu a{
+    text-decoration: none;
+    color: #181c29;
+  }
+
 }
 
 
@@ -853,5 +891,14 @@ footer .caption a {
   .cta-content {
     padding: 180px 0;
   }
+}
+
+
+
+.hamburger__menu{
+  right:-100%;
+  transition: all 0.2s;
+  position: fixed;
+
 }
 
