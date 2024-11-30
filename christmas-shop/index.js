@@ -126,3 +126,58 @@ function disableArrowButton(selector){
     document.querySelector(selector).classList.add('arrow-button_inactive');
 }
 
+
+//Timer
+updateTimer();
+
+
+console.log(showTimeBeforeNewYear().daysDiff);
+function showTimeBeforeNewYear(){
+
+    const newYear = new Date('December 31, 2024 23:59:00');
+    const currentDate = new Date();
+    let daysDiff, hours, minutes, seconds, diff;
+    diff = newYear - currentDate;
+
+
+    daysDiff = Math.floor((diff)/1000/60/60/24);
+
+
+
+    diff = ((diff)/1000/60/60/24 - daysDiff)*24*60*60;//seconds
+
+
+    hours = Math.floor((diff)/60/60);
+
+
+    diff = ((diff)/60/60 - hours)*60*60;//seconds
+
+
+    minutes = Math.floor((diff)/60);
+
+
+    diff = ((diff)/60 - minutes)*60;//seconds
+
+
+    seconds = Math.round((diff));
+
+    return {
+        daysDiff: daysDiff,
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds
+    };
+
+}
+
+function setTimer(){
+    document.querySelector('.days').textContent = showTimeBeforeNewYear().daysDiff;
+    document.querySelector('.hours').textContent = showTimeBeforeNewYear().hours;
+    document.querySelector('.minutes').textContent = showTimeBeforeNewYear().minutes;
+    document.querySelector('.seconds').textContent = showTimeBeforeNewYear().seconds;
+
+}
+
+function updateTimer(){
+    setInterval(setTimer, 1000);
+}
