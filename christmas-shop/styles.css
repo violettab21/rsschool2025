@@ -234,6 +234,7 @@ h2 {
 .carousel {
   padding: 60px 0;
   text-align: center;
+  overflow: hidden;
 }
 
 .carousel-cards {
@@ -243,7 +244,9 @@ h2 {
   align-items: center;
   gap: 21px;
   overflow: hidden;
-  margin-left: 82px;
+  padding-left: 82px;
+  padding-right: 82px;
+  transition: all 0.2s;
 }
 
 .carousel-cards li {
@@ -300,6 +303,7 @@ h2 {
 
 .arrow-button_inactive {
   border-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
 }
 
 .arrow-button_inactive:hover {
@@ -777,7 +781,7 @@ footer .caption a {
   .wrapper-gifts{
     padding: 60px 8px;
   }
-  .closeButton__line1{
+  /*.closeButton__line1{
     top: 50%;
     rotate:45deg;
     transition: all 0.2s;
@@ -786,7 +790,18 @@ footer .caption a {
     top: 20px;
     rotate:-45deg;
     transition: all 0.2s;
-  }
+  }*/
+.hamburger__cross .hamburger__line_line1{
+  top: 50%;
+    rotate:45deg;
+    transition: all 0.2s;
+}
+.hamburger__cross .hamburger__line_line2{
+  top: 20px;
+  rotate:-45deg;
+  transition: all 0.2s;
+}
+
   .hamburger__menu{
     width: 100%;
     height: calc(100% - 64px);
