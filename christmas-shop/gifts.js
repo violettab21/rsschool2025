@@ -436,198 +436,91 @@ let gifts = [
 
 
 
-console.log('hello');
-sliderHandler();
-updateTimer();
-setTimer();
-
-  showRandomCards(gifts);
-
-
-  console.log(showTimeBeforeNewYear().daysDiff);
+createGiftsCards(gifts);
+categoryHandler();
 //Hamburger
-        burgerHandler();
-        linkHandler();
-        function burgerHandler(){
+burgerHandler();
+linkHandler();
+function burgerHandler(){
 
-         document.querySelector('.hamburger').addEventListener('click', () => {
-            console.log(document.querySelector('.hamburger').classList.contains('hamburger__cross'));
+ document.querySelector('.hamburger').addEventListener('click', () => {
+    console.log(document.querySelector('.hamburger').classList.contains('hamburger__cross'));
 
-            if (!document.querySelector('.hamburger').classList.contains('hamburger__cross')){
-            openBurgerMenu();
+    if (!document.querySelector('.hamburger').classList.contains('hamburger__cross')){
+    openBurgerMenu();
 
-        }
-            else if(document.querySelector('.hamburger').classList.contains('hamburger__cross'))
-            {
-            closeBurgerMenu();
+}
+    else if(document.querySelector('.hamburger').classList.contains('hamburger__cross'))
+    {
+    closeBurgerMenu();
 
-        }
-    });
-        }
+}
+});
+}
 
-        function openBurgerMenu(){
-            console.log('open');
-           /* document.querySelector('.hamburger__line_line1').classList.add('closeButton__line1');
-            document.querySelector('.hamburger__line_line2').classList.add('closeButton__line2');*/
-            document.querySelector('.hamburger').classList.add('hamburger__cross');
-            document.querySelector('.hamburger__menu').style.right=0;
-            document.body.style.overflow = 'hidden';
+function openBurgerMenu(){
+    console.log('open');
+   /* document.querySelector('.hamburger__line_line1').classList.add('closeButton__line1');
+    document.querySelector('.hamburger__line_line2').classList.add('closeButton__line2');*/
+    document.querySelector('.hamburger').classList.add('hamburger__cross');
+    document.querySelector('.hamburger__menu').style.right=0;
+    document.body.style.overflow = 'hidden';
 
-        }
+}
 
-        function closeBurgerMenu(){
-            console.log('close');
-            /*document.querySelector('.hamburger__line_line1').classList.remove('closeButton__line1');
-            document.querySelector('.hamburger__line_line2').classList.remove('closeButton__line2');*/
-            document.querySelector('.hamburger').classList.remove('hamburger__cross');
-            document.querySelector('.hamburger__menu').style.right='-100%';
-            document.body.style.overflow = 'visible';
-        }
+function closeBurgerMenu(){
+    console.log('close');
+    /*document.querySelector('.hamburger__line_line1').classList.remove('closeButton__line1');
+    document.querySelector('.hamburger__line_line2').classList.remove('closeButton__line2');*/
+    document.querySelector('.hamburger').classList.remove('hamburger__cross');
+    document.querySelector('.hamburger__menu').style.right='-100%';
+    document.body.style.overflow = 'visible';
+}
 
 function linkHandler() {
-    document.querySelector('.hamburger__menu').addEventListener('click', (event) => {
-        console.log(event.target);
-        if(event.target.classList.contains('hamburger__menu__link')){
-           closeBurgerMenu();
+document.querySelector('.hamburger__menu').addEventListener('click', (event) => {
+console.log(event.target);
+if(event.target.classList.contains('hamburger__menu__link')){
+   closeBurgerMenu();
 
+}
+});
+}
+function createGiftsCards(gifts){
+    gifts.forEach(gift => {
+        let div1;
+        div1 = document.createElement('div');
+        div1.className ='gift-card';
+        if (gift.category === 'For Work'){
+            div1.classList.add('gift-tag_work');
         }
-    });
-}
+        else if (gift.category === 'For Harmony'){
+            div1.classList.add('gift-tag_harmony');
+        }
+        else {
+            div1.classList.add('gift-tag_health');
+        }
 
-//Slider
-
-
-
-function defineMaxWidth(){
-    if (window.matchMedia("(max-width: 768px)").matches){
-        return 6;
-    }
-    else {
-        return 3;
-    }
-}
-
-function resetSliderOnScreenResize(){
-    document.querySelector('.carousel-cards').style.marginLeft = 0;
-    enableArrowButton('.next');
-    disableArrowButton('.prev');
-}
-
-
-function sliderHandler(){
-    let sliderWidth = '2150px';
-    let visibleArea = '100%';
-    let visibleAreaNumber = 0;
-    let maxCount;
-    document.querySelector('.slider__arrows').addEventListener('click', (event) => {
-        //handle screen change
-            window.addEventListener('resize', () =>{
-            visibleAreaNumber = 0;
-            resetSliderOnScreenResize();
-            });
-
-            //calculate max count of clicks
-            maxCount = defineMaxWidth();
-
-            //next button
-        if(event.target.closest('.next')){
-            console.log('right');
-            if (visibleAreaNumber < maxCount) {
-                visibleAreaNumber += 1;
-                enableArrowButton('.prev');
-                document.querySelector('.carousel-cards').style.marginLeft = `calc((${sliderWidth} - ${visibleArea})/(-${maxCount})*${visibleAreaNumber})`;
-                if (visibleAreaNumber === maxCount) {
-                disableArrowButton('.next');
-                }
-            }
-
-         }
-
-         //prev button
-         if (event.target.closest('.prev')){
-            console.log('left');
-            if (visibleAreaNumber > 0){
-                if (visibleAreaNumber === maxCount){
-                    enableArrowButton('.next');
-                }
-                visibleAreaNumber -= 1;
-                document.querySelector('.carousel-cards').style.marginLeft = `calc((${sliderWidth} - ${visibleArea})/(-${maxCount})*${visibleAreaNumber})`;
-                if (visibleAreaNumber === 0){
-                    disableArrowButton('.prev');
-                }
-
-            }
-         }
-
+       let div2;
+        div2 = document.createElement('div');
+        div2.className ='gift-card__image';
+        let div3;
+        div3 = document.createElement('div');
+        div3.className ='gift-card__text';
+        let h4;
+        h4 = document.createElement('h4');
+        h4.innerHTML = gift.category;
+        let h3;
+        h3 = document.createElement('h3');
+        h3.innerHTML = gift.name;
+        document.querySelector('.gifts-background .gifts-cards').append(div1);
+       div1.append(div2);
+        div1.append(div3);
+        div3.append(h4);
+        div3.append(h3);
 
     });
-}
 
-
-function enableArrowButton(selector){
-    document.querySelector(selector).classList.remove('arrow-button_inactive');
-}
-
-function disableArrowButton(selector){
-    document.querySelector(selector).classList.add('arrow-button_inactive');
-}
-
-
-//Timer
-
-
-setTimer();
-console.log(showTimeBeforeNewYear().daysDiff);
-function showTimeBeforeNewYear(){
-
-    const newYear = new Date('December 31, 2024 23:59:00');
-    const currentDate = new Date();
-    let daysDiff, hours, minutes, seconds, diff;
-    diff = newYear - currentDate;
-
-
-    daysDiff = Math.floor((diff)/1000/60/60/24);
-
-
-
-    diff = ((diff)/1000/60/60/24 - daysDiff)*24*60*60;//seconds
-
-
-    hours = Math.floor((diff)/60/60);
-
-
-    diff = ((diff)/60/60 - hours)*60*60;//seconds
-
-
-    minutes = Math.floor((diff)/60);
-
-
-    diff = ((diff)/60 - minutes)*60;//seconds
-
-
-    seconds = Math.round((diff));
-
-    return {
-        daysDiff: daysDiff,
-        hours: hours,
-        minutes: minutes,
-        seconds: seconds
-    };
-
-}
-
-function setTimer(){
-    document.querySelector('.days').textContent = showTimeBeforeNewYear().daysDiff;
-    document.querySelector('.hours').textContent = showTimeBeforeNewYear().hours;
-    document.querySelector('.minutes').textContent = showTimeBeforeNewYear().minutes;
-    document.querySelector('.seconds').textContent = showTimeBeforeNewYear().seconds;
-    console.log(showTimeBeforeNewYear().daysDiff);
-
-}
-
-function updateTimer(){
-    setInterval(setTimer, 1000);
-    console.log('timer is here');
 }
 
 //Category switch
@@ -665,67 +558,4 @@ function highlightSelectedTag(tag){
         element.classList.remove('gift-tag_current');
     })
     tag.classList.add('gift-tag_current');
-}
-
-//Gifts
-
-
-
-function showRandomCards(gifts){
-    let countOfCards = gifts.length;
-    let numbersOfGift = generateUniqueRandomNumbers(countOfCards);
-    let arr = [];
-    for (let i = 0; i < numbersOfGift.length; i += 1){
-       arr.push(gifts[numbersOfGift[i]]);
-    }
-    arr.forEach(gift => {
-        let div1;
-        div1 = document.createElement('div');
-        div1.className ='gift-card';
-        if (gift.category === 'For Work'){
-            div1.classList.add('gift-tag_work');
-        }
-        else if (gift.category === 'For Harmony'){
-            div1.classList.add('gift-tag_harmony');
-        }
-        else {
-            div1.classList.add('gift-tag_health');
-        }
-
-       let div2;
-        div2 = document.createElement('div');
-        div2.className ='gift-card__image';
-        let div3;
-        div3 = document.createElement('div');
-        div3.className ='gift-card__text';
-        let h4;
-        h4 = document.createElement('h4');
-        h4.innerHTML = gift.category;
-        let h3;
-        h3 = document.createElement('h3');
-        h3.innerHTML = gift.name;
-        document.querySelector('.wrapper-gifts .gifts-cards').append(div1);
-       div1.append(div2);
-        div1.append(div3);
-        div3.append(h4);
-        div3.append(h3);
-
-    });
-
-}
-console.log(generateUniqueRandomNumbers(30));
-function generateUniqueRandomNumbers(range){
-    let number;
-    let arr = [];
-    for (let i = 0; i < 4; i += 1){
-        number = Math.floor(Math.random()*(range-1));
-        if (!arr.includes(number)){
-            arr.push(number);
-        }
-        else {
-            i -=1;
-    }
-
-    }
-    return arr;
 }
