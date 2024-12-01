@@ -19,6 +19,7 @@ body {
 .container {
   max-width: 1440px;
   margin: 0 auto;
+  position: relative;
 }
 
 .wrapper {
@@ -372,14 +373,20 @@ h4 {
 
 .gift-tag_work .gift-card__image {
   background-image: url("images/image.png");
+  background-position: center;
+  background-size: cover;
 }
 
 .gift-tag_health .gift-card__image{
   background-image: url("images/snowman-ball.png");
+  background-position: center;
+  background-size: cover;
 }
 
 .gift-tag_harmony .gift-card__image {
   background-image: url("images/tree-ball.png");
+  background-position: center;
+  background-size: cover;
 }
 
 .gift-tag_work h4 {
@@ -917,3 +924,109 @@ footer .caption a {
 
 }
 
+
+.dark-view {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color:rgba(24, 28, 41, 0.8);
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.modal {
+  margin: 0 auto;
+  width: 400px;
+  background-color: rgba(236, 243, 248, 1);
+  height: 500px;
+  border-radius: 20px;
+  position: relative;
+}
+
+/*.gift-card__superpowers{
+  height: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-superpowers{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal__description{
+  padding-top: 8px;
+}
+
+h4.modal__superpowers-title{
+  padding-top: 20px;
+  color: rgba(24, 28, 41, 1);
+}
+
+.gift-card__superpowers li{
+  padding-top: 8px;
+  list-style-type: none;
+}*/
+
+.gift-card__superpowers{
+  height: 105px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  gap: 0;
+}
+
+.list-superpowers{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal__description{
+  padding-top: 8px;
+}
+
+h4.modal__superpowers-title{
+  padding-top: 20px;
+  color: rgba(24, 28, 41, 1);
+}
+
+.gift-card__superpowers li{
+  padding-top: 8px;
+  list-style-type: none;
+}
+
+.superpower{
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+}
+
+.superpower p:first-child{
+  width: 48%;
+}
+
+.modal .gift-card__text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 230px);
+}
+
+.icon-close{
+  position: absolute;
+  right: 12px;
+  top :12px;
+}

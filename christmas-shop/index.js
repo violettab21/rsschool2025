@@ -436,13 +436,13 @@ let gifts = [
 
 
 
-console.log('hello');
+
 sliderHandler();
 updateTimer();
-setTimer();
+
 
   showRandomCards(gifts);
-
+  giftCardHandler();
 
   console.log(showTimeBeforeNewYear().daysDiff);
 //Hamburger
@@ -728,4 +728,120 @@ function generateUniqueRandomNumbers(range){
 
     }
     return arr;
+}
+
+
+function giftCardHandler(){
+    document.querySelector(".gifts-cards").addEventListener('click', (event) => {
+        if (event.target.closest('.gift-card')){
+            let clickedCard = event.target.closest('.gift-card');
+            createModal(clickedCard, gifts);
+            document.body.style.overflow = 'hidden';
+
+        }
+    });
+}
+
+function createModal(card, gifts){
+    let clickedCardName = card.querySelector('.gift-card__text h3').innerText;
+    let clickedCardDetails = gifts.find(element =>
+        element.name.toLowerCase() === clickedCardName.toLowerCase()
+);
+
+        let div1;
+        div1 = document.createElement('div');
+        div1.className ='dark-view';
+        let div2;
+        div2 = document.createElement('div');
+        div2.className ='modal';
+        if (clickedCardDetails.category === 'For Work'){
+    div2.classList.add('gift-tag_work');
+    }
+        else if (clickedCardDetails.category === 'For Harmony'){
+            div2.classList.add('gift-tag_harmony');
+}
+        else {
+            div2.classList.add('gift-tag_health');
+        }
+    let spanCross = document.createElement('span');
+    spanCross.className = 'icon-close'
+    spanCross.innerHTML = `<img src="images/close.svg" alt="">`;
+    let div3;
+    div3 = document.createElement('div');
+    div3.className ='gift-card__image';
+
+    let div4;
+    div4 = document.createElement('div');
+    div4.className ='gift-card__text';
+    div4.innerHTML = `<h4>${clickedCardDetails.category}</h4>
+    <h3>${clickedCardDetails.name}</h3>
+    <p class="modal__description">${clickedCardDetails.description}</p>
+    <h4 class="modal__superpowers-title">Adds superpowers to:</h4>`
+
+    let div5 = document.createElement('div');
+    div5.className = 'gift-card__superpowers';
+    div1.append(div2);
+    div2.append(spanCross);
+    div2.append(div3);
+    div2.append(div4);
+    div4.append(div5);
+    for (let key in clickedCardDetails.superpowers){
+        let div = document.createElement('div');
+        div.className='superpower';
+        div.innerHTML= `<p>${key}</p>
+                    <p>${clickedCardDetails.superpowers[key]}</p>
+                    <p>${generateStarsContent(clickedCardDetails.superpowers[key])}</p>`
+                    div5.append(div);
+
+}
+
+
+
+document.querySelector('.container').append(div1);
+modalCloseButtonHandler();
+modalClickOutside();
+}
+
+
+
+console.log(generateStarsContent('+400'));
+function generateStarsContent(score){
+
+    let numberRedStars = +score[1];
+    let redStar = `<span class="star-icon"><img src="images/snowflake.svg" alt=""></span>`;
+    let grayStar = `<span class="star-icon"><img src="images/snowflake-disabled.svg" alt=""></span>`;
+    let result = '';
+    for (let i = 1; i <= 5; i += 1){
+        if (i <= numberRedStars){
+            result += redStar;
+        }
+        else {
+            result += grayStar;
+        }
+
+    }
+    return result;
+}
+
+function modalCloseButtonHandler(){
+
+        document.querySelector('.icon-close').addEventListener('click', () => {
+
+            document.querySelector('.dark-view').remove();
+            document.body.style.overflow = 'visible';
+        });
+
+}
+
+
+function modalClickOutside(){
+
+    document.querySelector('.dark-view').addEventListener('click', (event) => {
+        if (event.target.classList.contains('dark-view')){
+            document.querySelector('.dark-view').remove();
+            document.body.style.overflow = 'visible';
+        }
+
+    });
+
 }
