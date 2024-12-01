@@ -656,6 +656,9 @@ footer .caption a {
     left: 10px;
     transition: all 0.2s;
 }
+.arrow-up {
+  display: none;
+ }
 
 @media (hover:hover){
   .button:hover {
@@ -740,6 +743,20 @@ footer .caption a {
 }
 
 @media screen and (max-width: 768px){
+  .arrow-up {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    border: 1px solid #FF4646;
+  }
   .hamburger {
     display: block;
   }
@@ -1030,3 +1047,4 @@ h4.modal__superpowers-title{
   right: 12px;
   top :12px;
 }
+

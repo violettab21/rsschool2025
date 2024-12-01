@@ -443,6 +443,9 @@ categoryHandler();
 //Hamburger
 burgerHandler();
 linkHandler();
+showButtonUp();
+showButtonUpOnScroll();
+scrollToTop();
 function burgerHandler(){
 
  document.querySelector('.hamburger').addEventListener('click', () => {
@@ -681,4 +684,38 @@ function modalClickOutside(){
 
     });
 
+}
+
+function showButtonUpOnScroll(){
+    document.addEventListener('scroll', () => {
+        showButtonUp();
+    });
+
+}
+
+
+
+function scrollToTop(){
+    document.querySelector('.arrow-up').addEventListener('click', (event) => {
+        if (event.target.closest('.arrow-up')){
+            console.log('up');
+            document.documentElement.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+
+    });
+}
+
+function showButtonUp() {
+    let scrollTop = parseInt(document.documentElement.scrollTop, 10);
+    if(scrollTop <= 300){
+        document.querySelector('.arrow-up').style.display = 'none';
+}
+else {
+    document.querySelector('.arrow-up').style.display = 'flex';
+
+}
 }

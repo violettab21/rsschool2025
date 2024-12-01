@@ -576,14 +576,16 @@ function disableArrowButton(selector){
 //Timer
 
 
-setTimer();
-console.log(showTimeBeforeNewYear().daysDiff);
+/*setTimer();*/
+
 function showTimeBeforeNewYear(){
 
-    const newYear = new Date('December 31, 2024 23:59:00');
+
+    const newYear = new Date(Date.UTC(2024, 11, 31, 23, 59, 59));
     const currentDate = new Date();
     let daysDiff, hours, minutes, seconds, diff;
     diff = newYear - currentDate;
+
 
 
     daysDiff = Math.floor((diff)/1000/60/60/24);
@@ -616,12 +618,12 @@ function showTimeBeforeNewYear(){
 
 }
 
+
 function setTimer(){
     document.querySelector('.days').textContent = showTimeBeforeNewYear().daysDiff;
     document.querySelector('.hours').textContent = showTimeBeforeNewYear().hours;
     document.querySelector('.minutes').textContent = showTimeBeforeNewYear().minutes;
     document.querySelector('.seconds').textContent = showTimeBeforeNewYear().seconds;
-    console.log(showTimeBeforeNewYear().daysDiff);
 
 }
 
