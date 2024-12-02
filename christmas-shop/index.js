@@ -462,10 +462,25 @@ updateTimer();
 showRandomCards(gifts);
 giftCardHandler();
 
+defineNavigationStyle();
+defineNavigationStyleOnScreenSizeChange();
 burgerHandler();
 linkHandler();
 
 //Hamburger
+function defineNavigationStyle() {
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    document.querySelector(".navigation").classList.add("hamburger__menu");
+  } else {
+    document.querySelector(".navigation").classList.remove("hamburger__menu");
+    document.body.style.overflow = "visible";
+  }
+}
+function defineNavigationStyleOnScreenSizeChange() {
+  window.addEventListener("resize", () => {
+    defineNavigationStyle();
+  });
+}
 function burgerHandler() {
   document.querySelector(".hamburger").addEventListener("click", () => {
     if (
@@ -486,6 +501,7 @@ function burgerHandler() {
 
 function openBurgerMenu() {
   document.querySelector(".hamburger").classList.add("hamburger__cross");
+  /*document.querySelector(".navigation").classList.add("hamburger__menu");*/
   document.querySelector(".hamburger__menu").style.right = 0;
   document.body.style.overflow = "hidden";
 }
@@ -493,17 +509,19 @@ function openBurgerMenu() {
 function closeBurgerMenu() {
   document.querySelector(".hamburger").classList.remove("hamburger__cross");
   document.querySelector(".hamburger__menu").style.right = "-100%";
+
   document.body.style.overflow = "visible";
 }
 
 function linkHandler() {
-  document
-    .querySelector(".hamburger__menu")
-    .addEventListener("click", (event) => {
-      if (event.target.classList.contains("hamburger__menu__link")) {
-        closeBurgerMenu();
-      }
-    });
+  document.querySelector(".navigation").addEventListener("click", (event) => {
+    if (
+      event.target.closest(".hamburger__menu") &&
+      event.target.classList.contains("navigation__link")
+    ) {
+      closeBurgerMenu();
+    }
+  });
 }
 
 //Slider
