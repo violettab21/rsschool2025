@@ -85,14 +85,6 @@ body {
   padding: 12px 20px;
 }
 
-.navigation__link:hover {
-  padding: 12px 20px;
-  background-color: rgba(255, 70, 70, 0.1);
-  border-radius: 12px;
-  color: #ff4646;
-  transition: background-color 1s ease, color 1s ease;
-}
-
 .navigation .current-link a {
   background-color: rgba(255, 70, 70, 0.1);
   border-radius: 12px;
@@ -726,7 +718,7 @@ h4.modal__superpowers-title {
   text-transform: capitalize;
 }
 .superpower p:first-child {
-  width: 50%;
+  width: 53%;
 }
 
 .modal .gift-card__text {
@@ -756,6 +748,14 @@ h4.modal__superpowers-title {
 }
 
 @media (hover: hover) {
+  .navigation__link:hover {
+    padding: 12px 20px;
+    background-color: rgba(255, 70, 70, 0.1);
+    border-radius: 12px;
+    color: #ff4646;
+    transition: background-color 1s ease, color 1s ease;
+  }
+
   .button:hover {
     background-color: #ffffff;
     transition: background-color 0.5s ease-in, color 0.5s ease-in;
@@ -818,6 +818,9 @@ h4.modal__superpowers-title {
     color: #ff4646;
     transition: color 1s ease;
   }
+  .icon-close:hover {
+    cursor: pointer;
+  }
 }
 
 @media screen and (max-width: 1295px) {
@@ -876,10 +879,6 @@ h4.modal__superpowers-title {
     padding: 106px 60px;
   }
 
-  .wrapper-slider {
-    /*padding-left: 8px;*/
-  }
-
   .carousel-cards {
     margin-left: 0;
     padding-left: 8px;
@@ -915,8 +914,9 @@ h4.modal__superpowers-title {
   }
 
   .hamburger__menu {
+    right: -100%;
     width: 100%;
-    height: calc(100% - 64px);
+    height: calc(100% - 60px);
     position: fixed;
     background-color: white;
     display: flex;
@@ -926,6 +926,7 @@ h4.modal__superpowers-title {
     list-style-type: none;
     transition: all 0.5s ease-out;
     gap: 8px;
+    top: 60px;
   }
 
   .hamburger__menu li {
