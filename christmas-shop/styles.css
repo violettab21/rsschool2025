@@ -5,7 +5,7 @@
   outline: none;
   border-collapse: collapse;
 }
-html{
+html {
   font-size: 10px;
   scroll-behavior: smooth;
 }
@@ -19,15 +19,17 @@ body {
 .container {
   max-width: 1440px;
   margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
 }
 
 .wrapper {
- max-width: 1296px;
+  max-width: 1296px;
   padding: 0 10px;
 
   margin: 0 auto;
 }
-.background{
+.background {
   background: #ff4646;
   border-radius: 20px;
 }
@@ -42,7 +44,6 @@ body {
   color: #181c29;
 
   background-color: #ffffff;
-
 }
 
 .header-wrapper {
@@ -54,7 +55,8 @@ body {
   padding: 12px 10px;
 }
 
-.navigation__link, .logo {
+.navigation__link,
+.logo {
   text-decoration: none;
   color: #181c29;
 }
@@ -98,12 +100,12 @@ body {
 }
 
 .navigation .current-link:hover,
-.navigation .current-link a:hover
- {
+.navigation .current-link a:hover {
   cursor: default;
- }
+}
 
- .hero-content__title, .gifts__title {
+.hero-content__title,
+.gifts__title {
   font-family: Montserrat;
   font-size: 3.2rem;
   line-height: 150%;
@@ -198,7 +200,7 @@ p {
   min-height: 528px;
   border-radius: 20px;
   background-repeat: no-repeat;
-  background-size:cover;
+  background-size: cover;
   background-position: center;
 }
 
@@ -234,6 +236,7 @@ h2 {
 .carousel {
   padding: 60px 0;
   text-align: center;
+  overflow: hidden;
 }
 
 .carousel-cards {
@@ -243,11 +246,13 @@ h2 {
   align-items: center;
   gap: 21px;
   overflow: hidden;
-  margin-left: 82px;
+  padding-left: 82px;
+  padding-right: 82px;
+  transition: all 0.5s ease-out;
 }
 
 .carousel-cards li {
- list-style-type: none;
+  list-style-type: none;
 }
 
 .carousel h2 {
@@ -278,7 +283,6 @@ h2 {
   display: flex;
   justify-content: flex-end;
   gap: 20px;
-
 }
 
 .arrow-icon {
@@ -300,6 +304,7 @@ h2 {
 
 .arrow-button_inactive {
   border-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
 }
 
 .arrow-button_inactive:hover {
@@ -368,14 +373,20 @@ h4 {
 
 .gift-tag_work .gift-card__image {
   background-image: url("images/image.png");
+  background-position: center;
+  background-size: cover;
 }
 
-.gift-tag_health .gift-card__image{
+.gift-tag_health .gift-card__image {
   background-image: url("images/snowman-ball.png");
+  background-position: center;
+  background-size: cover;
 }
 
 .gift-tag_harmony .gift-card__image {
   background-image: url("images/tree-ball.png");
+  background-position: center;
+  background-size: cover;
 }
 
 .gift-tag_work h4 {
@@ -431,7 +442,7 @@ h3 {
   border-radius: 12px;
 }
 .gift-tag_current:hover {
- cursor: default;
+  cursor: default;
 }
 .gifts.gifts-background {
   background-image: url("images/bg-garland.png");
@@ -535,7 +546,6 @@ footer {
   text-align: center;
   background-color: rgba(236, 243, 248, 1);
   border-radius: 20px;
-
 }
 
 .contact-card a {
@@ -629,22 +639,123 @@ footer .caption a {
   height: 2px;
   background-color: #181c297a;
   display: inline-block;
-
 }
 
-.hamburger__line_line1{
+.hamburger__line_line1 {
   position: absolute;
   top: calc(50% - 5px);
-    left: 10px;
+  left: 10px;
+  transition: all 0.2s;
 }
 
-.hamburger__line_line2{
+.hamburger__line_line2 {
   position: absolute;
   top: 23px;
-    left: 10px;
+  left: 10px;
+  transition: all 0.2s;
+}
+.arrow-up {
+  display: none;
 }
 
-@media (hover:hover){
+.hamburger__menu {
+  right: -100%;
+  transition: all 0.2s;
+  position: fixed;
+}
+
+.dark-view {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(24, 28, 41, 0.8);
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.modal {
+  margin: 0 auto;
+  max-width: 400px;
+  background-color: rgba(236, 243, 248, 1);
+  border-radius: 20px;
+  position: relative;
+}
+
+.gift-card__superpowers {
+  height: 105px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 8px;
+  gap: 0;
+}
+
+.list-superpowers {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal__description {
+  padding-top: 8px;
+}
+
+h4.modal__superpowers-title {
+  padding-top: 20px;
+  color: rgba(24, 28, 41, 1);
+}
+
+.gift-card__superpowers li {
+  padding-top: 8px;
+  list-style-type: none;
+}
+
+.superpower {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.superpower p {
+  text-transform: capitalize;
+}
+.superpower p:first-child {
+  width: 50%;
+}
+
+.modal .gift-card__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 230px);
+}
+
+.icon-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.stars-container {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+}
+
+.star-icon {
+  width: 16px;
+  height: 16px;
+}
+
+@media (hover: hover) {
   .button:hover {
     background-color: #ffffff;
     transition: background-color 0.5s ease-in, color 0.5s ease-in;
@@ -689,10 +800,10 @@ footer .caption a {
 
   .contact-card:hover,
   .contact-card:hover a {
-  color: #ff4646;
-  cursor: pointer;
-  transition: color 1s ease;
-}
+    color: #ff4646;
+    cursor: pointer;
+    transition: color 1s ease;
+  }
 
   .social li:hover {
     cursor: pointer;
@@ -709,24 +820,38 @@ footer .caption a {
   }
 }
 
-@media screen and (max-width: 1295px){
-  .gifts-cards{
+@media screen and (max-width: 1295px) {
+  .gifts-cards {
     justify-content: center;
     width: 650px;
     margin: 0 auto;
   }
 }
 
-@media screen and (max-width: 1060px){
-  .contact-cards{
+@media screen and (max-width: 1060px) {
+  .contact-cards {
     flex-direction: column;
   }
-  .contact-card{
+  .contact-card {
     width: 100%;
   }
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 768px) {
+  .arrow-up {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    bottom: 8px;
+    right: 8px;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    border: 1px solid #ff4646;
+  }
   .hamburger {
     display: block;
   }
@@ -752,11 +877,13 @@ footer .caption a {
   }
 
   .wrapper-slider {
-    padding-left: 8px;
+    /*padding-left: 8px;*/
   }
 
   .carousel-cards {
     margin-left: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 
   .slider__arrows {
@@ -768,31 +895,68 @@ footer .caption a {
     justify-content: center;
   }
 
-  .footer__wrapper{
+  .footer__wrapper {
     padding: 60px 8px;
   }
 
-  .wrapper-gifts{
+  .wrapper-gifts {
     padding: 60px 8px;
+  }
+
+  .hamburger__cross .hamburger__line_line1 {
+    top: 50%;
+    rotate: 45deg;
+    transition: all 0.2s;
+  }
+  .hamburger__cross .hamburger__line_line2 {
+    top: 20px;
+    rotate: -45deg;
+    transition: all 0.2s;
+  }
+
+  .hamburger__menu {
+    width: 100%;
+    height: calc(100% - 64px);
+    position: fixed;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    transition: all 0.5s ease-out;
+    gap: 8px;
+  }
+
+  .hamburger__menu li {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 36.48px;
+    letter-spacing: 3.84px;
+  }
+  .hamburger__menu a {
+    text-decoration: none;
+    color: #181c29;
   }
 }
 
-
-
-@media screen and (max-width: 620px){
-.about-block {
-  flex-direction: column;
-}
-.about-block>div {
-  padding: 60px 20px;
-  width: 100%;
-}
-.hero-content {
-  width: 100%;
-}
+@media screen and (max-width: 620px) {
+  .about-block {
+    flex-direction: column;
+  }
+  .about-block > div {
+    padding: 60px 20px;
+    width: 100%;
+  }
+  .hero-content {
+    width: 100%;
+  }
 }
 
-@media screen and (max-width: 430px){
+@media screen and (max-width: 430px) {
   .hero-content {
     width: 100%;
   }
@@ -839,9 +1003,12 @@ footer .caption a {
   .footer__wrapper {
     padding: 60px 8px;
   }
+  .modal {
+    margin: 0 8px;
+  }
 }
 
-@media screen and (max-width: 380px){
+@media screen and (max-width: 380px) {
   .footer__wrapper {
     padding: 60px 8px;
   }
@@ -854,4 +1021,3 @@ footer .caption a {
     padding: 180px 0;
   }
 }
-
