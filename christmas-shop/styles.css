@@ -829,6 +829,11 @@ h4.modal__superpowers-title {
     width: 650px;
     margin: 0 auto;
   }
+  .carousel-cards {
+    margin-left: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
 @media screen and (max-width: 1060px) {
@@ -852,7 +857,6 @@ h4.modal__superpowers-title {
     /*display: flex;*/
     justify-content: center;
     align-items: center;
-    z-index: 2;
     border: 1px solid #ff4646;
   }
   .hamburger {
@@ -877,12 +881,6 @@ h4.modal__superpowers-title {
 
   .about__content {
     padding: 106px 60px;
-  }
-
-  .carousel-cards {
-    margin-left: 0;
-    padding-left: 8px;
-    padding-right: 8px;
   }
 
   .slider__arrows {

@@ -535,7 +535,7 @@ function defineMaxWidth() {
 }
 
 function defineSliderWidth() {
-  if (window.matchMedia("(max-width: 768px)").matches) {
+  if (window.matchMedia("(max-width: 1295px)").matches) {
     return "2012px";
   } else {
     return "2160px";
