@@ -2,6 +2,7 @@ window.addEventListener("load", (event) => {
   createInitialScreenElements();
   levelSelection();
   startHandler();
+  console.log(getKeybordSymbols());
 });
 
 function createInitialScreenElements() {
@@ -87,5 +88,52 @@ function addKeyboard(level) {
 function startHandler() {
   document.querySelector(".button").addEventListener("click", (event) => {
     document.querySelector(".button").style.display = "none";
+    document.querySelector(".levels").style.pointerEvents = "none";
+    addGameElements();
+    console.log(generateRandomSequence(1));
   });
+}
+
+function addGameElements() {
+  let elementsContainer = document.createElement("div");
+  elementsContainer.className = "options";
+  let roundsContainer = document.createElement("div");
+  roundsContainer.className = "rounds";
+  let roundsLabel = document.createElement("label");
+  roundsLabel.className = "rounds__round-label";
+  roundsLabel.innerHTML = `Round <input type="text" value="1" disabled/>`;
+  roundsContainer.append(roundsLabel);
+  let buttonsContainer = document.createElement("div");
+  let repeatSequence = document.createElement("button");
+  repeatSequence.innerHTML = "Repeat The Sequence";
+  repeatSequence.className = "button__opt";
+  let newGame = document.createElement("button");
+  newGame.innerHTML = "New Game";
+  newGame.className = "button__opt";
+  buttonsContainer.append(repeatSequence, newGame);
+  elementsContainer.append(roundsContainer, buttonsContainer);
+  document.querySelector(".levels").after(elementsContainer);
+  let stringInput = document.createElement("input");
+  stringInput.disabled = true;
+  stringInput.type = "text";
+  stringInput.className = "current-sequence";
+  document.querySelector(".options").after(stringInput);
+}
+
+function generateRandomSequence(round) {
+  let randomSequence = "";
+  let symbols = getKeybordSymbols();
+  let randomSequenceLength = round * 2;
+  let randomNumbers = [];
+  for (let i = 0; i < randomSequenceLength; i += 1) {
+    randomNumbers.push(Math.floor(Math.random() * (symbols.length - 1)));
+  }
+  randomSequence = randomNumbers.map((el) => symbols[el]).join("");
+  return randomSequence;
+}
+
+function getKeybordSymbols() {
+  let symbols = [];
+  document.querySelectorAll(".key").forEach((el) => symbols.push(el.innerText));
+  return symbols;
 }
