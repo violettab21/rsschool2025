@@ -86,3 +86,7 @@ body {
   display: block;
   margin: 0 auto;
 }
+
+.key_highlighted {
+  background-color: rgb(191, 221, 191);
+}

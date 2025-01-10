@@ -90,7 +90,9 @@ function startHandler() {
     document.querySelector(".button").style.display = "none";
     document.querySelector(".levels").style.pointerEvents = "none";
     addGameElements();
-    console.log(generateRandomSequence(1));
+    let generatedString = generateRandomSequence(getCurrentRound());
+    console.log(generatedString);
+    highlightKeyboardSymbols(generatedString);
   });
 }
 
@@ -101,7 +103,7 @@ function addGameElements() {
   roundsContainer.className = "rounds";
   let roundsLabel = document.createElement("label");
   roundsLabel.className = "rounds__round-label";
-  roundsLabel.innerHTML = `Round <input type="text" value="1" disabled/>`;
+  roundsLabel.innerHTML = `Round <input type="text" value="3" disabled/>`;
   roundsContainer.append(roundsLabel);
   let buttonsContainer = document.createElement("div");
   let repeatSequence = document.createElement("button");
@@ -136,4 +138,27 @@ function getKeybordSymbols() {
   let symbols = [];
   document.querySelectorAll(".key").forEach((el) => symbols.push(el.innerText));
   return symbols;
+}
+
+function getCurrentRound() {
+  let round = document.querySelector(".rounds__round-label input");
+  return round.value;
+}
+
+function highlightKeyboardSymbols(sequence) {
+  sequence.split("").forEach((el, i) => {
+    document.querySelectorAll(".key").forEach((element) => {
+      if (element.innerText === el) {
+        setTimeout(highlightOneKey, (i + 1) * 2000, element);
+      }
+    });
+  });
+}
+
+function highlightOneKey(key) {
+  key.classList.add("key_highlighted");
+  setTimeout(removeHighlightFromKey, 1000, key);
+}
+function removeHighlightFromKey(key) {
+  key.classList.remove("key_highlighted");
 }
