@@ -1,0 +1,58 @@
+body {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.initial-screen {
+  border-radius: 6px;
+  border: 1px solid blue;
+  width: 50%;
+}
+.levels {
+  list-style-type: none;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0px;
+}
+.button {
+  display: block;
+}
+.initial-screen__button {
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.levels__level {
+  cursor: pointer;
+  padding: 12px 24px;
+  border-radius: 6px;
+}
+.levels__level_selected {
+  background-color: #e5e5e5;
+}
+
+.keyboard-keys__numbers,
+.keyboard-keys__letters {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 45px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.key {
+  background-color: rgb(196 196 226);
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 5%;
+  text-align: center;
+  font-size: 24px;
+}
