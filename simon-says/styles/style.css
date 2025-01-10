@@ -1,16 +1,25 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+  border-collapse: collapse;
+}
+
 body {
   box-sizing: border-box;
   padding: 0;
-  margin: 0;
+  margin: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  max-width: 1440px;
 }
 .initial-screen {
   border-radius: 6px;
   border: 1px solid blue;
-  width: 50%;
+  width: 1296px;
 }
 .levels {
   list-style-type: none;
@@ -55,4 +64,25 @@ body {
   width: 5%;
   text-align: center;
   font-size: 24px;
+}
+
+.button__opt {
+  display: block;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 120px;
+  flex-wrap: wrap;
+  gap: 10%;
+}
+
+.button__opt {
+  margin-bottom: 10px;
+}
+
+.current-sequence {
+  display: block;
+  margin: 0 auto;
 }
