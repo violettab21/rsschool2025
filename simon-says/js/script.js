@@ -95,7 +95,7 @@ function startHandler() {
     highlightKeyboardSymbols(generatedSequenceGlobal);
     keyboardHandler();
     physicalKeyboardHandler();
-    nextRoundHandler();
+    buttonsHandler();
   });
 }
 
@@ -212,25 +212,31 @@ function showNextButton() {
     .classList.remove("buttons__button_hidden");
 }
 
-function nextRoundHandler() {
+function buttonsHandler() {
   document.querySelector(".buttons").addEventListener("click", (event) => {
     if (event.target.innerText === "Next") {
-      document.querySelector(".rounds__round-label input").value =
-        +getCurrentRound() + 1;
-      document
-        .querySelector(".buttons__button:first-child")
-        .classList.remove("buttons__button_hidden");
-      document
-        .querySelector(".buttons__button:nth-child(2)")
-        .classList.add("buttons__button_hidden");
-      document.querySelector(".current-sequence").value = "";
-      generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
-      console.log(generatedSequenceGlobal);
-      highlightKeyboardSymbols(generatedSequenceGlobal);
+      goToNextRound();
+    } else if (event.target.innerText === "Repeat The Sequence") {
+      repeatSequence();
+      event.target.disabled = true;
     }
   });
 }
-
+function goToNextRound() {
+  document.querySelector(".rounds__round-label input").value =
+    +getCurrentRound() + 1;
+  document
+    .querySelector(".buttons__button:first-child")
+    .classList.remove("buttons__button_hidden");
+  document.querySelector(".buttons__button:first-child").disabled = false;
+  document
+    .querySelector(".buttons__button:nth-child(2)")
+    .classList.add("buttons__button_hidden");
+  document.querySelector(".current-sequence").value = "";
+  generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
+  console.log(generatedSequenceGlobal);
+  highlightKeyboardSymbols(generatedSequenceGlobal);
+}
 function generateModal(text) {
   let divContainer;
   divContainer = document.createElement("div");
@@ -278,4 +284,9 @@ function physicalKeyboardHandler() {
       );
     }
   });
+}
+
+function repeatSequence() {
+  highlightKeyboardSymbols(generatedSequenceGlobal);
+  document.querySelector(".current-sequence").value = "";
 }
