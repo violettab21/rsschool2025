@@ -93,6 +93,7 @@ function startHandler() {
     let generatedString = generateRandomSequence(getCurrentRound());
     console.log(generatedString);
     highlightKeyboardSymbols(generatedString);
+    keyboardHandler(generatedString);
   });
 }
 
@@ -103,16 +104,21 @@ function addGameElements() {
   roundsContainer.className = "rounds";
   let roundsLabel = document.createElement("label");
   roundsLabel.className = "rounds__round-label";
-  roundsLabel.innerHTML = `Round <input type="text" value="3" disabled/>`;
+  roundsLabel.innerHTML = `Round <input type="text" value="1" disabled/>`;
   roundsContainer.append(roundsLabel);
   let buttonsContainer = document.createElement("div");
+  buttonsContainer.className = "buttons";
   let repeatSequence = document.createElement("button");
   repeatSequence.innerHTML = "Repeat The Sequence";
-  repeatSequence.className = "button__opt";
+  repeatSequence.className = "buttons__button";
+  let next = document.createElement("button");
+  next.innerHTML = "Next";
+  next.className = "buttons__button";
+  next.classList.add("buttons__button_hidden");
   let newGame = document.createElement("button");
   newGame.innerHTML = "New Game";
-  newGame.className = "button__opt";
-  buttonsContainer.append(repeatSequence, newGame);
+  newGame.className = "buttons__button";
+  buttonsContainer.append(repeatSequence, next, newGame);
   elementsContainer.append(roundsContainer, buttonsContainer);
   document.querySelector(".levels").after(elementsContainer);
   let stringInput = document.createElement("input");
@@ -161,4 +167,38 @@ function highlightOneKey(key) {
 }
 function removeHighlightFromKey(key) {
   key.classList.remove("key_highlighted");
+}
+
+function keyboardHandler(generatedSequence) {
+  document.querySelector(".keyboard").addEventListener("click", (event) => {
+    if (event.target.classList.contains("key")) {
+      document.querySelector(".current-sequence").value +=
+        event.target.innerText;
+      checkInputString(
+        document.querySelector(".current-sequence").value,
+        generatedSequence
+      );
+    }
+  });
+}
+
+function checkInputString(inputString, generatedSequence) {
+  let inputStringLength = inputString.length;
+  if (inputStringLength === generatedSequence.length) {
+    if (inputString === generatedSequence) showNextButton();
+    else console.log("OOps, incorrect");
+  } else {
+    if (inputString === generatedSequence.slice(0, inputStringLength)) {
+      console.log("Correct! Type next");
+    } else console.log("Incorrect, be careful");
+  }
+}
+
+function showNextButton() {
+  document
+    .querySelector(".buttons__button:first-child")
+    .classList.add("buttons__button_hidden");
+  document
+    .querySelector(".buttons__button:nth-child(2)")
+    .classList.remove("buttons__button_hidden");
 }

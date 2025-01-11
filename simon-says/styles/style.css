@@ -64,10 +64,7 @@ body {
   width: 5%;
   text-align: center;
   font-size: 24px;
-}
-
-.button__opt {
-  display: block;
+  cursor: pointer;
 }
 
 .options {
@@ -78,7 +75,8 @@ body {
   gap: 10%;
 }
 
-.button__opt {
+.buttons__button {
+  display: block;
   margin-bottom: 10px;
 }
 
@@ -89,4 +87,13 @@ body {
 
 .key_highlighted {
   background-color: rgb(191, 221, 191);
+}
+
+.key:active {
+  background-color: rgb(166, 167, 182);
+  transition: stroke 2s ease;
+}
+
+.buttons__button_hidden {
+  display: none;
 }
