@@ -1,3 +1,4 @@
+let generatedSequenceGlobal = "";
 window.addEventListener("load", (event) => {
   createInitialScreenElements();
   levelSelection();
@@ -90,10 +91,11 @@ function startHandler() {
     document.querySelector(".button").style.display = "none";
     document.querySelector(".levels").style.pointerEvents = "none";
     addGameElements();
-    let generatedString = generateRandomSequence(getCurrentRound());
-    console.log(generatedString);
-    highlightKeyboardSymbols(generatedString);
-    keyboardHandler(generatedString);
+    generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
+    console.log(generatedSequenceGlobal);
+    highlightKeyboardSymbols(generatedSequenceGlobal);
+    keyboardHandler();
+    nextRoundHandler();
   });
 }
 
@@ -169,14 +171,14 @@ function removeHighlightFromKey(key) {
   key.classList.remove("key_highlighted");
 }
 
-function keyboardHandler(generatedSequence) {
+function keyboardHandler() {
   document.querySelector(".keyboard").addEventListener("click", (event) => {
     if (event.target.classList.contains("key")) {
       document.querySelector(".current-sequence").value +=
         event.target.innerText;
       checkInputString(
         document.querySelector(".current-sequence").value,
-        generatedSequence
+        generatedSequenceGlobal
       );
     }
   });
@@ -185,12 +187,16 @@ function keyboardHandler(generatedSequence) {
 function checkInputString(inputString, generatedSequence) {
   let inputStringLength = inputString.length;
   if (inputStringLength === generatedSequence.length) {
-    if (inputString === generatedSequence) showNextButton();
-    else console.log("OOps, incorrect");
+    if (inputString === generatedSequence) {
+      if (getCurrentRound() !== "5") {
+        showNextButton();
+        generateModal("Correct, click Next to proceed!");
+      } else generateModal("You won!");
+    } else generateModal("OOps, wrong symbol, try again!");
   } else {
     if (inputString === generatedSequence.slice(0, inputStringLength)) {
       console.log("Correct! Type next");
-    } else console.log("Incorrect, be careful");
+    } else generateModal("OOps, wrong symbol, try again!");
   }
 }
 
@@ -201,4 +207,51 @@ function showNextButton() {
   document
     .querySelector(".buttons__button:nth-child(2)")
     .classList.remove("buttons__button_hidden");
+}
+
+function nextRoundHandler() {
+  document.querySelector(".buttons").addEventListener("click", (event) => {
+    if (event.target.innerText === "Next") {
+      document.querySelector(".rounds__round-label input").value =
+        +getCurrentRound() + 1;
+      document
+        .querySelector(".buttons__button:first-child")
+        .classList.remove("buttons__button_hidden");
+      document
+        .querySelector(".buttons__button:nth-child(2)")
+        .classList.add("buttons__button_hidden");
+      document.querySelector(".current-sequence").value = "";
+      generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
+      console.log(generatedSequenceGlobal);
+      highlightKeyboardSymbols(generatedSequenceGlobal);
+    }
+  });
+}
+
+function generateModal(text) {
+  let divContainer;
+  divContainer = document.createElement("div");
+  divContainer.className = "dark-view";
+  let divModal;
+  divModal = document.createElement("div");
+  divModal.className = "modal";
+  let spanCross = document.createElement("span");
+  spanCross.className = "icon-close";
+  spanCross.innerHTML = `<img src="../assets/close.svg" alt="">`;
+  let divModalText;
+  divModalText = document.createElement("div");
+  divModalText.className = "modal__text-block";
+  divModalText.innerHTML = `
+      <p class="modal__text">${text}</p>`;
+  divContainer.append(divModal);
+  divModal.append(spanCross);
+  divModal.append(divModalText);
+  document.querySelector(".initial-screen").append(divContainer);
+  closeModal();
+}
+
+function closeModal() {
+  document.querySelector(".icon-close").addEventListener("click", () => {
+    document.querySelector(".dark-view").remove();
+  });
 }
