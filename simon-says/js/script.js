@@ -3,7 +3,6 @@ window.addEventListener("load", (event) => {
   createInitialScreenElements();
   levelSelection();
   startHandler();
-  console.log(getKeybordSymbols());
 });
 
 function createInitialScreenElements() {
@@ -95,6 +94,7 @@ function startHandler() {
     console.log(generatedSequenceGlobal);
     highlightKeyboardSymbols(generatedSequenceGlobal);
     keyboardHandler();
+    physicalKeyboardHandler();
     nextRoundHandler();
   });
 }
@@ -187,14 +187,17 @@ function keyboardHandler() {
 function checkInputString(inputString, generatedSequence) {
   let inputStringLength = inputString.length;
   if (inputStringLength === generatedSequence.length) {
-    if (inputString === generatedSequence) {
+    if (inputString.toUpperCase() === generatedSequence.toUpperCase()) {
       if (getCurrentRound() !== "5") {
         showNextButton();
         generateModal("Correct, click Next to proceed!");
       } else generateModal("You won!");
     } else generateModal("OOps, wrong symbol, try again!");
   } else {
-    if (inputString === generatedSequence.slice(0, inputStringLength)) {
+    if (
+      inputString.toUpperCase() ===
+      generatedSequence.slice(0, inputStringLength).toUpperCase()
+    ) {
       console.log("Correct! Type next");
     } else generateModal("OOps, wrong symbol, try again!");
   }
@@ -253,5 +256,26 @@ function generateModal(text) {
 function closeModal() {
   document.querySelector(".icon-close").addEventListener("click", () => {
     document.querySelector(".dark-view").remove();
+  });
+}
+
+function physicalKeyboardHandler() {
+  document.addEventListener("keydown", (event) => {
+    let possibleSymbols = getKeybordSymbols();
+    let isValidSymbol = possibleSymbols.some(
+      (el) => el === event.key.toUpperCase()
+    );
+    if (isValidSymbol) {
+      document.querySelectorAll(".key").forEach((el) => {
+        if (el.innerText.toUpperCase() === event.key.toUpperCase()) {
+          highlightOneKey(el);
+        }
+      });
+      document.querySelector(".current-sequence").value += event.key;
+      checkInputString(
+        document.querySelector(".current-sequence").value,
+        generatedSequenceGlobal
+      );
+    }
   });
 }
