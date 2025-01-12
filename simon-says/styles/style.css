@@ -11,7 +11,6 @@ body {
   padding: 0;
   margin: auto;
   display: flex;
-  align-items: center;
   justify-content: center;
   min-height: 100vh;
   max-width: 1440px;
@@ -23,7 +22,7 @@ body {
   border-radius: 10px;
   width: 1296px;
   background-color: rgb(242 242 242);
-  height: 450px;
+  /*min-height: 450px;*/
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -47,10 +46,6 @@ body {
 
 .levels__level_selected {
   background-color: #eda9a9;
-}
-
-.levels__level:hover {
-  background-color: white;
 }
 
 .button {
@@ -99,15 +94,6 @@ body {
 .key_highlighted {
   background-color: rgb(185 127 127);
 }
-.key:hover {
-  background-color: #eda9a9;
-  color: white;
-  transition: all 0.5s;
-}
-.key:active {
-  background-color: rgb(185 127 127);
-  transition: stroke 2s ease;
-}
 
 .options {
   display: flex;
@@ -134,13 +120,6 @@ body {
 
 .buttons__button_hidden {
   display: none;
-}
-
-.buttons__button:hover,
-.initial-screen__button:hover {
-  background-color: #eda9a9;
-  color: white;
-  transition: all 0.5s;
 }
 
 .buttons__button:disabled {
@@ -171,7 +150,8 @@ body {
 }
 
 .modal__text {
-  padding: 60px;
+  padding: 60px 20px 0px;
+  font-size: 18px;
 }
 
 .icon-close {
@@ -208,4 +188,80 @@ body {
   font-weight: 600;
   color: #dd7575;
   font-size: 16px;
+}
+@media (hover: hover) {
+  .levels__level:hover {
+    background-color: white;
+  }
+  .buttons__button:hover,
+  .initial-screen__button:hover {
+    background-color: #eda9a9;
+    color: white;
+    transition: all 0.5s;
+  }
+  .key:hover {
+    background-color: #eda9a9;
+    color: white;
+    transition: all 0.5s;
+  }
+}
+.key:active,
+.buttons__button:active,
+.initial-screen__button:active {
+  background-color: rgb(185 127 127);
+  transition: stroke 2s ease;
+}
+
+@media screen and (max-width: 768px) {
+  .options {
+    padding: 5px 50px;
+  }
+  .keyboard-keys__numbers,
+  .keyboard-keys__letters {
+    padding: 15px 50px;
+  }
+  .key {
+    cursor: none;
+  }
+  .buttons__button,
+  .initial-screen__button {
+    cursor: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .options {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  .keyboard-keys__numbers,
+  .keyboard-keys__letters {
+    padding: 15px 50px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .modal {
+    max-width: 300px;
+  }
+  .modal__text {
+    padding: 40px 20px;
+    font-size: 16px;
+  }
+  .initial-screen {
+    min-height: 100vh;
+  }
+}
+
+.modal-image {
+  display: block;
+  width: 200px;
+}
+
+.modal__text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
