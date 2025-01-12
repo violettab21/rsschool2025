@@ -1,4 +1,5 @@
 let generatedSequenceGlobal = "";
+let currentClickedKeys = [];
 window.addEventListener("load", (event) => {
   createInitialScreenElements();
   levelSelection();
@@ -94,12 +95,19 @@ function startHandler() {
     document
       .querySelector(".keyboard")
       .addEventListener("click", keyboardHandler);
-    document.addEventListener("keydown", physicalKeyboardHandler);
+    physicalKeyboard();
     buttonsHandler();
 
     generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
     console.log(generatedSequenceGlobal);
     highlightKeyboardSymbols(generatedSequenceGlobal);
+  });
+}
+
+function physicalKeyboard() {
+  document.addEventListener("keydown", physicalKeyboardHandler);
+  document.addEventListener("keyup", (event) => {
+    if (currentClickedKeys.length !== 0) currentClickedKeys.length = 0;
   });
 }
 
@@ -306,39 +314,22 @@ function closeModal() {
   });
 }
 
-function physicalKeyboardHandler() {
-  document.addEventListener("keydown", (event) => {
-    let possibleSymbols = getKeybordSymbols();
-    let isValidSymbol = possibleSymbols.some(
-      (el) => el === event.key.toUpperCase()
-    );
-    if (isValidSymbol) {
-      document.querySelectorAll(".key").forEach((el) => {
-        if (el.innerText.toUpperCase() === event.key.toUpperCase()) {
-          highlightOneKey(el);
-        }
-      });
-      document.querySelector(".current-sequence").value += event.key;
-      checkInputString(
-        document.querySelector(".current-sequence").value,
-        generatedSequenceGlobal
-      );
-    }
-  });
-}
-
 function physicalKeyboardHandler(event) {
   let possibleSymbols = getKeybordSymbols();
   let isValidSymbol = possibleSymbols.some(
     (el) => el === event.key.toUpperCase()
   );
   if (isValidSymbol) {
-    document.querySelectorAll(".key").forEach((el) => {
-      if (el.innerText.toUpperCase() === event.key.toUpperCase()) {
-        highlightOneKey(el);
-      }
-    });
-    document.querySelector(".current-sequence").value += event.key;
+    currentClickedKeys.push(event.key);
+    console.log(currentClickedKeys);
+    if (currentClickedKeys.length <= 1) {
+      document.querySelector(".current-sequence").value += event.key;
+      document.querySelectorAll(".key").forEach((el) => {
+        if (el.innerText.toUpperCase() === event.key.toUpperCase()) {
+          highlightOneKey(el);
+        }
+      });
+    }
     checkInputString(
       document.querySelector(".current-sequence").value,
       generatedSequenceGlobal
