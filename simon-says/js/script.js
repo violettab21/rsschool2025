@@ -219,6 +219,7 @@ function checkInputString(inputString, generatedSequence) {
       } else {
         generateModal("You won!");
         disableKeyboardInput();
+        document.querySelector(".buttons__button:first-child").disabled = true;
       }
     } else {
       generateModal(
