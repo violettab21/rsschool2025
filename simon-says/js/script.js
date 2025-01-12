@@ -257,6 +257,8 @@ function buttonsHandler() {
     } else if (event.target.innerText === "Repeat The Sequence") {
       event.target.disabled = true;
       repeatSequence();
+    } else if (event.target.innerText === "New Game") {
+      newGameHandler();
     }
   });
 }
@@ -374,4 +376,13 @@ function enableAllControls(isRepeatClicked) {
     if (el.innerText === "Repeat The Sequence") el.disabled = isRepeatClicked;
     else el.disabled = false;
   });
+}
+
+function newGameHandler() {
+  document.querySelector(".button").style.display = "block";
+  document.querySelector(".levels").style.pointerEvents = "auto";
+  document.querySelector(".current-sequence").remove();
+  document.querySelector(".options").remove();
+
+  enableKeyboardInput();
 }
