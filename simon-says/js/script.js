@@ -89,13 +89,17 @@ function startHandler() {
   document.querySelector(".button").addEventListener("click", (event) => {
     document.querySelector(".button").style.display = "none";
     document.querySelector(".levels").style.pointerEvents = "none";
+
     addGameElements();
+    document
+      .querySelector(".keyboard")
+      .addEventListener("click", keyboardHandler);
+    document.addEventListener("keydown", physicalKeyboardHandler);
+    buttonsHandler();
+
     generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
     console.log(generatedSequenceGlobal);
     highlightKeyboardSymbols(generatedSequenceGlobal);
-    keyboardHandler();
-    physicalKeyboardHandler();
-    buttonsHandler();
   });
 }
 
@@ -154,10 +158,20 @@ function getCurrentRound() {
 }
 
 function highlightKeyboardSymbols(sequence) {
+  let isRepeatClicked;
+  if (
+    document.querySelector(".buttons__button:first-child").disabled === true
+  ) {
+    isRepeatClicked = true;
+  } else isRepeatClicked = false;
+  disableAllControls();
   sequence.split("").forEach((el, i) => {
     document.querySelectorAll(".key").forEach((element) => {
-      if (element.innerText === el) {
-        setTimeout(highlightOneKey, (i + 1) * 2000, element);
+      if (element.innerText === el && i !== sequence.length - 1) {
+        setTimeout(highlightOneKey, (i + 1) * 1500, element);
+      } else if (element.innerText === el && i == sequence.length - 1) {
+        setTimeout(highlightOneKey, (i + 1) * 1500, element);
+        setTimeout(enableAllControls, (i + 1) * 1500, isRepeatClicked);
       }
     });
   });
@@ -184,6 +198,16 @@ function keyboardHandler() {
   });
 }
 
+function keyboardHandler(event) {
+  if (event.target.classList.contains("key")) {
+    document.querySelector(".current-sequence").value += event.target.innerText;
+    checkInputString(
+      document.querySelector(".current-sequence").value,
+      generatedSequenceGlobal
+    );
+  }
+}
+
 function checkInputString(inputString, generatedSequence) {
   let inputStringLength = inputString.length;
   if (inputStringLength === generatedSequence.length) {
@@ -191,15 +215,29 @@ function checkInputString(inputString, generatedSequence) {
       if (getCurrentRound() !== "5") {
         showNextButton();
         generateModal("Correct, click Next to proceed!");
-      } else generateModal("You won!");
-    } else generateModal("OOps, wrong symbol, try again!");
+        disableKeyboardInput();
+      } else {
+        generateModal("You won!");
+        disableKeyboardInput();
+      }
+    } else {
+      generateModal(
+        "Ops, wrong symbol, use 'Repeat the sequence' or start a new game"
+      );
+      disableKeyboardInput();
+    }
   } else {
     if (
       inputString.toUpperCase() ===
       generatedSequence.slice(0, inputStringLength).toUpperCase()
     ) {
       console.log("Correct! Type next");
-    } else generateModal("OOps, wrong symbol, try again!");
+    } else {
+      generateModal(
+        "Ops, wrong symbol, use 'Repeat the sequence' or start a new game"
+      );
+      disableKeyboardInput();
+    }
   }
 }
 
@@ -217,8 +255,8 @@ function buttonsHandler() {
     if (event.target.innerText === "Next") {
       goToNextRound();
     } else if (event.target.innerText === "Repeat The Sequence") {
-      repeatSequence();
       event.target.disabled = true;
+      repeatSequence();
     }
   });
 }
@@ -286,7 +324,54 @@ function physicalKeyboardHandler() {
   });
 }
 
+function physicalKeyboardHandler(event) {
+  let possibleSymbols = getKeybordSymbols();
+  let isValidSymbol = possibleSymbols.some(
+    (el) => el === event.key.toUpperCase()
+  );
+  if (isValidSymbol) {
+    document.querySelectorAll(".key").forEach((el) => {
+      if (el.innerText.toUpperCase() === event.key.toUpperCase()) {
+        highlightOneKey(el);
+      }
+    });
+    document.querySelector(".current-sequence").value += event.key;
+    checkInputString(
+      document.querySelector(".current-sequence").value,
+      generatedSequenceGlobal
+    );
+  }
+}
+
 function repeatSequence() {
   highlightKeyboardSymbols(generatedSequenceGlobal);
   document.querySelector(".current-sequence").value = "";
+}
+
+function disableKeyboardInput() {
+  document.removeEventListener("keydown", physicalKeyboardHandler);
+  document.querySelector(".keyboard").style.pointerEvents = "none";
+}
+
+function enableKeyboardInput() {
+  document.addEventListener("keydown", physicalKeyboardHandler);
+  document.querySelector(".keyboard").style.pointerEvents = "auto";
+}
+
+function disableAllControls() {
+  document.removeEventListener("keydown", physicalKeyboardHandler);
+  document.querySelector(".keyboard").style.pointerEvents = "none";
+  document
+    .querySelectorAll(".buttons__button")
+    .forEach((el) => (el.disabled = true));
+}
+
+function enableAllControls(isRepeatClicked) {
+  document.addEventListener("keydown", physicalKeyboardHandler);
+  document.querySelector(".keyboard").style.pointerEvents = "auto";
+
+  document.querySelectorAll(".buttons__button").forEach((el) => {
+    if (el.innerText === "Repeat The Sequence") el.disabled = isRepeatClicked;
+    else el.disabled = false;
+  });
 }
