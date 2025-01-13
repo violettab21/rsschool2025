@@ -1,5 +1,6 @@
 let generatedSequenceGlobal = "";
 let currentClickedKeys = [];
+let incorrectAttemps = 0;
 window.addEventListener("load", (event) => {
   createInitialScreenElements();
   levelSelection();
@@ -222,17 +223,31 @@ function checkInputString(inputString, generatedSequence) {
     if (inputString.toUpperCase() === generatedSequence.toUpperCase()) {
       if (getCurrentRound() !== "5") {
         showNextButton();
-        generateModal("Correct, click Next to proceed!");
+        generateModal(
+          "Correct! </br> Click 'Next' to proceed to the next round!",
+          "correct"
+        );
         disableKeyboardInput();
       } else {
-        generateModal("You won!");
+        generateModal(
+          "Congratulations!</br> You won the game! You are the star!",
+          "win"
+        );
         disableKeyboardInput();
         document.querySelector(".buttons__button:first-child").disabled = true;
       }
     } else {
-      generateModal(
-        "Ops, wrong symbol, use 'Repeat the sequence' or start a new game"
-      );
+      incorrectAttemps += 1;
+      if (incorrectAttemps <= 1)
+        generateModal(
+          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
+          "incorrect"
+        );
+      else
+        generateModal(
+          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
+          "game over"
+        );
       disableKeyboardInput();
     }
   } else {
@@ -242,9 +257,17 @@ function checkInputString(inputString, generatedSequence) {
     ) {
       console.log("Correct! Type next");
     } else {
-      generateModal(
-        "Ops, wrong symbol, use 'Repeat the sequence' or start a new game"
-      );
+      incorrectAttemps += 1;
+      if (incorrectAttemps <= 1)
+        generateModal(
+          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
+          "incorrect"
+        );
+      else
+        generateModal(
+          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
+          "game over"
+        );
       disableKeyboardInput();
     }
   }
@@ -272,6 +295,7 @@ function buttonsHandler() {
   });
 }
 function goToNextRound() {
+  incorrectAttemps = 0;
   document.querySelector(".rounds__round-label input").value =
     +getCurrentRound() + 1;
   document
@@ -286,7 +310,7 @@ function goToNextRound() {
   console.log(generatedSequenceGlobal);
   highlightKeyboardSymbols(generatedSequenceGlobal);
 }
-function generateModal(text) {
+function generateModal(text, status) {
   let divContainer;
   divContainer = document.createElement("div");
   divContainer.className = "dark-view";
@@ -299,8 +323,19 @@ function generateModal(text) {
   let divModalText;
   divModalText = document.createElement("div");
   divModalText.className = "modal__text-block";
-  divModalText.innerHTML = `
-      <p class="modal__text">${text}</p>`;
+  if (status === "win") {
+    divModalText.innerHTML = `
+       <p class="modal__text">${text}</p><img class='modal-image modal-image_win' src="../assets/win.png" alt="">`;
+  } else if (status === "correct") {
+    divModalText.innerHTML = `
+      <p class="modal__text">${text}</p><img class='modal-image modal-image_correct' src="../assets/correct.png" alt="">`;
+  } else if (status === "incorrect") {
+    divModalText.innerHTML = `
+      <p class="modal__text">${text}</p><img class='modal-image modal-image_incorrect' src="../assets/incorrect.png" alt="">`;
+  } else if (status === "game over") {
+    divModalText.innerHTML = `
+      <p class="modal__text">${text}</p><img class='modal-image modal-image_game-over' src="../assets/game-over.png" alt="">`;
+  }
   divContainer.append(divModal);
   divModal.append(spanCross);
   divModal.append(divModalText);
@@ -340,6 +375,7 @@ function physicalKeyboardHandler(event) {
 function repeatSequence() {
   highlightKeyboardSymbols(generatedSequenceGlobal);
   document.querySelector(".current-sequence").value = "";
+  incorrectAttemps += 1;
 }
 
 function disableKeyboardInput() {
@@ -371,6 +407,7 @@ function enableAllControls(isRepeatClicked) {
 }
 
 function newGameHandler() {
+  incorrectAttemps = 0;
   document.querySelector(".button").style.display = "block";
   document.querySelector(".levels").style.pointerEvents = "auto";
   document.querySelector(".current-sequence").remove();

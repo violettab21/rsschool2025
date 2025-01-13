@@ -247,7 +247,7 @@ body {
     max-width: 300px;
   }
   .modal__text {
-    padding: 40px 20px;
+    padding: 40px 20px 0px;
     font-size: 16px;
   }
   .initial-screen {
@@ -257,11 +257,16 @@ body {
 
 .modal-image {
   display: block;
-  width: 200px;
+  width: 150px;
+  padding-bottom: 10px;
 }
-
+.modal-image_correct,
+.modal-image_incorrect {
+  width: 100px;
+}
 .modal__text-block {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
 }
