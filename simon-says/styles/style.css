@@ -22,7 +22,6 @@ body {
   border-radius: 10px;
   width: 1296px;
   background-color: rgb(242 242 242);
-  /*min-height: 450px;*/
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -160,7 +159,10 @@ body {
   top: 12px;
   cursor: pointer;
 }
-
+.rounds__round-label {
+  color: #363535;
+  font-weight: 600;
+}
 .rounds input {
   width: 50px;
   text-align: center;
@@ -171,7 +173,7 @@ body {
   font-family: Roboto;
   font-weight: 600;
   color: #dd7575;
-  font-size: 14px;
+  font-size: 16px;
   margin-left: 8px;
 }
 
@@ -247,7 +249,7 @@ body {
     max-width: 300px;
   }
   .modal__text {
-    padding: 40px 20px 0px;
+    padding: 50px 20px 0px;
     font-size: 16px;
   }
   .initial-screen {
