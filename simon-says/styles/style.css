@@ -41,6 +41,7 @@ body {
   padding: 12px 24px;
   border-radius: 6px;
   color: #7a0000;
+  font-weight: 600;
 }
 
 .levels__level_selected {
@@ -168,7 +169,7 @@ body {
   text-align: center;
   padding: 6px;
   font-size: 14px;
-  border: 1px solid #e1bfbf;
+  border: 2px solid #e1bfbf;
   border-radius: 6px;
   font-family: Roboto;
   font-weight: 600;
@@ -184,7 +185,7 @@ body {
   text-align: center;
   padding: 6px;
   font-size: 14px;
-  border: 1px solid #e1bfbf;
+  border: 2px solid #e1bfbf;
   border-radius: 6px;
   font-family: Roboto;
   font-weight: 600;
