@@ -100,7 +100,6 @@ function startHandler() {
     buttonsHandler();
 
     generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
-    console.log(generatedSequenceGlobal);
     highlightKeyboardSymbols(generatedSequenceGlobal);
   });
 }
@@ -185,7 +184,7 @@ function highlightKeyboardSymbols(sequence) {
         setTimeout(highlightOneKey, (i + 1) * 1500, element);
       } else if (element.innerText === el && i == sequence.length - 1) {
         setTimeout(highlightOneKey, (i + 1) * 1500, element);
-        setTimeout(enableAllControls, (i + 1) * 1500, isRepeatClicked);
+        setTimeout(enableAllControls, (i + 1) * 1700, isRepeatClicked);
       }
     });
   });
@@ -246,11 +245,9 @@ function checkInputString(inputString, generatedSequence) {
     }
   } else {
     if (
-      inputString.toUpperCase() ===
+      inputString.toUpperCase() !==
       generatedSequence.slice(0, inputStringLength).toUpperCase()
     ) {
-      console.log("Correct! Type next");
-    } else {
       incorrectAttemps += 1;
       if (incorrectAttemps <= 1) generateModal(incorrectMessage, "incorrect");
       else generateModal(incorrectMessage, "game over");
@@ -293,7 +290,6 @@ function goToNextRound() {
     .classList.add("buttons__button_hidden");
   document.querySelector(".current-sequence").value = "";
   generatedSequenceGlobal = generateRandomSequence(getCurrentRound());
-  console.log(generatedSequenceGlobal);
   highlightKeyboardSymbols(generatedSequenceGlobal);
 }
 function generateModal(text, status) {
@@ -348,7 +344,6 @@ function physicalKeyboardHandler(event) {
   );
   if (isValidSymbol) {
     currentClickedKeys.push(event.key);
-    console.log(currentClickedKeys);
     if (currentClickedKeys.length <= 1) {
       document.querySelector(".current-sequence").value += event.key;
       document.querySelectorAll(".key").forEach((el) => {
