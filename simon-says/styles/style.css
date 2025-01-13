@@ -143,7 +143,7 @@ body {
 
 .modal {
   margin: 0 auto;
-  max-width: 400px;
+  width: 350px;
   background-color: rgba(236, 243, 248, 1);
   border-radius: 20px;
   position: relative;

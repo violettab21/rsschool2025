@@ -16,19 +16,19 @@ function createInitialScreenElements() {
   easy.className = "levels__level";
   easy.classList.add("levels__level_selected");
   levels.append(easy);
-  easy.innerHTML = "Easy";
+  easy.textContent = "Easy";
   let medium = document.createElement("li");
   medium.className = "levels__level";
-  medium.innerHTML = "Medium";
+  medium.textContent = "Medium";
   levels.append(medium);
   let hard = document.createElement("li");
   hard.className = "levels__level";
-  hard.innerHTML = "Hard";
+  hard.textContent = "Hard";
   levels.append(hard);
   let button = document.createElement("button");
   button.className = "button";
   button.classList.add("initial-screen__button");
-  button.innerHTML = "Start";
+  button.textContent = "Start";
   document.querySelector("body").prepend(main);
 
   main.append(levels);
@@ -66,7 +66,7 @@ function addKeyboard(level) {
     for (let i = 0; i <= 9; i += 1) {
       let number = document.createElement("li");
       number.className = "key";
-      number.innerHTML = i;
+      number.textContent = i;
       numbers.append(number);
     }
     keyboardSection.append(numbers);
@@ -77,7 +77,7 @@ function addKeyboard(level) {
     for (let i = 65; i <= 90; i += 1) {
       let letter = document.createElement("li");
       letter.className = "key";
-      letter.innerHTML = String.fromCharCode(i).toUpperCase();
+      letter.textContent = String.fromCharCode(i).toUpperCase();
       letters.append(letter);
     }
     keyboardSection.append(letters);
@@ -119,19 +119,24 @@ function addGameElements() {
   roundsContainer.className = "rounds";
   let roundsLabel = document.createElement("label");
   roundsLabel.className = "rounds__round-label";
-  roundsLabel.innerHTML = `Round <input type="text" value="1" disabled/>`;
+  roundsLabel.textContent = `Round`;
+  let roundsInput = document.createElement("input");
+  roundsInput.type = "text";
+  roundsInput.disabled = "true";
+  roundsInput.value = "1";
+  roundsLabel.append(roundsInput);
   roundsContainer.append(roundsLabel);
   let buttonsContainer = document.createElement("div");
   buttonsContainer.className = "buttons";
   let repeatSequence = document.createElement("button");
-  repeatSequence.innerHTML = "Repeat The Sequence";
+  repeatSequence.textContent = "Repeat The Sequence";
   repeatSequence.className = "buttons__button";
   let next = document.createElement("button");
-  next.innerHTML = "Next";
+  next.textContent = "Next";
   next.className = "buttons__button";
   next.classList.add("buttons__button_hidden");
   let newGame = document.createElement("button");
-  newGame.innerHTML = "New Game";
+  newGame.textContent = "New Game";
   newGame.className = "buttons__button";
   buttonsContainer.append(repeatSequence, next, newGame);
   elementsContainer.append(roundsContainer, buttonsContainer);
@@ -218,36 +223,25 @@ function keyboardHandler(event) {
 }
 
 function checkInputString(inputString, generatedSequence) {
+  let youWonMessage = "Congratulations! You won the game!";
+  let incorrectMessage = "Oops, wrong symbol:(";
+  let successMessage = "Correct! Click 'Next' to proceed!";
   let inputStringLength = inputString.length;
   if (inputStringLength === generatedSequence.length) {
     if (inputString.toUpperCase() === generatedSequence.toUpperCase()) {
       if (getCurrentRound() !== "5") {
         showNextButton();
-        generateModal(
-          "Correct! </br> Click 'Next' to proceed to the next round!",
-          "correct"
-        );
+        generateModal(successMessage, "correct");
         disableKeyboardInput();
       } else {
-        generateModal(
-          "Congratulations!</br> You won the game! You are the star!",
-          "win"
-        );
+        generateModal(youWonMessage, "win");
         disableKeyboardInput();
         document.querySelector(".buttons__button:first-child").disabled = true;
       }
     } else {
       incorrectAttemps += 1;
-      if (incorrectAttemps <= 1)
-        generateModal(
-          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
-          "incorrect"
-        );
-      else
-        generateModal(
-          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
-          "game over"
-        );
+      if (incorrectAttemps <= 1) generateModal(incorrectMessage, "incorrect");
+      else generateModal(incorrectMessage, "game over");
       disableKeyboardInput();
     }
   } else {
@@ -258,16 +252,8 @@ function checkInputString(inputString, generatedSequence) {
       console.log("Correct! Type next");
     } else {
       incorrectAttemps += 1;
-      if (incorrectAttemps <= 1)
-        generateModal(
-          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
-          "incorrect"
-        );
-      else
-        generateModal(
-          "Oops, wrong symbol:(</br> use 'Repeat the sequence' or start a new game",
-          "game over"
-        );
+      if (incorrectAttemps <= 1) generateModal(incorrectMessage, "incorrect");
+      else generateModal(incorrectMessage, "game over");
       disableKeyboardInput();
     }
   }
@@ -319,26 +305,32 @@ function generateModal(text, status) {
   divModal.className = "modal";
   let spanCross = document.createElement("span");
   spanCross.className = "icon-close";
-  spanCross.innerHTML = `<img src="../assets/close.svg" alt="">`;
-  let divModalText;
-  divModalText = document.createElement("div");
-  divModalText.className = "modal__text-block";
+  let crossImage = document.createElement("img");
+  crossImage.src = "../assets/close.svg";
+  spanCross.append(crossImage);
+  let divModalContent;
+  divModalContent = document.createElement("div");
+  divModalContent.className = "modal__text-block";
+  let modalMessage = document.createElement("p");
+  modalMessage.textContent = `${text}`;
+  modalMessage.className = "modal__text";
+  let modalImage = document.createElement("img");
+  modalImage.className = "modal-image";
   if (status === "win") {
-    divModalText.innerHTML = `
-       <p class="modal__text">${text}</p><img class='modal-image modal-image_win' src="../assets/win.png" alt="">`;
+    modalImage.src = "../assets/win.png";
   } else if (status === "correct") {
-    divModalText.innerHTML = `
-      <p class="modal__text">${text}</p><img class='modal-image modal-image_correct' src="../assets/correct.png" alt="">`;
+    modalImage.src = "../assets/correct.png";
+    modalImage.classList.add("modal-image_correct");
   } else if (status === "incorrect") {
-    divModalText.innerHTML = `
-      <p class="modal__text">${text}</p><img class='modal-image modal-image_incorrect' src="../assets/incorrect.png" alt="">`;
+    modalImage.src = "../assets/incorrect.png";
+    modalImage.classList.add("modal-image_incorrect");
   } else if (status === "game over") {
-    divModalText.innerHTML = `
-      <p class="modal__text">${text}</p><img class='modal-image modal-image_game-over' src="../assets/game-over.png" alt="">`;
+    modalImage.src = "../assets/game-over.png";
   }
+  divModalContent.append(modalMessage, modalImage);
   divContainer.append(divModal);
   divModal.append(spanCross);
-  divModal.append(divModalText);
+  divModal.append(divModalContent);
   document.querySelector(".initial-screen").append(divContainer);
   closeModal();
 }
