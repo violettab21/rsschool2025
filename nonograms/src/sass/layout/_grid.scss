@@ -1,0 +1,10 @@
+.grid {
+  display: grid;
+  grid-auto-rows: 30px;
+  justify-content: center;
+  grid-gap: 0;
+}
+
+.grid div {
+  border: 1px, solid, black;
+}

@@ -1,4 +1,12 @@
 import "../../index.html";
 import "../sass/_style.scss";
+import {
+  nonograms,
+  generateHints,
+  calculateGridSize,
+  createGrid,
+} from "./nonograms";
 
-console.log("Hello Nonograms");
+document.addEventListener("DOMContentLoaded", () => {
+  createGrid(nonograms[7]);
+});
