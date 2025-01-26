@@ -77,11 +77,30 @@ function createPicturesList(level = "easy") {
 function changeLevelHandler() {
   document.querySelector(".levels__list").addEventListener("change", () => {
     let currentLevel = document.querySelector(".levels__list").value;
-    if (document.querySelector(".pictures"))
+    if (document.querySelector(".pictures")) {
       document.querySelector(".pictures").remove();
-    createPicturesList(currentLevel);
+      createPicturesList(currentLevel);
+      selectPictureHandler();
+    } else createPicturesList(currentLevel);
   });
 }
 
+function selectPictureHandler() {
+  document.querySelector(".pictures").addEventListener("click", (event) => {
+    if (event.target.className === "pictures__picture") {
+      let selectedNonogram = nonograms.find(
+        (el) => el.name === event.target.textContent.toLowerCase()
+      );
+      document.querySelector(".grid").remove();
+      createGrid(selectedNonogram);
+      fillInGridWithHints(selectedNonogram);
+    }
+  });
+}
 
-export { createGameElements, createPicturesList, changeLevelHandler };
+export {
+  createGameElements,
+  createPicturesList,
+  changeLevelHandler,
+  selectPictureHandler,
+};

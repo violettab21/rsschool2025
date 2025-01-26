@@ -80,7 +80,7 @@ const nonograms = [
     ],
   },
   {
-    name: "wakeUp",
+    name: "wakeup",
     matrix: [
       [0, 1, 1, 0, 0, 0, 0, 1, 1, 0],
       [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
