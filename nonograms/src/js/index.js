@@ -5,8 +5,10 @@ import {
   generateHints,
   calculateGridSize,
   createGrid,
+  fillInGridWithHints,
 } from "./nonograms";
 
 document.addEventListener("DOMContentLoaded", () => {
-  createGrid(nonograms[7]);
+  createGrid(nonograms[9]);
+  fillInGridWithHints(nonograms[9]);
 });

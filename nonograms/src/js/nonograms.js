@@ -307,4 +307,53 @@ function createGrid(nanogram) {
   document.querySelector("body").append(grid);
 }
 
-export { nonograms, generateHints, calculateGridSize, createGrid };
+function fillInGridWithHints(nanogram) {
+  let gridSize = calculateGridSize(nanogram);
+  let colCount = gridSize.colCount;
+  let rowCount = gridSize.rowCount;
+  let gridItems = Array.from(document.querySelectorAll(".grid-item"));
+  let matrixFromGrid = [];
+  console.log(gridItems);
+  for (let i = 0; i <= rowCount; i += 1) {
+    matrixFromGrid.push(gridItems.slice(i * colCount, i * colCount + colCount));
+  }
+  let hints = generateHints(nanogram.matrix);
+  let colsHintsCount = Math.max(...hints.rowsHints.map((el) => el.length));
+  let rowsHintsCount = Math.max(...hints.columnsHints.map((el) => el.length));
+
+  //area for columns hints
+
+  for (let j = colsHintsCount; j < colCount; j += 1) {
+    for (let i = rowsHintsCount - 1; i >= 0; i -= 1) {
+      matrixFromGrid[i][j].style.backgroundColor = "red";
+      matrixFromGrid[i][j].textContent = hints.columnsHints[
+        j - colsHintsCount
+      ].toReversed()[Math.abs(i - rowsHintsCount + 1)]
+        ? hints.columnsHints[j - colsHintsCount].toReversed()[
+            Math.abs(i - rowsHintsCount + 1)
+          ]
+        : "";
+    }
+  }
+  //area for rows hints
+  for (let i = rowsHintsCount; i < rowCount; i += 1) {
+    for (let j = colsHintsCount - 1; j >= 0; j -= 1) {
+      matrixFromGrid[i][j].style.backgroundColor = "red";
+      matrixFromGrid[i][j].textContent = hints.rowsHints[
+        i - rowsHintsCount
+      ].toReversed()[Math.abs(j - colsHintsCount + 1)]
+        ? hints.rowsHints[i - rowsHintsCount].toReversed()[
+            Math.abs(j - colsHintsCount + 1)
+          ]
+        : "";
+    }
+  }
+}
+
+export {
+  nonograms,
+  generateHints,
+  calculateGridSize,
+  createGrid,
+  fillInGridWithHints,
+};
