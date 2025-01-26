@@ -325,7 +325,8 @@ function fillInGridWithHints(nanogram) {
 
   for (let j = colsHintsCount; j < colCount; j += 1) {
     for (let i = rowsHintsCount - 1; i >= 0; i -= 1) {
-      matrixFromGrid[i][j].style.backgroundColor = "red";
+      matrixFromGrid[i][j].className = "grid-item__hint";
+      matrixFromGrid[i][j].classList.add("grid-item__hint_column");
       matrixFromGrid[i][j].textContent = hints.columnsHints[
         j - colsHintsCount
       ].toReversed()[Math.abs(i - rowsHintsCount + 1)]
@@ -338,7 +339,8 @@ function fillInGridWithHints(nanogram) {
   //area for rows hints
   for (let i = rowsHintsCount; i < rowCount; i += 1) {
     for (let j = colsHintsCount - 1; j >= 0; j -= 1) {
-      matrixFromGrid[i][j].style.backgroundColor = "red";
+      matrixFromGrid[i][j].className = "grid-item__hint";
+      matrixFromGrid[i][j].classList.add("grid-item__hint_row");
       matrixFromGrid[i][j].textContent = hints.rowsHints[
         i - rowsHintsCount
       ].toReversed()[Math.abs(j - colsHintsCount + 1)]
@@ -346,6 +348,12 @@ function fillInGridWithHints(nanogram) {
             Math.abs(j - colsHintsCount + 1)
           ]
         : "";
+    }
+  }
+
+  for (let i = rowsHintsCount; i < rowCount; i += 1) {
+    for (let j = colsHintsCount; j < colCount; j += 1) {
+      matrixFromGrid[i][j].className = "grid-item__game";
     }
   }
 }

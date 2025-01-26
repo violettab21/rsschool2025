@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pictures {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}

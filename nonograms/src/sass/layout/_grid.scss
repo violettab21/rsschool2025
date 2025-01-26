@@ -1,3 +1,5 @@
+@use "../abstracts/constants";
+
 .grid {
   display: grid;
   grid-auto-rows: 30px;
@@ -7,4 +9,17 @@
 
 .grid div {
   border: 1px, solid, black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-item__hint {
+  background-color: constants.$color-hint;
+  color: constants.$color-text;
+  font-size: 18px;
+}
+
+.grid-item__game_colored {
+  background-color: rgb(37, 35, 35);
 }

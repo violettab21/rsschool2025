@@ -14,8 +14,8 @@ import {
 } from "./elementsRendering";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
-  createGrid(nonograms[9]);
-  fillInGridWithHints(nonograms[9]);
+  /*createGrid(nonograms[9]);
+  fillInGridWithHints(nonograms[9]);*/
   changeLevelHandler();
   selectPictureHandler();
 });

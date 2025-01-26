@@ -1,0 +1,21 @@
+@use "../abstracts/constants";
+
+.pictures__picture {
+  list-style-type: none;
+  padding: 8px 12px;
+  border: 1px solid constants.$color-border;
+  border-radius: 6px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.levels__label {
+  margin-right: 8px;
+}
+
+.levels__list {
+  padding: 8px 12px;
+  color: constants.$color-text;
+  border: 1px solid constants.$color-border;
+  border-radius: 6px;
+}
