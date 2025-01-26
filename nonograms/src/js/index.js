@@ -7,8 +7,10 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
-
+import { changeLevelHandler, createGameElements } from "./elementsRendering";
 document.addEventListener("DOMContentLoaded", () => {
+  createGameElements();
   createGrid(nonograms[9]);
   fillInGridWithHints(nonograms[9]);
+  changeLevelHandler();
 });
