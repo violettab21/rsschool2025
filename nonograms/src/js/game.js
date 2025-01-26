@@ -5,21 +5,27 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
+import { generateModal, createCross } from "./elementsRendering";
 
 function gridHandler() {
   document.querySelector(".grid").addEventListener("click", (event) => {
-    if (event.target.classList.contains("grid-item__game")) {
-      event.target.classList.toggle("grid-item__game_colored");
+    if (event.target.closest(".grid-item__game")) {
+      event.target
+        .closest(".grid-item__game")
+        .classList.toggle("grid-item__game_colored");
 
-      console.log(
+      if (
         checkSolution(nonograms.find((el) => el.name === getCurrentPicture()))
-      );
+      )
+        generateModal("You solved the nonogram!");
     }
   });
   document.querySelector(".grid").addEventListener("contextmenu", (event) => {
     event.preventDefault();
-    if (event.target.classList.contains("grid-item__game")) {
-      event.target.style.backgroundColor = "grey";
+    if (event.target.closest(".grid-item__game")) {
+      if (event.target.closest(".grid-item__game").childElementCount !== 0) {
+        event.target.closest(".grid-item__game").innerHTML = "";
+      } else createCross(event.target);
     }
   });
 }
@@ -66,4 +72,5 @@ function getCurrentPicture() {
     .querySelector(".pictures__picture_selected")
     .textContent.toLocaleLowerCase();
 }
+
 export { gridHandler, checkSolution };

@@ -1,5 +1,6 @@
 import "../../index.html";
 import "../sass/_style.scss";
+import "../assets/close.svg";
 import {
   nonograms,
   generateHints,

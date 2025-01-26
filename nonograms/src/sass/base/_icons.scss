@@ -1,0 +1,28 @@
+.cross {
+  height: 25px;
+  width: 25px;
+  position: relative;
+}
+
+.cross__line {
+  width: 25px;
+  height: 2px;
+  background-color: #181c297a;
+  display: inline-block;
+}
+
+.cross__line_line1 {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: 0px;
+  rotate: 45deg;
+  transition: all 0.2s;
+}
+
+.cross__line_line2 {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  rotate: -45deg;
+  transition: all 0.2s;
+}

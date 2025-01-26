@@ -1,0 +1,32 @@
+.dark-view {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(24, 28, 41, 0.8);
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.modal {
+  margin: 0 auto;
+  width: 350px;
+  background-color: rgba(236, 243, 248, 1);
+  border-radius: 20px;
+  position: relative;
+}
+
+.modal__text {
+  padding: 60px 20px 0px;
+  font-size: 18px;
+}
+
+.icon-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+}
