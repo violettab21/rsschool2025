@@ -13,10 +13,18 @@ import {
   createGameElements,
   selectPictureHandler,
 } from "./elementsRendering";
+
+import { gridHandler, checkSolution, getCurrentPicture } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
   /*createGrid(nonograms[9]);
   fillInGridWithHints(nonograms[9]);*/
   changeLevelHandler();
   selectPictureHandler();
+  let selectedNonogram = nonograms.find(
+    (el) => el.name === getCurrentPicture()
+  );
+  createGrid(selectedNonogram);
+  fillInGridWithHints(selectedNonogram);
+  gridHandler();
 });

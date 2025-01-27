@@ -5,7 +5,7 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
-import { gridHandler } from "./game";
+import { gridHandler, getCurrentPicture } from "./game";
 import image from "../assets/close.svg";
 
 function createGameElements() {
@@ -67,10 +67,11 @@ function createPicturesList(level = "easy") {
   pictures.className = "pictures";
   nonograms
     .filter((el) => el.matrix.length === matrixSize)
-    .forEach((el) => {
+    .forEach((el, i) => {
       let picture = document.createElement("li");
       picture.className = "pictures__picture";
       picture.textContent = el.name;
+      if (i === 0) picture.classList.add("pictures__picture_selected");
       pictures.append(picture);
     });
   document.querySelector(".levels").after(pictures);
@@ -83,6 +84,14 @@ function changeLevelHandler() {
       document.querySelector(".pictures").remove();
       createPicturesList(currentLevel);
       selectPictureHandler();
+      let selectedNonogram = nonograms.find(
+        (el) => el.name === getCurrentPicture()
+      );
+      if (document.querySelector(".grid"))
+        document.querySelector(".grid").remove();
+      createGrid(selectedNonogram);
+      fillInGridWithHints(selectedNonogram);
+      gridHandler();
     } else createPicturesList(currentLevel);
   });
 }

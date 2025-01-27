@@ -73,4 +73,4 @@ function getCurrentPicture() {
     .textContent.toLocaleLowerCase();
 }
 
-export { gridHandler, checkSolution };
+export { gridHandler, checkSolution, getCurrentPicture };
