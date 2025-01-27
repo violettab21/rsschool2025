@@ -325,8 +325,10 @@ function fillInGridWithHints(nanogram) {
 
   for (let j = colsHintsCount; j < colCount; j += 1) {
     for (let i = rowsHintsCount - 1; i >= 0; i -= 1) {
-      matrixFromGrid[i][j].className = "grid-item__hint";
+      matrixFromGrid[i][j].classList.add("grid-item__hint");
       matrixFromGrid[i][j].classList.add("grid-item__hint_column");
+      if ((j - colsHintsCount) % 5 === 0)
+        matrixFromGrid[i][j].classList.add("grid-item_border-vertical");
       matrixFromGrid[i][j].textContent = hints.columnsHints[
         j - colsHintsCount
       ].toReversed()[Math.abs(i - rowsHintsCount + 1)]
@@ -339,8 +341,10 @@ function fillInGridWithHints(nanogram) {
   //area for rows hints
   for (let i = rowsHintsCount; i < rowCount; i += 1) {
     for (let j = colsHintsCount - 1; j >= 0; j -= 1) {
-      matrixFromGrid[i][j].className = "grid-item__hint";
+      matrixFromGrid[i][j].classList.add("grid-item__hint");
       matrixFromGrid[i][j].classList.add("grid-item__hint_row");
+      if ((i - rowsHintsCount) % 5 === 0)
+        matrixFromGrid[i][j].classList.add("grid-item_border-horizontal");
       matrixFromGrid[i][j].textContent = hints.rowsHints[
         i - rowsHintsCount
       ].toReversed()[Math.abs(j - colsHintsCount + 1)]
@@ -353,7 +357,11 @@ function fillInGridWithHints(nanogram) {
 
   for (let i = rowsHintsCount; i < rowCount; i += 1) {
     for (let j = colsHintsCount; j < colCount; j += 1) {
-      matrixFromGrid[i][j].className = "grid-item__game";
+      matrixFromGrid[i][j].classList.add("grid-item__game");
+      if ((j - colsHintsCount) % 5 === 0)
+        matrixFromGrid[i][j].classList.add("grid-item_border-vertical");
+      if ((i - rowsHintsCount) % 5 === 0)
+        matrixFromGrid[i][j].classList.add("grid-item_border-horizontal");
     }
   }
 }

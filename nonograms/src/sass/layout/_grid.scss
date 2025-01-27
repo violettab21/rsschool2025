@@ -4,14 +4,16 @@
   display: grid;
   grid-auto-rows: 30px;
   justify-content: center;
-  grid-gap: 0;
+  grid-gap: 1px;
+  background: black;
+  border: 2px solid black;
 }
 
-.grid div {
-  border: 1px, solid, black;
+.grid-item {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
 }
 
 .grid-item__hint {
@@ -22,4 +24,12 @@
 
 .grid-item__game_colored {
   background-color: rgb(37, 35, 35);
+}
+
+.grid-item_border-vertical {
+  border-left: 1px solid black;
+}
+
+.grid-item_border-horizontal {
+  border-top: 1px solid black;
 }
