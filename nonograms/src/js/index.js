@@ -14,7 +14,12 @@ import {
   selectPictureHandler,
 } from "./elementsRendering";
 
-import { gridHandler, checkSolution, getCurrentPicture } from "./game";
+import {
+  gridHandler,
+  checkSolution,
+  getCurrentPicture,
+  startTimer,
+} from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
   /*createGrid(nonograms[9]);
@@ -27,4 +32,5 @@ document.addEventListener("DOMContentLoaded", () => {
   createGrid(selectedNonogram);
   fillInGridWithHints(selectedNonogram);
   gridHandler();
+  
 });

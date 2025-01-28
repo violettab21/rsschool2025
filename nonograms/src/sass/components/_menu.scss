@@ -7,6 +7,10 @@
   border-radius: 6px;
   cursor: pointer;
   text-transform: capitalize;
+
+  &_selected {
+    background-color: rgb(160, 95, 95);
+  }
 }
 
 .levels__label {

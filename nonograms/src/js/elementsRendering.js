@@ -5,7 +5,7 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
-import { gridHandler, getCurrentPicture } from "./game";
+import { gridHandler, getCurrentPicture, timerReset } from "./game";
 import image from "../assets/close.svg";
 
 function createGameElements() {
@@ -48,6 +48,12 @@ function createGameElements() {
   main.append(container);
   document.querySelector("body").append(main);
   createPicturesList();
+  let timerContainer = document.createElement("div");
+  let timer = document.createElement("p");
+  timer.className = "timer";
+  timer.textContent = "00:00";
+  timerContainer.append(timer);
+  container.append(timerContainer);
 }
 
 function createPicturesList(level = "easy") {
@@ -92,6 +98,7 @@ function changeLevelHandler() {
       createGrid(selectedNonogram);
       fillInGridWithHints(selectedNonogram);
       gridHandler();
+      timerReset();
     } else createPicturesList(currentLevel);
   });
 }
@@ -111,6 +118,7 @@ function selectPictureHandler() {
       createGrid(selectedNonogram);
       fillInGridWithHints(selectedNonogram);
       gridHandler();
+      timerReset();
     }
   });
 }
@@ -159,6 +167,7 @@ function createCross(div) {
   cross.append(line1, line2);
   div.append(cross);
 }
+
 export {
   createGameElements,
   createPicturesList,

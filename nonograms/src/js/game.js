@@ -7,17 +7,33 @@ import {
 } from "./nonograms";
 import { generateModal, createCross } from "./elementsRendering";
 
+const timer = {
+  timerId: 0,
+  state: "clear",
+  defaultValue: "00:00",
+};
+
 function gridHandler() {
   document.querySelector(".grid").addEventListener("click", (event) => {
     if (event.target.closest(".grid-item__game")) {
       event.target
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
+      if (timer.state === "clear") {
+        timer.timerId = startTimer(new Date());
+        console.log(timer.timerId);
+        timer.state = "started";
+      }
 
       if (
         checkSolution(nonograms.find((el) => el.name === getCurrentPicture()))
-      )
-        generateModal("You solved the nonogram!");
+      ) {
+        console.log(`timer id ${timer}`);
+        stopTimer(timer.timerId);
+        generateModal(
+          `Great! You have solved the nonogram in ${getTimerTimeSeconds()} seconds!`
+        );
+      }
     }
   });
   document.querySelector(".grid").addEventListener("contextmenu", (event) => {
@@ -73,4 +89,55 @@ function getCurrentPicture() {
     .textContent.toLocaleLowerCase();
 }
 
-export { gridHandler, checkSolution, getCurrentPicture };
+function calculateTime(timeClick) {
+  let currentTime = new Date();
+  let diff = currentTime - timeClick;
+  let minutes = Math.floor(diff / 1000 / 60);
+  diff = (diff / 1000 / 60 - minutes) * 60;
+  let seconds = Math.floor(diff);
+  console.log(`${minutes} : ${seconds}`);
+  let additionalZeroMin = "";
+  let additionalZeroSec = "";
+  if (minutes < 10) additionalZeroMin = 0;
+  if (seconds < 10) additionalZeroSec = 0;
+  document.querySelector(
+    ".timer"
+  ).textContent = `${additionalZeroMin}${minutes}:${additionalZeroSec}${seconds}`;
+}
+
+function startTimer(timeClicked) {
+  let timerId = setInterval(calculateTime, 1000, timeClicked);
+  console.log(timerId);
+  return timerId;
+}
+
+function stopTimer(timerId) {
+  clearInterval(timerId);
+  timer.state = "stopped";
+}
+
+function getTimerTimeSeconds() {
+  let timerContent = document.querySelector(".timer").textContent;
+  let time = timerContent.split(":");
+  let minutes = time[0].trim();
+  let seconds = time[1].trim();
+  return +minutes * 60 + +seconds;
+}
+
+function timerReset() {
+  if (timer.state === "stopped")
+    document.querySelector(".timer").textContent = timer.defaultValue;
+  else if (timer.state === "started") {
+    stopTimer(timer.timerId);
+    document.querySelector(".timer").textContent = timer.defaultValue;
+  }
+  timer.state = "clear";
+}
+
+export {
+  gridHandler,
+  checkSolution,
+  getCurrentPicture,
+  startTimer,
+  timerReset,
+};
