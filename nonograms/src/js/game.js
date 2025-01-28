@@ -6,6 +6,11 @@ import {
   fillInGridWithHints,
 } from "./nonograms";
 import { generateModal, createCross } from "./elementsRendering";
+import blackCell from "../assets/pop-1.mp3";
+import whiteCell from "../assets/pop-2.mp3";
+import win from "../assets/game-bonus.mp3";
+import crossOn from "../assets/pop-on-cross.mp3";
+import crossOff from "../assets/pop-off-cross.mp3";
 
 const timer = {
   timerId: 0,
@@ -13,12 +18,25 @@ const timer = {
   defaultValue: "00:00",
 };
 
+const audioBlackCell = new Audio(blackCell);
+const audioWhiteCell = new Audio(whiteCell);
+const audioWin = new Audio(win);
+const audioCrossOn = new Audio(crossOn);
+const audioCrossOff = new Audio(crossOff);
+
 function gridHandler() {
   document.querySelector(".grid").addEventListener("click", (event) => {
     if (event.target.closest(".grid-item__game")) {
       event.target
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
+      if (
+        event.target
+          .closest(".grid-item__game")
+          .classList.contains("grid-item__game_colored")
+      )
+        audioBlackCell.play();
+      else audioWhiteCell.play();
       if (timer.state === "clear") {
         timer.timerId = startTimer(new Date());
         console.log(timer.timerId);
@@ -30,6 +48,7 @@ function gridHandler() {
       ) {
         console.log(`timer id ${timer}`);
         stopTimer(timer.timerId);
+        audioWin.play();
         generateModal(
           `Great! You have solved the nonogram in ${getTimerTimeSeconds()} seconds!`
         );
@@ -41,7 +60,11 @@ function gridHandler() {
     if (event.target.closest(".grid-item__game")) {
       if (event.target.closest(".grid-item__game").childElementCount !== 0) {
         event.target.closest(".grid-item__game").innerHTML = "";
-      } else createCross(event.target);
+        audioCrossOff.play();
+      } else {
+        createCross(event.target);
+        audioCrossOn.play();
+      }
     }
   });
 }
