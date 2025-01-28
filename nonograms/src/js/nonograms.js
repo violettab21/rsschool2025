@@ -304,7 +304,7 @@ function createGrid(nanogram) {
     grid.append(gridItem);
   }
   grid.style.gridTemplateColumns = `repeat(${gridSize.colCount}, 30px)`;
-  document.querySelector(".wrapper").append(grid);
+  document.querySelector(".timer-block").after(grid);
 }
 
 function fillInGridWithHints(nanogram) {

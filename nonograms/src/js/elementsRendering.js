@@ -49,11 +49,13 @@ function createGameElements() {
   document.querySelector("body").append(main);
   createPicturesList();
   let timerContainer = document.createElement("div");
+  timerContainer.className = "timer-block";
   let timer = document.createElement("p");
   timer.className = "timer";
   timer.textContent = "00:00";
   timerContainer.append(timer);
   container.append(timerContainer);
+  createButtons(container);
 }
 
 function createPicturesList(level = "easy") {
@@ -168,6 +170,17 @@ function createCross(div) {
   div.append(cross);
 }
 
+function createButtons(div) {
+  let containerButtons = document.createElement("div");
+  containerButtons.className = "buttons";
+
+  let resetGame = document.createElement("button");
+  resetGame.className = "buttons__button";
+  resetGame.textContent = "Reset Game";
+  containerButtons.append(resetGame);
+  div.append(containerButtons);
+}
+
 export {
   createGameElements,
   createPicturesList,
@@ -175,4 +188,5 @@ export {
   selectPictureHandler,
   generateModal,
   createCross,
+  createButtons,
 };

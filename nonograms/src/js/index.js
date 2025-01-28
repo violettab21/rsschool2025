@@ -12,6 +12,7 @@ import {
   changeLevelHandler,
   createGameElements,
   selectPictureHandler,
+  createButtons,
 } from "./elementsRendering";
 
 import {
@@ -19,6 +20,7 @@ import {
   checkSolution,
   getCurrentPicture,
   startTimer,
+  buttonsHandler,
 } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
@@ -32,5 +34,5 @@ document.addEventListener("DOMContentLoaded", () => {
   createGrid(selectedNonogram);
   fillInGridWithHints(selectedNonogram);
   gridHandler();
-  
+  buttonsHandler();
 });

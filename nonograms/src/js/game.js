@@ -134,10 +134,42 @@ function timerReset() {
   timer.state = "clear";
 }
 
+function resetGame() {
+  let currentNonogram = nonograms.find((el) => el.name === getCurrentPicture());
+  let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
+  let matrixFromGrid = [];
+  for (let i = 0; i < currentNonogram.matrix.length; i += 1) {
+    matrixFromGrid.push(
+      gridItems.slice(
+        i * currentNonogram.matrix.length,
+        i * currentNonogram.matrix.length + currentNonogram.matrix.length
+      )
+    );
+  }
+
+  for (let i = 0; i < currentNonogram.matrix.length; i += 1) {
+    for (let j = 0; j < currentNonogram.matrix.length; j += 1) {
+      matrixFromGrid[i][j].innerHTML = "";
+      if (matrixFromGrid[i][j].classList.contains("grid-item__game_colored"))
+        matrixFromGrid[i][j].classList.remove("grid-item__game_colored");
+    }
+  }
+  timerReset();
+}
+
+function buttonsHandler() {
+  document.querySelector(".buttons").addEventListener("click", (event) => {
+    if (event.target.textContent === "Reset Game") {
+      resetGame();
+    }
+  });
+}
+
 export {
   gridHandler,
   checkSolution,
   getCurrentPicture,
   startTimer,
   timerReset,
+  buttonsHandler,
 };
