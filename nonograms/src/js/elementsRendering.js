@@ -177,7 +177,13 @@ function createButtons(div) {
   let resetGame = document.createElement("button");
   resetGame.className = "buttons__button";
   resetGame.textContent = "Reset Game";
+
+  let saveGame = document.createElement("button");
+  saveGame.className = "buttons__button";
+  saveGame.textContent = "Save Game";
+
   containerButtons.append(resetGame);
+  containerButtons.append(saveGame);
   div.append(containerButtons);
 }
 

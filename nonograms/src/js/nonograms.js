@@ -366,6 +366,9 @@ function fillInGridWithHints(nanogram) {
   }
 }
 
+
+
+
 export {
   nonograms,
   generateHints,

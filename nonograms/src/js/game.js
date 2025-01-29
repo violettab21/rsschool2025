@@ -28,6 +28,7 @@ function gridHandler() {
   document.querySelector(".grid").addEventListener("click", (event) => {
     if (event.target.closest(".grid-item__game")) {
       event.target
+
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
       if (
@@ -185,7 +186,51 @@ function buttonsHandler() {
     if (event.target.textContent === "Reset Game") {
       resetGame();
     }
+    if (event.target.textContent === "Save Game") {
+      saveGame();
+    }
   });
+}
+
+function getCurrentGameMatrix(nonogram) {
+  let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
+  let matrixFromGrid = [];
+  for (let i = 0; i < nonogram.matrix.length; i += 1) {
+    matrixFromGrid.push(
+      gridItems.slice(
+        i * nonogram.matrix.length,
+        i * nonogram.matrix.length + nonogram.matrix.length
+      )
+    );
+  }
+
+  for (let i = 0; i < nonogram.matrix.length; i += 1) {
+    for (let j = 0; j < nonogram.matrix.length; j += 1) {
+      if (matrixFromGrid[i][j].classList.contains("grid-item__game_colored"))
+        matrixFromGrid[i][j] = 1;
+      else matrixFromGrid[i][j] = 0;
+    }
+  }
+
+  return matrixFromGrid;
+}
+
+function saveGame() {
+  let currentLevel = document.querySelector(".levels__list").value;
+  let currentPicture = getCurrentPicture();
+  let currentNonogram = nonograms.find((el) => el.name === currentPicture);
+
+  let currentSolution = getCurrentGameMatrix(currentNonogram);
+
+  let currentTime = document.querySelector(".timer").textContent;
+
+  let objectForSaving = {
+    level: currentLevel,
+    nonogram: currentNonogram,
+    solution: currentSolution,
+    time: currentTime,
+  };
+  localStorage.savedGame = JSON.stringify(objectForSaving);
 }
 
 export {
@@ -195,4 +240,5 @@ export {
   startTimer,
   timerReset,
   buttonsHandler,
+  saveGame,
 };
