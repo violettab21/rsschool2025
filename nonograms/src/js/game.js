@@ -5,7 +5,13 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
-import { generateModal, createCross } from "./elementsRendering";
+
+import {
+  generateModal,
+  createCross,
+  createPicturesList,
+  selectPictureHandler,
+} from "./elementsRendering";
 import blackCell from "../assets/pop-1.mp3";
 import whiteCell from "../assets/pop-2.mp3";
 import win from "../assets/game-bonus.mp3";
@@ -39,7 +45,8 @@ function gridHandler() {
         audioBlackCell.play();
       else audioWhiteCell.play();
       if (timer.state === "clear") {
-        timer.timerId = startTimer(new Date());
+        let seconds = getTimerTimeSeconds();
+        timer.timerId = startTimer(new Date(), seconds);
         console.log(timer.timerId);
         timer.state = "started";
       }
@@ -113,13 +120,14 @@ function getCurrentPicture() {
     .textContent.toLocaleLowerCase();
 }
 
-function calculateTime(timeClick) {
+function calculateTime(timeClick, currentSeconds) {
   let currentTime = new Date();
-  let diff = currentTime - timeClick;
+  let diff = currentTime - timeClick + currentSeconds * 1000;
   let minutes = Math.floor(diff / 1000 / 60);
   diff = (diff / 1000 / 60 - minutes) * 60;
   let seconds = Math.floor(diff);
   console.log(`${minutes} : ${seconds}`);
+
   let additionalZeroMin = "";
   let additionalZeroSec = "";
   if (minutes < 10) additionalZeroMin = 0;
@@ -129,8 +137,8 @@ function calculateTime(timeClick) {
   ).textContent = `${additionalZeroMin}${minutes}:${additionalZeroSec}${seconds}`;
 }
 
-function startTimer(timeClicked) {
-  let timerId = setInterval(calculateTime, 1000, timeClicked);
+function startTimer(timeClicked, seconds) {
+  let timerId = setInterval(calculateTime, 1000, timeClicked, seconds);
   console.log(timerId);
   return timerId;
 }
@@ -189,6 +197,10 @@ function buttonsHandler() {
     if (event.target.textContent === "Save Game") {
       saveGame();
     }
+    if (event.target.textContent === "Continue Last Game") {
+      timerReset();
+      continueLastGame();
+    }
   });
 }
 
@@ -208,6 +220,8 @@ function getCurrentGameMatrix(nonogram) {
     for (let j = 0; j < nonogram.matrix.length; j += 1) {
       if (matrixFromGrid[i][j].classList.contains("grid-item__game_colored"))
         matrixFromGrid[i][j] = 1;
+      else if (matrixFromGrid[i][j].childElementCount !== 0)
+        matrixFromGrid[i][j] = 2;
       else matrixFromGrid[i][j] = 0;
     }
   }
@@ -231,6 +245,47 @@ function saveGame() {
     time: currentTime,
   };
   localStorage.savedGame = JSON.stringify(objectForSaving);
+}
+
+function continueLastGame() {
+  let savedGame = JSON.parse(localStorage.savedGame);
+  document.querySelector(".levels__list").value = savedGame.level;
+
+  if (document.querySelector(".pictures")) {
+    document.querySelector(".pictures").remove();
+    createPicturesList(savedGame.level);
+    selectPictureHandler();
+    document.querySelectorAll(".pictures__picture").forEach((el) => {
+      el.classList.remove("pictures__picture_selected");
+      if (el.textContent.toLowerCase() === savedGame.nonogram.name)
+        el.classList.add("pictures__picture_selected");
+    });
+  } else createPicturesList(savedGame.level);
+  if (document.querySelector(".grid")) document.querySelector(".grid").remove();
+  createGrid(savedGame.nonogram);
+  fillInGridWithHints(savedGame.nonogram);
+  gridHandler();
+
+  let solution = savedGame.solution;
+  let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
+  let matrixFromGrid = [];
+  for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
+    matrixFromGrid.push(
+      gridItems.slice(
+        i * savedGame.nonogram.matrix.length,
+        i * savedGame.nonogram.matrix.length + savedGame.nonogram.matrix.length
+      )
+    );
+  }
+
+  for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
+    for (let j = 0; j < savedGame.nonogram.matrix.length; j += 1) {
+      if (solution[i][j] === 1)
+        matrixFromGrid[i][j].classList.add("grid-item__game_colored");
+      else if (solution[i][j] === 2) createCross(matrixFromGrid[i][j]);
+    }
+  }
+  document.querySelector(".timer").textContent = savedGame.time;
 }
 
 export {

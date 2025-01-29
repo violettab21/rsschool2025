@@ -182,8 +182,13 @@ function createButtons(div) {
   saveGame.className = "buttons__button";
   saveGame.textContent = "Save Game";
 
+  let proceedGame = document.createElement("button");
+  proceedGame.className = "buttons__button";
+  proceedGame.textContent = "Continue Last Game";
+
   containerButtons.append(resetGame);
   containerButtons.append(saveGame);
+  containerButtons.append(proceedGame);
   div.append(containerButtons);
 }
 

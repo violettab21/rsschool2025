@@ -24,8 +24,6 @@ import {
 } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
-  /*createGrid(nonograms[9]);
-  fillInGridWithHints(nonograms[9]);*/
   changeLevelHandler();
   selectPictureHandler();
   let selectedNonogram = nonograms.find(
