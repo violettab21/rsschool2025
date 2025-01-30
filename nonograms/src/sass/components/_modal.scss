@@ -30,3 +30,19 @@
   top: 12px;
   cursor: pointer;
 }
+
+.results__header,
+.results__data {
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.results__header {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.results__data {
+  text-transform: capitalize;
+  font-size: 18px;
+}

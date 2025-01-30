@@ -4,7 +4,7 @@
   list-style-type: none;
   padding: 8px 12px;
   border: 1px solid constants.$color-border;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   text-transform: capitalize;
 
@@ -15,11 +15,13 @@
 
 .levels__label {
   margin-right: 8px;
+  font-size: 16px;
 }
 
 .levels__list {
   padding: 8px 12px;
   color: constants.$color-text;
   border: 1px solid constants.$color-border;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 16px;
 }

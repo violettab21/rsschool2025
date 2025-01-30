@@ -168,19 +168,25 @@ function generateModalContentTable(data) {
 
     table.className = "results";
     let levelName = document.createElement("p");
+    levelName.className = "results__header";
     levelName.textContent = "Level";
     let pictureName = document.createElement("p");
+    pictureName.className = "results__header";
     pictureName.textContent = "Picture";
     let timeName = document.createElement("p");
+    timeName.className = "results__header";
     timeName.textContent = "Time";
     table.append(pictureName, levelName, timeName);
 
     data.forEach((el) => {
       let level = document.createElement("p");
+      level.className = "results__data";
       level.textContent = el.level;
       let picture = document.createElement("p");
+      picture.className = "results__data";
       picture.textContent = el.nonogram;
       let time = document.createElement("p");
+      time.className = "results__data";
       let timeMinutes = Math.floor(el.time / 60);
       let timeSeconds = el.time - timeMinutes * 60;
       let additionalZeroMin = "";

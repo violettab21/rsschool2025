@@ -1,3 +1,4 @@
+@use "./base/normalize";
 @use "./abstracts/constants";
 @use "./layout/grid";
 @use "./layout/_main";
@@ -5,3 +6,6 @@
 @use "./components/modal";
 
 @use "./base/icons";
+@use "./components/timer";
+
+@use "./base/buttons";
