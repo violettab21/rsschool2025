@@ -8,6 +8,8 @@ import {
 
 import {
   generateModal,
+  generateModalContentMessage,
+  generateModalContentTable,
   createCross,
   createPicturesList,
   selectPictureHandler,
@@ -56,7 +58,9 @@ function gridHandler() {
       ) {
         stopTimer(timer.timerId);
         audioWin.play();
-        generateModal(
+        saveWinResults(nonograms.find((el) => el.name === getCurrentPicture()));
+        generateModal();
+        generateModalContentMessage(
           `Great! You have solved the nonogram in ${getTimerTimeSeconds()} seconds!`
         );
       }
@@ -206,6 +210,13 @@ function buttonsHandler() {
       timerReset();
       continueLastGame();
     }
+    if (event.target.textContent === "Best Results") {
+      generateModal();
+      let currentTable = localStorage.winResults
+        ? JSON.parse(localStorage.winResults)
+        : "";
+      generateModalContentTable(currentTable);
+    }
   });
 }
 
@@ -291,6 +302,35 @@ function continueLastGame() {
     }
   }
   document.querySelector(".timer").textContent = savedGame.time;
+}
+
+function saveWinResults(solvedNonogram) {
+  let currentLevel = document.querySelector(".levels__list").value;
+  let currentPicture = solvedNonogram.name;
+  let time = getTimerTimeSeconds();
+  let objectForSaving = {
+    level: currentLevel,
+    nonogram: currentPicture,
+    time: time,
+  };
+  let bestResults = [];
+
+  if (!localStorage.winResults) {
+    bestResults.push(objectForSaving);
+    localStorage.winResults = JSON.stringify(bestResults);
+  } else {
+    let currentBestResult = JSON.parse(localStorage.winResults);
+    if (currentBestResult.length < 5) {
+      currentBestResult.push(objectForSaving);
+      bestResults = currentBestResult.sort((a, b) => a.time - b.time);
+    } else {
+      if (objectForSaving.time < currentBestResult[4].time) {
+        currentBestResult[4] = objectForSaving;
+        bestResults = currentBestResult.sort((a, b) => a.time - b.time);
+      } else bestResults = currentBestResult;
+    }
+    localStorage.winResults = JSON.stringify(bestResults);
+  }
 }
 
 export {

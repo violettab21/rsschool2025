@@ -124,7 +124,7 @@ function selectPictureHandler() {
     }
   });
 }
-function generateModal(text) {
+function generateModal() {
   let divContainer;
   divContainer = document.createElement("div");
   divContainer.className = "dark-view";
@@ -139,18 +139,62 @@ function generateModal(text) {
   let divModalContent;
   divModalContent = document.createElement("div");
   divModalContent.className = "modal__text-block";
-  let modalMessage = document.createElement("p");
-  modalMessage.textContent = `${text}`;
-  modalMessage.className = "modal__text";
-  let modalImage = document.createElement("img");
-  modalImage.className = "modal-image";
-  divModalContent.append(modalMessage, modalImage);
+
   divContainer.append(divModal);
   divModal.append(spanCross);
   divModal.append(divModalContent);
   document.querySelector("main").append(divContainer);
   closeModal();
 }
+
+function generateModalContentMessage(text) {
+  let modalMessage = document.createElement("p");
+  modalMessage.textContent = `${text}`;
+  modalMessage.className = "modal__text";
+  document.querySelector(".modal__text-block").append(modalMessage);
+}
+
+function generateModalContentTable(data) {
+  let modalMessage = document.createElement("p");
+  modalMessage.className = "modal__text";
+
+  if (!data) {
+    modalMessage.textContent = "No History of Games";
+    document.querySelector(".modal__text-block").append(modalMessage);
+  } else {
+    modalMessage.textContent = "5 Best Results:";
+    document.querySelector(".modal__text-block").append(modalMessage);
+    let table = document.createElement("div");
+
+    table.className = "results";
+    let levelName = document.createElement("p");
+    levelName.textContent = "Level";
+    let pictureName = document.createElement("p");
+    pictureName.textContent = "Picture";
+    let timeName = document.createElement("p");
+    timeName.textContent = "Time";
+    table.append(pictureName, levelName, timeName);
+
+    data.forEach((el) => {
+      let level = document.createElement("p");
+      level.textContent = el.level;
+      let picture = document.createElement("p");
+      picture.textContent = el.nonogram;
+      let time = document.createElement("p");
+      let timeMinutes = Math.floor(el.time / 60);
+      let timeSeconds = el.time - timeMinutes * 60;
+      let additionalZeroMin = "";
+      let additionalZeroSec = "";
+      if (timeMinutes < 10) additionalZeroMin = 0;
+      if (timeSeconds < 10) additionalZeroSec = 0;
+      time.textContent = `${additionalZeroMin}${timeMinutes}:${additionalZeroSec}${timeSeconds}`;
+      table.append(picture, level, time);
+    });
+
+    document.querySelector(".modal").append(table);
+  }
+}
+
 function closeModal() {
   document.querySelector(".icon-close").addEventListener("click", () => {
     document.querySelector(".dark-view").remove();
@@ -186,9 +230,14 @@ function createButtons(div) {
   proceedGame.className = "buttons__button";
   proceedGame.textContent = "Continue Last Game";
 
+  let bestResults = document.createElement("button");
+  bestResults.className = "buttons__button";
+  bestResults.textContent = "Best Results";
+
   containerButtons.append(resetGame);
   containerButtons.append(saveGame);
   containerButtons.append(proceedGame);
+  containerButtons.append(bestResults);
   div.append(containerButtons);
 }
 
@@ -200,4 +249,6 @@ export {
   generateModal,
   createCross,
   createButtons,
+  generateModalContentMessage,
+  generateModalContentTable,
 };

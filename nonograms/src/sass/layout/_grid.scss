@@ -33,3 +33,18 @@
 .grid-item_border-horizontal {
   border-top: 1px solid black;
 }
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/*.results__row {
+  display: flex;
+  justify-content: space-around;
+}*/
+
+.results p {
+  padding: 8px 12px;
+  text-align: center;
+}
