@@ -54,7 +54,6 @@ function gridHandler() {
       if (
         checkSolution(nonograms.find((el) => el.name === getCurrentPicture()))
       ) {
-        console.log(`timer id ${timer}`);
         stopTimer(timer.timerId);
         audioWin.play();
         generateModal(
@@ -71,6 +70,12 @@ function gridHandler() {
         audioCrossOff.play();
       } else {
         createCross(event.target);
+        if (timer.state === "clear") {
+          let seconds = getTimerTimeSeconds();
+          timer.timerId = startTimer(new Date(), seconds);
+          console.log(timer.timerId);
+          timer.state = "started";
+        }
         audioCrossOn.play();
       }
     }
