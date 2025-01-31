@@ -5,7 +5,12 @@ import {
   createGrid,
   fillInGridWithHints,
 } from "./nonograms";
-import { gridHandler, getCurrentPicture, timerReset } from "./game";
+import {
+  gridHandler,
+  getCurrentPicture,
+  timerReset,
+  enableSaveGame,
+} from "./game";
 import image from "../assets/close.svg";
 
 function createGameElements() {
@@ -55,6 +60,13 @@ function createGameElements() {
   timer.textContent = "00:00";
   timerContainer.append(timer);
   container.append(timerContainer);
+  let menuButtons = document.createElement("div");
+  let randomGame = document.createElement("button");
+  randomGame.className = "menu__button";
+  randomGame.textContent = "Random Game";
+  menuButtons.append(randomGame);
+  document.querySelector(".pictures").after(menuButtons);
+
   createButtons(container);
 }
 
@@ -101,6 +113,7 @@ function changeLevelHandler() {
       fillInGridWithHints(selectedNonogram);
       gridHandler();
       timerReset();
+      enableSaveGame();
     } else createPicturesList(currentLevel);
   });
 }
@@ -115,6 +128,7 @@ function selectPictureHandler() {
       let selectedNonogram = nonograms.find(
         (el) => el.name === event.target.textContent.toLowerCase()
       );
+      enableSaveGame();
       if (document.querySelector(".grid"))
         document.querySelector(".grid").remove();
       createGrid(selectedNonogram);
@@ -240,10 +254,16 @@ function createButtons(div) {
   bestResults.className = "buttons__button";
   bestResults.textContent = "Best Results";
 
+  let solution = document.createElement("button");
+  solution.className = "buttons__button";
+  solution.textContent = "Solution";
+
+  containerButtons.append(solution);
   containerButtons.append(resetGame);
   containerButtons.append(saveGame);
   containerButtons.append(proceedGame);
   containerButtons.append(bestResults);
+
   div.append(containerButtons);
 }
 

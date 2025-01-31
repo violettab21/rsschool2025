@@ -21,6 +21,7 @@ import {
   getCurrentPicture,
   startTimer,
   buttonsHandler,
+  randomButtonHandler,
 } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
@@ -33,4 +34,5 @@ document.addEventListener("DOMContentLoaded", () => {
   fillInGridWithHints(selectedNonogram);
   gridHandler();
   buttonsHandler();
+  randomButtonHandler();
 });

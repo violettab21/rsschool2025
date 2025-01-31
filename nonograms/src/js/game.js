@@ -202,6 +202,8 @@ function buttonsHandler() {
   document.querySelector(".buttons").addEventListener("click", (event) => {
     if (event.target.textContent === "Reset Game") {
       resetGame();
+      enableSaveGame();
+      enableGrid();
     }
     if (event.target.textContent === "Save Game") {
       saveGame();
@@ -209,6 +211,7 @@ function buttonsHandler() {
     if (event.target.textContent === "Continue Last Game") {
       timerReset();
       continueLastGame();
+      enableSaveGame();
     }
     if (event.target.textContent === "Best Results") {
       generateModal();
@@ -216,6 +219,12 @@ function buttonsHandler() {
         ? JSON.parse(localStorage.winResults)
         : "";
       generateModalContentTable(currentTable);
+    }
+    if (event.target.textContent === "Solution") {
+      showSolution();
+      disableGrid();
+      timerReset();
+      disableSaveGame();
     }
   });
 }
@@ -333,6 +342,106 @@ function saveWinResults(solvedNonogram) {
   }
 }
 
+function randomGame() {
+  let randomNumber = Math.floor(Math.random() * 14);
+  let randomNonogram = nonograms[randomNumber];
+  let matrixSize = randomNonogram.matrix.length;
+  let level;
+  switch (matrixSize) {
+    case 5:
+      level = "easy";
+      break;
+    case 10:
+      level = "medium";
+      break;
+    case 15:
+      level = "hard";
+      break;
+  }
+  document.querySelector(".levels__list").value = level;
+
+  if (document.querySelector(".pictures")) {
+    document.querySelector(".pictures").remove();
+    createPicturesList(level);
+    selectPictureHandler();
+    document.querySelectorAll(".pictures__picture").forEach((el) => {
+      el.classList.remove("pictures__picture_selected");
+      if (el.textContent.toLowerCase() === randomNonogram.name)
+        el.classList.add("pictures__picture_selected");
+    });
+  } else createPicturesList(level);
+
+  if (document.querySelector(".grid")) document.querySelector(".grid").remove();
+  createGrid(randomNonogram);
+  fillInGridWithHints(randomNonogram);
+  gridHandler();
+}
+
+function randomButtonHandler() {
+  document.querySelector(".menu__button").addEventListener("click", () => {
+    timerReset();
+    enableSaveGame();
+    randomGame();
+  });
+}
+
+function showSolution() {
+  let currentPicture = getCurrentPicture();
+  let currentNonogram = nonograms.find((el) => el.name === currentPicture);
+
+  //clear current
+
+  let solution = currentNonogram.matrix;
+  let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
+  let matrixFromGrid = [];
+  for (let i = 0; i < solution.length; i += 1) {
+    matrixFromGrid.push(
+      gridItems.slice(
+        i * solution.length,
+        i * solution.length + solution.length
+      )
+    );
+  }
+
+  for (let i = 0; i < solution.length; i += 1) {
+    for (let j = 0; j < solution.length; j += 1) {
+      if (solution[i][j] === 1) {
+        if (!matrixFromGrid[i][j].classList.contains("grid-item__game_colored"))
+          matrixFromGrid[i][j].classList.add("grid-item__game_colored");
+        matrixFromGrid[i][j].classList.add("grid-item__game_solution");
+        matrixFromGrid[i][j].innerHTML = "";
+      } else {
+        matrixFromGrid[i][j].classList.remove("grid-item__game_colored");
+        matrixFromGrid[i][j].innerHTML = "";
+      }
+    }
+  }
+}
+
+function disableGrid() {
+  document.querySelector(".grid").style.pointerEvents = "none";
+}
+
+function enableGrid() {
+  document.querySelector(".grid").style.pointerEvents = "auto";
+}
+
+function disableSaveGame() {
+  document.querySelectorAll(".buttons__button").forEach((btn) => {
+    if (btn.textContent === "Save Game") {
+      btn.disabled = true;
+    }
+  });
+}
+
+function enableSaveGame() {
+  document.querySelectorAll(".buttons__button").forEach((btn) => {
+    if (btn.textContent === "Save Game") {
+      btn.disabled = false;
+    }
+  });
+}
+
 export {
   gridHandler,
   checkSolution,
@@ -341,4 +450,6 @@ export {
   timerReset,
   buttonsHandler,
   saveGame,
+  randomButtonHandler,
+  enableSaveGame,
 };
