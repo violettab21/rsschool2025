@@ -1,10 +1,22 @@
+@use "../abstracts/constants";
+main {
+  display: flex;
+  justify-content: center;
+  background-color: constants.$color-background-body;
+  height: 100vh;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
   align-items: center;
   gap: 20px;
   font-family: Roboto;
+  width: 1240px;
+  border-radius: 10px;
+  background-color: constants.$color-background-main;
+  padding: 15px;
 }
 
 .pictures {

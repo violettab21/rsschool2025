@@ -1,8 +1,9 @@
+@use "../abstracts/constants";
 .dark-view {
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: rgba(24, 28, 41, 0.8);
+  background-color: constants.$color-background-modal-out;
   top: 0;
   left: 0;
   display: flex;
@@ -13,15 +14,17 @@
 
 .modal {
   margin: 0 auto;
-  width: 350px;
-  background-color: rgba(236, 243, 248, 1);
+  width: 450px;
+  background-color: constants.$color-background-modal;
   border-radius: 20px;
   position: relative;
+  padding: 20px;
 }
 
 .modal__text {
-  padding: 60px 20px 0px;
+  padding: 30px 20px;
   font-size: 18px;
+  font-family: Roboto;
 }
 
 .icon-close {
@@ -29,20 +32,4 @@
   right: 12px;
   top: 12px;
   cursor: pointer;
-}
-
-.results__header,
-.results__data {
-  padding: 8px 12px;
-  text-align: center;
-}
-
-.results__header {
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.results__data {
-  text-transform: capitalize;
-  font-size: 18px;
 }

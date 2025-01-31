@@ -1,27 +1,32 @@
 @use "../abstracts/constants";
 
 .pictures__picture {
+  color: constants.$color-text-main;
   list-style-type: none;
   padding: 8px 12px;
-  border: 1px solid constants.$color-border;
+  width: 95px;
+  text-align: center;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
   text-transform: capitalize;
-
+  background-color: constants.$color-background-top;
   &_selected {
-    background-color: rgb(160, 95, 95);
+    background-color: constants.$color-background-selected;
   }
 }
 
 .levels__label {
   margin-right: 8px;
-  font-size: 16px;
+  font-size: 18px;
+  color: constants.$color-text-main;
 }
 
 .levels__list {
   padding: 8px 12px;
   color: constants.$color-text;
-  border: 1px solid constants.$color-border;
+  border: none;
   border-radius: 8px;
   font-size: 16px;
+  background-color: constants.$color-background-top;
 }

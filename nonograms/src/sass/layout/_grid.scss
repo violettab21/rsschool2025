@@ -5,8 +5,8 @@
   grid-auto-rows: 30px;
   justify-content: center;
   grid-gap: 1px;
-  background: black;
-  border: 2px solid black;
+  background: constants.$color-border;
+  border: 2px solid constants.$color-border;
 }
 
 .grid-item {
@@ -17,31 +17,51 @@
 }
 
 .grid-item__hint {
-  background-color: constants.$color-hint;
+  background-color: constants.$color-background-hint;
   color: constants.$color-text;
   font-size: 18px;
 }
 
 .grid-item__game_colored {
-  background-color: rgb(37, 35, 35);
+  background-color: constants.$color-colored-cell;
 }
 
 .grid-item_border-vertical {
-  border-left: 1px solid black;
+  border-left: 1px solid constants.$color-border;
 }
 
 .grid-item_border-horizontal {
-  border-top: 1px solid black;
+  border-top: 1px solid constants.$color-border;
 }
 
 .results {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  font-family: "Roboto";
+  background-color: constants.$color-border;
+  gap: 1px;
+}
+
+.results__header,
+.results__data {
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.results__header {
+  font-weight: 600;
+  font-size: 18px;
+  background-color: constants.$color-background-modal;
+  background-color: #fec89a;
+}
+
+.results__data {
+  text-transform: capitalize;
+  font-size: 18px;
+  background-color: constants.$color-background-modal;
 }
 
 /*.results__row {
   display: flex;
   justify-content: space-around;
 }*/
-
-
