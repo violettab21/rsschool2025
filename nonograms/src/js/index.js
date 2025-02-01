@@ -1,6 +1,7 @@
 import "../../index.html";
 import "../sass/_style.scss";
 import "../assets/close.svg";
+import "../sass/abstracts/colors.scss";
 import {
   nonograms,
   generateHints,
@@ -22,6 +23,7 @@ import {
   startTimer,
   buttonsHandler,
   randomButtonHandler,
+  themeHandler,
 } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
@@ -35,4 +37,5 @@ document.addEventListener("DOMContentLoaded", () => {
   gridHandler();
   buttonsHandler();
   randomButtonHandler();
+  themeHandler();
 });

@@ -1,0 +1,24 @@
+@use "constants";
+
+:export {
+  colorbackgroundbodydark: constants.$color-background-body-dark;
+  colorbackgroundmaindark: constants.$color-background-main-dark;
+  colorbackgroundhintdark: constants.$color-background-hint-dark;
+  colorbackgroundbuttonsdark: constants.$color-background-buttons-dark;
+  colorbackgroundtopdark: constants.$color-background-top-dark;
+  colorbackgroundselecteddark: constants.$color-background-selected-dark;
+  colorbackgroundrandomdark: constants.$color-background-random-dark;
+  colorbackgroundmodaldark: constants.$color-background-modal-dark;
+  colortextbuttonsdark: constants.$color-text-buttons-dark;
+  colortextmaindark: constants.$color-text-main-dark;
+  colorbackgroundbodylight: constants.$color-background-body-light;
+  colorbackgroundmainlight: constants.$color-background-main-light;
+  colorbackgroundhintlight: constants.$color-background-hint-light;
+  colorbackgroundbuttonslight: constants.$color-background-buttons-light;
+  colorbackgroundtoplight: constants.$color-background-top-light;
+  colorbackgroundselectedlight: constants.$color-background-selected-light;
+  colorbackgroundrandomlight: constants.$color-background-random-light;
+  colorbackgroundmodallight: constants.$color-background-modal-light;
+  colortextbuttonslight: constants.$color-text-buttons-light;
+  colortextmainlight: constants.$color-text-main-light;
+}

@@ -13,7 +13,34 @@ import {
   createCross,
   createPicturesList,
   selectPictureHandler,
+  addDarkSchemeElement,
+  addLightSchemeElement,
+  createLightSchemeElement,
 } from "./elementsRendering";
+
+import {
+  colorbackgroundbodydark,
+  colorbackgroundmaindark,
+  colorbackgroundhintdark,
+  colorbackgroundbuttonsdark,
+  colorbackgroundtopdark,
+  colorbackgroundselecteddark,
+  colorbackgroundrandomdark,
+  colorbackgroundmodaldark,
+  colortextmaindark,
+  colortextbuttonsdark,
+  colorbackgroundbodylight,
+  colorbackgroundmainlight,
+  colorbackgroundhintlight,
+  colorbackgroundbuttonslight,
+  colorbackgroundtoplight,
+  colorbackgroundselectedlight,
+  colorbackgroundrandomlight,
+  colorbackgroundmodallight,
+  colortextmainlight,
+  colortextbuttonslight,
+} from "../sass/abstracts/colors.scss";
+
 import blackCell from "../assets/pop-1.mp3";
 import whiteCell from "../assets/pop-2.mp3";
 import win from "../assets/game-bonus.mp3";
@@ -290,6 +317,9 @@ function continueLastGame() {
   createGrid(savedGame.nonogram);
   fillInGridWithHints(savedGame.nonogram);
   gridHandler();
+  let scheme = getCurrentSchema();
+  if (scheme === "light") setLightColorSchema();
+  else if (scheme === "dark") setDarkColorSchema();
 
   let solution = savedGame.solution;
   let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
@@ -375,6 +405,9 @@ function randomGame() {
   createGrid(randomNonogram);
   fillInGridWithHints(randomNonogram);
   gridHandler();
+  let scheme = getCurrentSchema();
+  if (scheme === "light") setLightColorSchema();
+  else if (scheme === "dark") setDarkColorSchema();
 }
 
 function randomButtonHandler() {
@@ -442,6 +475,75 @@ function enableSaveGame() {
   });
 }
 
+function setDarkColorSchema() {
+  document.querySelector("main").style.backgroundColor =
+    colorbackgroundbodydark;
+  document.querySelector(".wrapper").style.backgroundColor =
+    colorbackgroundmaindark;
+  document.querySelectorAll(".pictures__picture").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundtopdark;
+    el.style.color = colortextbuttonsdark;
+  });
+  document.querySelector(".pictures__picture_selected").style.backgroundColor =
+    colorbackgroundselecteddark;
+  document.querySelector(".pictures__picture_selected").style.color =
+    colortextmaindark;
+  document
+    .querySelectorAll(".buttons__button")
+    .forEach((el) => (el.style.backgroundColor = colorbackgroundbuttonsdark));
+  document.querySelector(".menu__button").style.backgroundColor =
+    colorbackgroundrandomdark;
+  document.querySelectorAll(".grid-item__hint").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundhintdark;
+    el.style.color = colortextbuttonsdark;
+  });
+
+  document.querySelector(".levels__label").style.color = colortextbuttonsdark;
+}
+
+function setLightColorSchema() {
+  document.querySelector("main").style.backgroundColor =
+    colorbackgroundbodylight;
+  document.querySelector(".wrapper").style.backgroundColor =
+    colorbackgroundmainlight;
+  document.querySelectorAll(".pictures__picture").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundtoplight;
+    el.style.color = colortextmainlight;
+  });
+  document.querySelector(".pictures__picture_selected").style.backgroundColor =
+    colorbackgroundselectedlight;
+  document.querySelector(".pictures__picture_selected").style.color =
+    colortextmainlight;
+  document
+    .querySelectorAll(".buttons__button")
+    .forEach((el) => (el.style.backgroundColor = colorbackgroundbuttonslight));
+  document.querySelector(".menu__button").style.backgroundColor =
+    colorbackgroundrandomlight;
+  document.querySelectorAll(".grid-item__hint").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundhintlight;
+    el.style.color = colortextmainlight;
+  });
+
+  document.querySelector(".levels__label").style.color = colortextmainlight;
+}
+
+function themeHandler() {
+  document.querySelector(".theme").addEventListener("click", (event) => {
+    if (event.target.closest(".theme_light")) {
+      setDarkColorSchema();
+      addDarkSchemeElement();
+    } else if (event.target.closest(".theme_dark")) {
+      setLightColorSchema();
+      addLightSchemeElement();
+    }
+  });
+}
+
+function getCurrentSchema() {
+  if (document.querySelector(".theme_light")) return "light";
+  else if (document.querySelector(".theme_dark")) return "dark";
+}
+
 export {
   gridHandler,
   checkSolution,
@@ -452,4 +554,8 @@ export {
   saveGame,
   randomButtonHandler,
   enableSaveGame,
+  themeHandler,
+  getCurrentSchema,
+  setDarkColorSchema,
+  setLightColorSchema,
 };
