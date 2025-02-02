@@ -29,6 +29,8 @@ import {
   colorbackgroundmodaldark,
   colortextmaindark,
   colortextbuttonsdark,
+  colorborderdark,
+  colorcoloredcelldark,
   colorbackgroundbodylight,
   colorbackgroundmainlight,
   colorbackgroundhintlight,
@@ -39,6 +41,8 @@ import {
   colorbackgroundmodallight,
   colortextmainlight,
   colortextbuttonslight,
+  colorborderlight,
+  colorcoloredcelllight,
 } from "../sass/abstracts/colors.scss";
 
 import blackCell from "../assets/pop-1.mp3";
@@ -497,8 +501,24 @@ function setDarkColorSchema() {
     el.style.backgroundColor = colorbackgroundhintdark;
     el.style.color = colortextbuttonsdark;
   });
-
+  document.querySelectorAll(".grid-item__empty").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundhintdark;
+  });
   document.querySelector(".levels__label").style.color = colortextbuttonsdark;
+
+  document.querySelectorAll(".grid-item__empty").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundhintdark;
+  });
+
+  document
+    .querySelectorAll(
+      `.grid-item_border-vertical,
+      .grid-item_border-horizontal`
+    )
+    .forEach((el) => {
+      el.style.borderColor = colorborderdark;
+    });
+  document.querySelector(".grid").style.backgroundColor = colorborderdark;
 }
 
 function setLightColorSchema() {
@@ -525,6 +545,20 @@ function setLightColorSchema() {
   });
 
   document.querySelector(".levels__label").style.color = colortextmainlight;
+
+  document.querySelectorAll(".grid-item__empty").forEach((el) => {
+    el.style.backgroundColor = colorbackgroundhintlight;
+  });
+
+  document
+    .querySelectorAll(
+      `.grid-item_border-vertical,
+      .grid-item_border-horizontal`
+    )
+    .forEach((el) => {
+      el.style.borderColor = colorborderlight;
+    });
+  document.querySelector(".grid").style.backgroundColor = colorborderlight;
 }
 
 function themeHandler() {

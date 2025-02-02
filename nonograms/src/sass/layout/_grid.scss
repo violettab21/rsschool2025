@@ -33,6 +33,9 @@
 .grid-item_border-horizontal {
   border-top: 1px solid constants.$color-border;
 }
+.grid-item__empty {
+  background-color: constants.$color-background-hint;
+}
 
 .results {
   display: grid;

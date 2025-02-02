@@ -321,6 +321,14 @@ function fillInGridWithHints(nanogram) {
   let colsHintsCount = Math.max(...hints.rowsHints.map((el) => el.length));
   let rowsHintsCount = Math.max(...hints.columnsHints.map((el) => el.length));
 
+  //area with empty cells
+
+  for (let i = 0; i < rowsHintsCount; i += 1) {
+    for (let j = 0; j < colsHintsCount; j += 1) {
+      matrixFromGrid[i][j].classList.add("grid-item__empty");
+    }
+  }
+
   //area for columns hints
 
   for (let j = colsHintsCount; j < colCount; j += 1) {
@@ -365,9 +373,6 @@ function fillInGridWithHints(nanogram) {
     }
   }
 }
-
-
-
 
 export {
   nonograms,
