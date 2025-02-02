@@ -15,7 +15,10 @@
     background-color: constants.$color-background-selected;
   }
 }
-
+.pictures__picture:hover {
+  background-color: #c9bebc !important;
+  transition: all 0.3s;
+}
 .levels__label {
   margin-right: 8px;
   font-size: 18px;

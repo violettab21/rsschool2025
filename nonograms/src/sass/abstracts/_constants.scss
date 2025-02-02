@@ -9,6 +9,8 @@ $color-background-selected: #fec5bb;
 $color-background-random: #f6bd60;
 $color-background-modal: #f8edeb;
 $color-background-modal-out: rgba(24, 28, 41, 0.8);
+$color-background-buttons-hover: #f8edeb;
+$color-background-pictures-hover: #fae1dd;
 
 $color-border: #938f8f;
 $color-colored-cell: #665f5f;
@@ -18,21 +20,24 @@ $color-text-main: #4b4242;
 
 //dark scheme
 
-$color-background-body-dark: rgb(36, 43, 40);
-$color-background-main-dark: #343937;
-$color-background-hint-dark: #4c5954;
+$color-background-body-dark: #292929;
+$color-background-main-dark: #4a4a4a;
+$color-background-hint-dark: #7a7a7a;
 $color-background-buttons-dark: rgb(36, 43, 40);
 $color-background-top-dark: #848d89;
 $color-background-selected-dark: rgb(218, 232, 225);
 $color-background-random-dark: #8c8c8c;
-$color-background-modal-dark: #f8edeb;
+$color-background-modal-dark: #8a8a8a;
 $color-background-modal-out-dark: rgba(24, 28, 41, 0.8);
+$color-background-modal-table-dark: #4a4a4a;
 $color-text-buttons-dark: #ecfaf1;
 $color-text-main-dark: #4b4242;
 $color-border-dark: rgb(36, 43, 40);
 $color-colored-cell-dark: #665f5f;
+$color-background-buttons-hover-dark: rgb(132, 141, 137);
+$color-background-pictures-hover-dark: rgb(218, 232, 225);
 
-//light cheme
+//light scheme
 $color-background-body-light: #f7ede2;
 $color-background-main-light: #d1ded9;
 $color-background-hint-light: #fae1dd;
@@ -42,7 +47,10 @@ $color-background-selected-light: #fec5bb;
 $color-background-random-light: #f6bd60;
 $color-background-modal-light: #f8edeb;
 $color-background-modal-out-light: rgba(24, 28, 41, 0.8);
+$color-background-modal-table-light: #f6bd60;
 $color-text-buttons-light: #fbfbfb;
 $color-text-main-light: #4b4242;
 $color-border-light: #938f8f;
 $color-colored-cell-light: #665f5f;
+$color-background-buttons-hover-light: #f8edeb;
+$color-background-pictures-hover-light: #fae1dd;

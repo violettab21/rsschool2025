@@ -4,23 +4,19 @@ import "../assets/close.svg";
 import "../sass/abstracts/colors.scss";
 import {
   nonograms,
-  generateHints,
-  calculateGridSize,
   createGrid,
   fillInGridWithHints,
+  defineNavigationStyleOnScreenSizeChange,
 } from "./nonograms";
 import {
   changeLevelHandler,
   createGameElements,
   selectPictureHandler,
-  createButtons,
 } from "./elementsRendering";
 
 import {
   gridHandler,
-  checkSolution,
   getCurrentPicture,
-  startTimer,
   buttonsHandler,
   randomButtonHandler,
   themeHandler,
@@ -40,4 +36,5 @@ document.addEventListener("DOMContentLoaded", () => {
   randomButtonHandler();
   themeHandler();
   soundHandler();
+  defineNavigationStyleOnScreenSizeChange();
 });

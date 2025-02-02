@@ -1,3 +1,5 @@
+import { getCurrentPicture } from "./game";
+
 const nonograms = [
   {
     name: "snake",
@@ -303,7 +305,22 @@ function createGrid(nanogram) {
     gridItem.className = "grid-item";
     grid.append(gridItem);
   }
-  grid.style.gridTemplateColumns = `repeat(${gridSize.colCount}, 30px)`;
+  if (nanogram.matrix.length > 10) {
+    if (window.matchMedia("(max-width: 700px)").matches) {
+      grid.style.gridTemplateColumns = `repeat(${gridSize.colCount}, 20px)`;
+      grid.style.gridAutoRows = "20px";
+      grid.style.fontSize = "16px";
+    } else {
+      grid.style.gridTemplateColumns = `repeat(${gridSize.colCount}, 30px)`;
+      grid.style.gridAutoRows = "30px";
+      grid.style.fontSize = "18px";
+    }
+  } else {
+    grid.style.gridTemplateColumns = `repeat(${gridSize.colCount}, 30px)`;
+    grid.style.gridAutoRows = "30px";
+    grid.style.fontSize = "18px";
+  }
+
   document.querySelector(".timer-block").after(grid);
 }
 
@@ -313,7 +330,6 @@ function fillInGridWithHints(nanogram) {
   let rowCount = gridSize.rowCount;
   let gridItems = Array.from(document.querySelectorAll(".grid-item"));
   let matrixFromGrid = [];
-  console.log(gridItems);
   for (let i = 0; i <= rowCount; i += 1) {
     matrixFromGrid.push(gridItems.slice(i * colCount, i * colCount + colCount));
   }
@@ -374,10 +390,37 @@ function fillInGridWithHints(nanogram) {
   }
 }
 
+function defineGridCellSize(nonogram) {
+  if (nonogram.matrix.length > 10) {
+    if (window.matchMedia("(max-width: 700px)").matches) {
+      let gridSize = calculateGridSize(nonogram);
+      document.querySelector(
+        ".grid"
+      ).style.gridTemplateColumns = `repeat(${gridSize.colCount}, 20px)`;
+      document.querySelector(".grid").style.gridAutoRows = `20px`;
+      document.querySelector(".grid").style.fontSize = `16px`;
+    } else {
+      let gridSize = calculateGridSize(nonogram);
+      document.querySelector(
+        ".grid"
+      ).style.gridTemplateColumns = `repeat(${gridSize.colCount}, 30px)`;
+      document.querySelector(".grid").style.gridAutoRows = `30px`;
+      document.querySelector(".grid").style.fontSize = `18px`;
+    }
+  }
+}
+function defineNavigationStyleOnScreenSizeChange() {
+  window.addEventListener("resize", () => {
+    defineGridCellSize(nonograms.find((el) => el.name === getCurrentPicture()));
+  });
+}
+
 export {
   nonograms,
   generateHints,
   calculateGridSize,
   createGrid,
   fillInGridWithHints,
+  defineNavigationStyleOnScreenSizeChange,
+  defineGridCellSize,
 };

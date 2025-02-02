@@ -1,10 +1,4 @@
-import {
-  nonograms,
-  generateHints,
-  calculateGridSize,
-  createGrid,
-  fillInGridWithHints,
-} from "./nonograms";
+import { nonograms, createGrid, fillInGridWithHints } from "./nonograms";
 
 import {
   generateModal,
@@ -45,6 +39,12 @@ import {
   colortextbuttonslight,
   colorborderlight,
   colorcoloredcelllight,
+  colorbackgroundmodaltablelight,
+  colorbackgroundmodaltabledark,
+  colorbackgroundbtnhoverlight,
+  colorbackgroundbtnhoverdark,
+  colorbackgroundpicturehoverlight,
+  colorbackgroundpicturehoverdark,
 } from "../sass/abstracts/colors.scss";
 
 import blackCell from "../assets/pop-1.mp3";
@@ -86,7 +86,7 @@ function gridHandler() {
       if (timer.state === "clear") {
         let seconds = getTimerTimeSeconds();
         timer.timerId = startTimer(new Date(), seconds);
-        console.log(timer.timerId);
+
         timer.state = "started";
       }
 
@@ -98,9 +98,13 @@ function gridHandler() {
         if (sound === "on") audioWin.play();
         saveWinResults(nonograms.find((el) => el.name === getCurrentPicture()));
         generateModal();
+
         generateModalContentMessage(
           `Great! You have solved the nonogram in ${getTimerTimeSeconds()} seconds!`
         );
+        let scheme = getCurrentSchema();
+        if (scheme === "light") setLightColorSchemaModal();
+        else setDarkColorSchemaModal();
       }
     }
   });
@@ -118,7 +122,7 @@ function gridHandler() {
         if (timer.state === "clear") {
           let seconds = getTimerTimeSeconds();
           timer.timerId = startTimer(new Date(), seconds);
-          console.log(timer.timerId);
+
           timer.state = "started";
         }
         let sound = getSoundState();
@@ -131,7 +135,7 @@ function gridHandler() {
 function checkSolution(nonogram) {
   let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
   let matrixFromGrid = [];
-  console.log(gridItems);
+
   for (let i = 0; i < nonogram.matrix.length; i += 1) {
     matrixFromGrid.push(
       gridItems.slice(
@@ -154,14 +158,12 @@ function checkSolution(nonogram) {
       if (matrixFromGrid[i][j] === nonogram.matrix[i][j]) isCorrect = true;
       else {
         isCorrect = false;
-        console.log(nonogram.matrix);
-        console.log(matrixFromGrid);
+
         return isCorrect;
       }
     }
   }
-  console.log(nonogram.matrix);
-  console.log(matrixFromGrid);
+
   return isCorrect;
 }
 
@@ -177,7 +179,6 @@ function calculateTime(timeClick, currentSeconds) {
   let minutes = Math.floor(diff / 1000 / 60);
   diff = (diff / 1000 / 60 - minutes) * 60;
   let seconds = Math.floor(diff);
-  console.log(`${minutes} : ${seconds}`);
 
   let additionalZeroMin = "";
   let additionalZeroSec = "";
@@ -190,7 +191,7 @@ function calculateTime(timeClick, currentSeconds) {
 
 function startTimer(timeClicked, seconds) {
   let timerId = setInterval(calculateTime, 1000, timeClicked, seconds);
-  console.log(timerId);
+
   return timerId;
 }
 
@@ -261,6 +262,9 @@ function buttonsHandler() {
         ? JSON.parse(localStorage.winResults)
         : "";
       generateModalContentTable(currentTable);
+      let scheme = getCurrentSchema();
+      if (scheme === "light") setLightColorSchemaModal();
+      else setDarkColorSchemaModal();
     }
     if (event.target.textContent === "Solution") {
       showSolution();
@@ -530,6 +534,7 @@ function setDarkColorSchema() {
       el.style.borderColor = colorborderdark;
     });
   document.querySelector(".grid").style.backgroundColor = colorborderdark;
+
 }
 
 function setLightColorSchema() {
@@ -570,6 +575,45 @@ function setLightColorSchema() {
       el.style.borderColor = colorborderlight;
     });
   document.querySelector(".grid").style.backgroundColor = colorborderlight;
+}
+
+function setLightColorSchemaModal() {
+  document.querySelector(".modal").style.backgroundColor =
+    colorbackgroundmodallight;
+  if (
+    document.querySelector(".results__header") &&
+    document.querySelector(".results__data")
+  ) {
+    document
+      .querySelectorAll(".results__header")
+      .forEach(
+        (cell) => (cell.style.backgroundColor = colorbackgroundmodaltablelight)
+      );
+    document
+      .querySelectorAll(".results__data")
+      .forEach(
+        (cell) => (cell.style.backgroundColor = colorbackgroundmodallight)
+      );
+  }
+}
+function setDarkColorSchemaModal() {
+  document.querySelector(".modal").style.backgroundColor =
+    colorbackgroundmodaldark;
+  if (
+    document.querySelector(".results__header") &&
+    document.querySelector(".results__data")
+  ) {
+    document
+      .querySelectorAll(".results__header")
+      .forEach(
+        (cell) => (cell.style.backgroundColor = colorbackgroundmodaltabledark)
+      );
+    document
+      .querySelectorAll(".results__data")
+      .forEach(
+        (cell) => (cell.style.backgroundColor = colorbackgroundmodaldark)
+      );
+  }
 }
 
 function themeHandler() {
@@ -619,4 +663,6 @@ export {
   setDarkColorSchema,
   setLightColorSchema,
   soundHandler,
+  setLightColorSchemaModal,
+  setDarkColorSchemaModal,
 };

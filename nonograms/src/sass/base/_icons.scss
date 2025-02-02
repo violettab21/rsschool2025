@@ -1,12 +1,12 @@
 .cross {
-  height: 30px;
-  width: 30px;
+  height: 100%;
+  width: 100%;
   position: relative;
   display: block;
 }
 
 .cross__line {
-  width: 27px;
+  width: 80%;
   height: 2px;
   background-color: #181c297a;
   display: inline-block;
@@ -14,30 +14,35 @@
 
 .cross__line_line1 {
   position: absolute;
-  top: 12px;
-  left: 0px;
+  top: 40%;
+  left: 5%;
   rotate: 45deg;
 }
 
 .cross__line_line2 {
   position: absolute;
-  top: 12px;
-  left: 0px;
+  top: 40%;
+  left: 5%;
   rotate: -45deg;
 }
 
 .theme {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   position: absolute;
   right: 10px;
 }
-
+.theme:hover {
+  cursor: pointer;
+}
 .sound {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   position: absolute;
   right: 60px;
+}
+.sound:hover {
+  cursor: pointer;
 }

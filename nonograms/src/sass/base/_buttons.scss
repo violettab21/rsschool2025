@@ -4,12 +4,14 @@
   flex-wrap: wrap;
   flex-direction: row;
   gap: 20px;
+  justify-content: center;
+  padding: 0 10px;
 }
 
 .buttons__button {
   display: block;
-  width: 150px;
-  padding: 4px 10px;
+  width: 165px;
+  padding: 6px 10px;
   font-size: 16px;
   font-family: Roboto;
   background-color: constants.$color-background-buttons;
@@ -17,7 +19,16 @@
   border: none;
   color: constants.$color-text-buttons;
 }
-
+.buttons__button:hover {
+  background-color: #f8edeb !important;
+  color: #4b4242;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.buttons__button:disabled {
+  background-color: #8cb2a9c7 !important;
+  cursor: none;
+}
 .menu__button {
   padding: 8px 12px;
   border: none;
@@ -27,4 +38,9 @@
   font-size: 16px;
   font-family: Roboto;
   color: constants.$color-text-buttons;
+}
+.menu__button:hover {
+  background-color: rgb(248, 237, 235) !important;
+  color: #4b4242;
+  transition: all 0.3s;
 }
