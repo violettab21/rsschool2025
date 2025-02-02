@@ -24,6 +24,7 @@ import {
   buttonsHandler,
   randomButtonHandler,
   themeHandler,
+  soundHandler,
 } from "./game";
 document.addEventListener("DOMContentLoaded", () => {
   createGameElements();
@@ -38,4 +39,5 @@ document.addEventListener("DOMContentLoaded", () => {
   buttonsHandler();
   randomButtonHandler();
   themeHandler();
+  soundHandler();
 });

@@ -16,6 +16,8 @@ import {
   addDarkSchemeElement,
   addLightSchemeElement,
   createLightSchemeElement,
+  addSoundOffElement,
+  addSoundOnElement,
 } from "./elementsRendering";
 
 import {
@@ -70,13 +72,17 @@ function gridHandler() {
 
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
-      if (
-        event.target
-          .closest(".grid-item__game")
-          .classList.contains("grid-item__game_colored")
-      )
-        audioBlackCell.play();
-      else audioWhiteCell.play();
+      let sound = getSoundState();
+      if (sound === "on") {
+        if (
+          event.target
+            .closest(".grid-item__game")
+            .classList.contains("grid-item__game_colored")
+        )
+          audioBlackCell.play();
+        else audioWhiteCell.play();
+      }
+
       if (timer.state === "clear") {
         let seconds = getTimerTimeSeconds();
         timer.timerId = startTimer(new Date(), seconds);
@@ -88,7 +94,8 @@ function gridHandler() {
         checkSolution(nonograms.find((el) => el.name === getCurrentPicture()))
       ) {
         stopTimer(timer.timerId);
-        audioWin.play();
+        let sound = getSoundState();
+        if (sound === "on") audioWin.play();
         saveWinResults(nonograms.find((el) => el.name === getCurrentPicture()));
         generateModal();
         generateModalContentMessage(
@@ -102,7 +109,10 @@ function gridHandler() {
     if (event.target.closest(".grid-item__game")) {
       if (event.target.closest(".grid-item__game").childElementCount !== 0) {
         event.target.closest(".grid-item__game").innerHTML = "";
-        audioCrossOff.play();
+        let sound = getSoundState();
+        if (sound === "on") {
+          audioCrossOff.play();
+        }
       } else {
         createCross(event.target);
         if (timer.state === "clear") {
@@ -111,7 +121,8 @@ function gridHandler() {
           console.log(timer.timerId);
           timer.state = "started";
         }
-        audioCrossOn.play();
+        let sound = getSoundState();
+        if (sound === "on") audioCrossOn.play();
       }
     }
   });
@@ -578,6 +589,21 @@ function getCurrentSchema() {
   else if (document.querySelector(".theme_dark")) return "dark";
 }
 
+function getSoundState() {
+  if (document.querySelector(".sound_on")) return "on";
+  else if (document.querySelector(".sound_off")) return "off";
+}
+
+function soundHandler() {
+  document.querySelector(".sound").addEventListener("click", (event) => {
+    if (event.target.closest(".sound_on")) {
+      addSoundOffElement();
+    } else if (event.target.closest(".sound_off")) {
+      addSoundOnElement();
+    }
+  });
+}
+
 export {
   gridHandler,
   checkSolution,
@@ -592,4 +618,5 @@ export {
   getCurrentSchema,
   setDarkColorSchema,
   setLightColorSchema,
+  soundHandler,
 };
