@@ -20,14 +20,14 @@
   color: constants.$color-text-buttons;
 }
 .buttons__button:hover {
-  background-color: #f8edeb !important;
+  background-color: constants.$color-background-buttons-hover !important;
   color: #4b4242;
   transition: all 0.3s;
   cursor: pointer;
 }
 .buttons__button:disabled {
-  background-color: #8cb2a9c7 !important;
-  cursor: none;
+  background-color: rgb(36 43 40 / 43%) !important;
+  pointer-events: none;
 }
 .menu__button {
   padding: 8px 12px;

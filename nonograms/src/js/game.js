@@ -69,9 +69,10 @@ function gridHandler() {
   document.querySelector(".grid").addEventListener("click", (event) => {
     if (event.target.closest(".grid-item__game")) {
       event.target
-
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
+
+      console.log(event.target.closest(".grid-item__game"));
       let sound = getSoundState();
       if (sound === "on") {
         if (
@@ -82,7 +83,9 @@ function gridHandler() {
           audioBlackCell.play();
         else audioWhiteCell.play();
       }
-
+      if (event.target.closest(".grid-item__game").childElementCount !== 0) {
+        event.target.closest(".grid-item__game").innerHTML = "";
+      }
       if (timer.state === "clear") {
         let seconds = getTimerTimeSeconds();
         timer.timerId = startTimer(new Date(), seconds);
@@ -94,6 +97,7 @@ function gridHandler() {
         checkSolution(nonograms.find((el) => el.name === getCurrentPicture()))
       ) {
         stopTimer(timer.timerId);
+        disableSaveGame();
         let sound = getSoundState();
         if (sound === "on") audioWin.play();
         saveWinResults(nonograms.find((el) => el.name === getCurrentPicture()));
@@ -111,6 +115,7 @@ function gridHandler() {
   document.querySelector(".grid").addEventListener("contextmenu", (event) => {
     event.preventDefault();
     if (event.target.closest(".grid-item__game")) {
+      console.log(event.target.closest(".grid-item__game"));
       if (event.target.closest(".grid-item__game").childElementCount !== 0) {
         event.target.closest(".grid-item__game").innerHTML = "";
         let sound = getSoundState();
@@ -119,6 +124,15 @@ function gridHandler() {
         }
       } else {
         createCross(event.target);
+        console.log(event.target.closest(".grid-item__game"));
+        if (
+          event.target
+            .closest(".grid-item__game")
+            .classList.contains("grid-item__game_colored")
+        )
+          event.target
+            .closest(".grid-item__game")
+            .classList.remove("grid-item__game_colored");
         if (timer.state === "clear") {
           let seconds = getTimerTimeSeconds();
           timer.timerId = startTimer(new Date(), seconds);
@@ -534,7 +548,6 @@ function setDarkColorSchema() {
       el.style.borderColor = colorborderdark;
     });
   document.querySelector(".grid").style.backgroundColor = colorborderdark;
-
 }
 
 function setLightColorSchema() {

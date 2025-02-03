@@ -1,3 +1,5 @@
+@use "../abstracts/constants";
+
 .cross {
   height: 100%;
   width: 100%;
@@ -32,9 +34,11 @@
   height: 30px;
   position: absolute;
   right: 10px;
-}
-.theme:hover {
   cursor: pointer;
+}
+.theme:hover svg path,
+.theme:hover svg rect {
+  fill: constants.$color-background-buttons-hover;
 }
 .sound {
   display: block;
@@ -42,7 +46,9 @@
   height: 30px;
   position: absolute;
   right: 60px;
-}
-.sound:hover {
   cursor: pointer;
+}
+
+.sound:hover svg path {
+  fill: constants.$color-background-buttons-hover;
 }
