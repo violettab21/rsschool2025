@@ -8,17 +8,13 @@
   text-align: center;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
   text-transform: capitalize;
   background-color: constants.$color-background-top;
   &_selected {
     background-color: constants.$color-background-selected;
   }
 }
-.pictures__picture:hover {
-  background-color: constants.$color-background-pictures-hover !important;
-  transition: all 0.3s;
-}
+
 .levels__label {
   margin-right: 8px;
   font-size: 18px;
@@ -32,5 +28,4 @@
   border-radius: 8px;
   font-size: 16px;
   background-color: constants.$color-background-top;
-  cursor: pointer;
 }

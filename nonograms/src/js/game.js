@@ -72,7 +72,6 @@ function gridHandler() {
         .closest(".grid-item__game")
         .classList.toggle("grid-item__game_colored");
 
-      console.log(event.target.closest(".grid-item__game"));
       let sound = getSoundState();
       if (sound === "on") {
         if (
@@ -116,7 +115,6 @@ function gridHandler() {
   document.querySelector(".grid").addEventListener("contextmenu", (event) => {
     event.preventDefault();
     if (event.target.closest(".grid-item__game")) {
-      console.log(event.target.closest(".grid-item__game"));
       if (event.target.closest(".grid-item__game").childElementCount !== 0) {
         event.target.closest(".grid-item__game").innerHTML = "";
         let sound = getSoundState();
@@ -125,7 +123,7 @@ function gridHandler() {
         }
       } else {
         createCross(event.target);
-        console.log(event.target.closest(".grid-item__game"));
+
         if (
           event.target
             .closest(".grid-item__game")
@@ -335,6 +333,9 @@ function saveGame() {
   generateModalContentMessage(
     `The game is saved. Use Continue Last Game button whenever you would like to proceed.`
   );
+  let scheme = getCurrentSchema();
+  if (scheme === "light") setLightColorSchemaModal();
+  else setDarkColorSchemaModal();
 }
 
 function continueLastGame() {
@@ -385,6 +386,9 @@ function continueLastGame() {
   } else {
     generateModal();
     generateModalContentMessage(`You haven't saved any game yet...`);
+    let scheme = getCurrentSchema();
+    if (scheme === "light") setLightColorSchemaModal();
+    else setDarkColorSchemaModal();
   }
 }
 

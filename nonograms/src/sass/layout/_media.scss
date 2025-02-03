@@ -1,3 +1,35 @@
+@use "../abstracts/constants";
+@media (hover: hover) {
+  .buttons__button:hover {
+    background-color: constants.$color-background-buttons-hover !important;
+    color: #4b4242;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .pictures__picture:hover {
+    background-color: constants.$color-background-pictures-hover !important;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .theme:hover,
+  .sound:hover {
+    cursor: pointer;
+  }
+
+  .theme:hover svg path,
+  .theme:hover svg rect {
+    fill: constants.$color-background-buttons-hover;
+    transition: all 0.3s;
+  }
+  .sound:hover svg path {
+    fill: constants.$color-background-buttons-hover;
+    transition: all 0.3s;
+  }
+  .levels__list:hover {
+    cursor: pointer;
+  }
+}
+
 @media screen and (max-width: 670px) {
   .wrapper {
     padding: 15px 0;

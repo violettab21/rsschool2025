@@ -19,12 +19,7 @@
   border: none;
   color: constants.$color-text-buttons;
 }
-.buttons__button:hover {
-  background-color: constants.$color-background-buttons-hover !important;
-  color: #4b4242;
-  transition: all 0.3s;
-  cursor: pointer;
-}
+
 .buttons__button:disabled {
   background-color: rgb(36 43 40 / 43%) !important;
   pointer-events: none;
