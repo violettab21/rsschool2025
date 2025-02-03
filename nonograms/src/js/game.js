@@ -98,6 +98,7 @@ function gridHandler() {
       ) {
         stopTimer(timer.timerId);
         disableSaveGame();
+        disableGrid();
         let sound = getSoundState();
         if (sound === "on") audioWin.play();
         saveWinResults(nonograms.find((el) => el.name === getCurrentPicture()));
@@ -330,50 +331,61 @@ function saveGame() {
     time: currentTime,
   };
   localStorage.savedGame = JSON.stringify(objectForSaving);
+  generateModal();
+  generateModalContentMessage(
+    `The game is saved. Use Continue Last Game button whenever you would like to proceed.`
+  );
 }
 
 function continueLastGame() {
-  let savedGame = JSON.parse(localStorage.savedGame);
-  document.querySelector(".levels__list").value = savedGame.level;
+  if (localStorage.savedGame) {
+    let savedGame = JSON.parse(localStorage.savedGame);
+    document.querySelector(".levels__list").value = savedGame.level;
 
-  if (document.querySelector(".pictures")) {
-    document.querySelector(".pictures").remove();
-    createPicturesList(savedGame.level);
-    selectPictureHandler();
-    document.querySelectorAll(".pictures__picture").forEach((el) => {
-      el.classList.remove("pictures__picture_selected");
-      if (el.textContent.toLowerCase() === savedGame.nonogram.name)
-        el.classList.add("pictures__picture_selected");
-    });
-  } else createPicturesList(savedGame.level);
-  if (document.querySelector(".grid")) document.querySelector(".grid").remove();
-  createGrid(savedGame.nonogram);
-  fillInGridWithHints(savedGame.nonogram);
-  gridHandler();
-  let scheme = getCurrentSchema();
-  if (scheme === "light") setLightColorSchema();
-  else if (scheme === "dark") setDarkColorSchema();
+    if (document.querySelector(".pictures")) {
+      document.querySelector(".pictures").remove();
+      createPicturesList(savedGame.level);
+      selectPictureHandler();
+      document.querySelectorAll(".pictures__picture").forEach((el) => {
+        el.classList.remove("pictures__picture_selected");
+        if (el.textContent.toLowerCase() === savedGame.nonogram.name)
+          el.classList.add("pictures__picture_selected");
+      });
+    } else createPicturesList(savedGame.level);
+    if (document.querySelector(".grid"))
+      document.querySelector(".grid").remove();
+    createGrid(savedGame.nonogram);
+    fillInGridWithHints(savedGame.nonogram);
+    gridHandler();
+    let scheme = getCurrentSchema();
+    if (scheme === "light") setLightColorSchema();
+    else if (scheme === "dark") setDarkColorSchema();
 
-  let solution = savedGame.solution;
-  let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
-  let matrixFromGrid = [];
-  for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
-    matrixFromGrid.push(
-      gridItems.slice(
-        i * savedGame.nonogram.matrix.length,
-        i * savedGame.nonogram.matrix.length + savedGame.nonogram.matrix.length
-      )
-    );
-  }
-
-  for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
-    for (let j = 0; j < savedGame.nonogram.matrix.length; j += 1) {
-      if (solution[i][j] === 1)
-        matrixFromGrid[i][j].classList.add("grid-item__game_colored");
-      else if (solution[i][j] === 2) createCross(matrixFromGrid[i][j]);
+    let solution = savedGame.solution;
+    let gridItems = Array.from(document.querySelectorAll(".grid-item__game"));
+    let matrixFromGrid = [];
+    for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
+      matrixFromGrid.push(
+        gridItems.slice(
+          i * savedGame.nonogram.matrix.length,
+          i * savedGame.nonogram.matrix.length +
+            savedGame.nonogram.matrix.length
+        )
+      );
     }
+
+    for (let i = 0; i < savedGame.nonogram.matrix.length; i += 1) {
+      for (let j = 0; j < savedGame.nonogram.matrix.length; j += 1) {
+        if (solution[i][j] === 1)
+          matrixFromGrid[i][j].classList.add("grid-item__game_colored");
+        else if (solution[i][j] === 2) createCross(matrixFromGrid[i][j]);
+      }
+    }
+    document.querySelector(".timer").textContent = savedGame.time;
+  } else {
+    generateModal();
+    generateModalContentMessage(`You haven't saved any game yet...`);
   }
-  document.querySelector(".timer").textContent = savedGame.time;
 }
 
 function saveWinResults(solvedNonogram) {

@@ -184,10 +184,11 @@ function generateModalContentTable(data) {
   modalMessage.className = "modal__text";
 
   if (!data) {
-    modalMessage.textContent = "No History of Games";
+    modalMessage.textContent =
+      "Currently there is no history of solved nonograms. Try to solve one and TOP 5 results will be shown here. Good Luck!";
     document.querySelector(".modal__text-block").append(modalMessage);
   } else {
-    modalMessage.textContent = "5 Best Results:";
+    modalMessage.textContent = "TOP 5 Best Results:";
     document.querySelector(".modal__text-block").append(modalMessage);
     let table = document.createElement("div");
 
