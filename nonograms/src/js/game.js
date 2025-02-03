@@ -85,7 +85,7 @@ function gridHandler() {
       if (event.target.closest(".grid-item__game").childElementCount !== 0) {
         event.target.closest(".grid-item__game").innerHTML = "";
       }
-      if (timer.state === "clear") {
+      if (timer.state === "clear" || timer.state === "stopped") {
         let seconds = getTimerTimeSeconds();
         timer.timerId = startTimer(new Date(), seconds);
 
@@ -132,7 +132,7 @@ function gridHandler() {
           event.target
             .closest(".grid-item__game")
             .classList.remove("grid-item__game_colored");
-        if (timer.state === "clear") {
+        if (timer.state === "clear" || timer.state === "stopped") {
           let seconds = getTimerTimeSeconds();
           timer.timerId = startTimer(new Date(), seconds);
 
@@ -383,6 +383,7 @@ function continueLastGame() {
       }
     }
     document.querySelector(".timer").textContent = savedGame.time;
+    timer.state = "stopped";
   } else {
     generateModal();
     generateModalContentMessage(`You haven't saved any game yet...`);
@@ -623,6 +624,7 @@ function setLightColorSchemaModal() {
       .forEach(
         (cell) => (cell.style.backgroundColor = colorbackgroundmodallight)
       );
+    document.querySelector(".results").style.backgroundColor = colorborderlight;
   }
 }
 function setDarkColorSchemaModal() {
@@ -642,6 +644,7 @@ function setDarkColorSchemaModal() {
       .forEach(
         (cell) => (cell.style.backgroundColor = colorbackgroundmodaldark)
       );
+    document.querySelector(".results").style.backgroundColor = colorborderdark;
   }
 }
 
