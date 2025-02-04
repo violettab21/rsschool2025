@@ -185,10 +185,10 @@ function generateModalContentTable(data) {
 
   if (!data) {
     modalMessage.textContent =
-      "Currently there is no history of solved nonograms. Try to solve one and TOP 5 results will be shown here. Good Luck!";
+      "Currently there is no history of solved nonograms. Try to solve one and results will be shown here. Good Luck!";
     document.querySelector(".modal__text-block").append(modalMessage);
   } else {
-    modalMessage.textContent = "TOP 5 Best Results:";
+    modalMessage.textContent = "The latest 5 win results:";
     document.querySelector(".modal__text-block").append(modalMessage);
     let table = document.createElement("div");
 
@@ -264,7 +264,7 @@ function createButtons(div) {
 
   let bestResults = document.createElement("button");
   bestResults.className = "buttons__button";
-  bestResults.textContent = "Best Results";
+  bestResults.textContent = "History";
 
   let solution = document.createElement("button");
   solution.className = "buttons__button";

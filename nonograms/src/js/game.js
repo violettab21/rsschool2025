@@ -269,10 +269,10 @@ function buttonsHandler() {
       continueLastGame();
       enableSaveGame();
     }
-    if (event.target.textContent === "Best Results") {
+    if (event.target.textContent === "History") {
       generateModal();
       let currentTable = localStorage.winResults
-        ? JSON.parse(localStorage.winResults)
+        ? JSON.parse(localStorage.winResults).sort((a, b) => a.time - b.time)
         : "";
       generateModalContentTable(currentTable);
       let scheme = getCurrentSchema();
@@ -411,12 +411,11 @@ function saveWinResults(solvedNonogram) {
     let currentBestResult = JSON.parse(localStorage.winResults);
     if (currentBestResult.length < 5) {
       currentBestResult.push(objectForSaving);
-      bestResults = currentBestResult.sort((a, b) => a.time - b.time);
+      bestResults = currentBestResult;
     } else {
-      if (objectForSaving.time < currentBestResult[4].time) {
-        currentBestResult[4] = objectForSaving;
-        bestResults = currentBestResult.sort((a, b) => a.time - b.time);
-      } else bestResults = currentBestResult;
+      currentBestResult.shift();
+      currentBestResult.push(objectForSaving);
+      bestResults = currentBestResult;
     }
     localStorage.winResults = JSON.stringify(bestResults);
   }
