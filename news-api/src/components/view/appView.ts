@@ -1,6 +1,7 @@
 import News from './news/news';
 import Sources from './sources/sources';
-import { EverythingResponse, SourceResponse} from '../../interfaces';
+import { EverythingResponse, SourceResponse } from '../../interfaces';
+
 export class AppView {
     news: News;
     sources: Sources;
