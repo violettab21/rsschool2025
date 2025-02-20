@@ -37,6 +37,11 @@ interface SourceResponse {
     sources?: Source[];
 }
 
-interface Options {
-
+interface RequestParam {
+    endpoint: string;
+    options?: {
+        [index: string]: string;
+    };
 }
+
+export { Source, Article, EverythingResponse, SourceResponse, RequestParam };
