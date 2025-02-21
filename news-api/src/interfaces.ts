@@ -40,7 +40,7 @@ interface SourceResponse {
 interface RequestParam {
     endpoint: string;
     options?: {
-        [index: string]: string;
+        sources?: string;
     };
 }
 

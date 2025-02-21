@@ -29,11 +29,11 @@ class Loader {
 
     makeUrl(
         endpoint: string,
-        options?: {
-            [index: string]: string;
+        options: {
+            sources?: string;
         }
     ): string {
-        const urlOptions = { ...this.options, ...options };
+        const urlOptions: { [index: string]: string } = { ...this.options, ...options };
         let url = `${this.baseLink}${endpoint}?`;
 
         Object.keys(urlOptions).forEach((key) => {
@@ -47,7 +47,9 @@ class Loader {
         method: string,
         endpoint: string,
         callback: (data: EverythingResponse | SourceResponse) => void,
-        options = {}
+        options: {
+            sources?: string;
+        } = {}
     ): void {
         fetch(this.makeUrl(endpoint, options), { method })
             .then(this.errorHandler)
