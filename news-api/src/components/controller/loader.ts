@@ -1,4 +1,4 @@
-import { EverythingResponse, SourceResponse, RequestParam } from '../../interfaces';
+import { RequestParam, Callback } from '../../interfaces';
 
 class Loader {
     baseLink: string;
@@ -8,13 +8,13 @@ class Loader {
         this.options = options;
     }
 
-    getResp(
+    getResp<T>(
         request: RequestParam,
-        callback: (data: EverythingResponse | SourceResponse) => void = () => {
+        callback: Callback<T> = () => {
             console.error('No callback for GET response');
         }
     ): void {
-        this.load('GET', request.endpoint, callback, request.options);
+        this.load<T>('GET', request.endpoint, callback, request.options);
     }
 
     errorHandler(res: Response): Response {
@@ -43,10 +43,10 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    load(
+    load<T>(
         method: string,
         endpoint: string,
-        callback: (data: EverythingResponse | SourceResponse) => void,
+        callback: Callback<T>,
         options: {
             sources?: string;
         } = {}
@@ -54,7 +54,7 @@ class Loader {
         fetch(this.makeUrl(endpoint, options), { method })
             .then(this.errorHandler)
             .then((res: Response) => res.json())
-            .then((data: EverythingResponse | SourceResponse) => callback(data))
+            .then((data: T) => callback(data))
             .catch((err: Error) => console.error(err));
     }
 }

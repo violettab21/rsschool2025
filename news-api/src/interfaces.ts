@@ -22,7 +22,7 @@ interface Article {
     content: string;
 }
 
-interface EverythingResponse {
+/*interface EverythingResponse {
     status: 'ok' | 'error';
     code?: string;
     message?: string;
@@ -35,6 +35,15 @@ interface SourceResponse {
     code?: string;
     message?: string;
     sources?: Source[];
+}*/
+
+interface ResponseGeneral<T> {
+    status: 'ok' | 'error';
+    code?: string;
+    message?: string;
+    totalResults?: number;
+    articles?: T[];
+    sources?: T[];
 }
 
 interface RequestParam {
@@ -44,4 +53,8 @@ interface RequestParam {
     };
 }
 
-export { Source, Article, EverythingResponse, SourceResponse, RequestParam };
+interface Callback<T> {
+    (data: T): void;
+}
+
+export { Source, Article, RequestParam, ResponseGeneral, Callback };
