@@ -8,7 +8,7 @@ class Loader {
         this.options = options;
     }
 
-    getResp<T>(
+    getResp<T extends object>(
         request: RequestParam,
         callback: Callback<T> = () => {
             console.error('No callback for GET response');
@@ -43,7 +43,7 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    load<T>(
+    load<T extends object>(
         method: string,
         endpoint: string,
         callback: Callback<T>,

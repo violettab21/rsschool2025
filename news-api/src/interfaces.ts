@@ -1,29 +1,33 @@
+import { Language, Category, Country } from './types';
+
+import { Endpoint, Status } from './enums';
+
 interface Source {
     id: string;
     name: string;
     description: string;
     url: string;
-    category: string;
-    language: string;
-    country: string;
+    category: Category;
+    language: Language;
+    country: Country;
 }
 
 interface Article {
     source: {
-        id?: string;
+        id: string | null;
         name: string;
     };
-    author?: string;
+    author: string | null;
     title: string;
-    description?: string;
+    description: string | null;
     url: string;
-    urlToImage?: string;
+    urlToImage: string | null;
     publishedAt: string;
     content: string;
 }
 
-/*interface EverythingResponse {
-    status: 'ok' | 'error';
+interface EverythingResponse {
+    status: Status;
     code?: string;
     message?: string;
     totalResults?: number;
@@ -31,30 +35,21 @@ interface Article {
 }
 
 interface SourceResponse {
-    status: 'ok' | 'error';
+    status: Status;
     code?: string;
     message?: string;
     sources?: Source[];
-}*/
-
-interface ResponseGeneral<T> {
-    status: 'ok' | 'error';
-    code?: string;
-    message?: string;
-    totalResults?: number;
-    articles?: T[];
-    sources?: T[];
 }
 
 interface RequestParam {
-    endpoint: string;
+    endpoint: Endpoint;
     options?: {
         sources?: string;
     };
 }
 
-interface Callback<T> {
+interface Callback<T extends object> {
     (data: T): void;
 }
 
-export { Source, Article, RequestParam, ResponseGeneral, Callback };
+export { Source, Article, RequestParam, Callback, EverythingResponse, SourceResponse };

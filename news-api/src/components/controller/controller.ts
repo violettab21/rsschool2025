@@ -1,16 +1,17 @@
 import AppLoader from './appLoader';
-import { ResponseGeneral, Source, Article, Callback } from '../../interfaces';
+import { EverythingResponse, SourceResponse, Callback } from '../../interfaces';
+import { Endpoint } from '../../enums';
 class AppController extends AppLoader {
-    getSources(callback: Callback<ResponseGeneral<Source>>): void {
-        super.getResp<ResponseGeneral<Source>>(
+    getSources(callback: Callback<SourceResponse>): void {
+        super.getResp<SourceResponse>(
             {
-                endpoint: 'sources',
+                endpoint: Endpoint.source,
             },
             callback
         );
     }
 
-    getNews(e: Event, callback: Callback<ResponseGeneral<Article>>): void {
+    getNews(e: Event, callback: Callback<EverythingResponse>): void {
         let target: Element = e.target as Element;
         const newsContainer: Element = e.currentTarget as Element;
 
@@ -19,9 +20,9 @@ class AppController extends AppLoader {
                 const sourceId: string = target.getAttribute('data-source-id') as string;
                 if (newsContainer.getAttribute('data-source') !== sourceId) {
                     newsContainer.setAttribute('data-source', sourceId);
-                    super.getResp<ResponseGeneral<Article>>(
+                    super.getResp<EverythingResponse>(
                         {
-                            endpoint: 'everything',
+                            endpoint: Endpoint.news,
                             options: {
                                 sources: sourceId,
                             },
