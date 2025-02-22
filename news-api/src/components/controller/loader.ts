@@ -1,9 +1,9 @@
-import { RequestParam, Callback } from '../../interfaces';
+import { RequestParam, Callback, Options } from '../../interfaces';
 
 class Loader {
     private readonly baseLink: string;
-    private readonly options: { apiKey: string };
-    constructor(baseLink: string, options: { apiKey: string }) {
+    private readonly options: Options;
+    constructor(baseLink: string, options: Options) {
         this.baseLink = baseLink;
         this.options = options;
     }
@@ -27,12 +27,7 @@ class Loader {
         return res;
     }
 
-    private makeUrl(
-        endpoint: string,
-        options: {
-            sources?: string;
-        } = {}
-    ): string {
+    private makeUrl(endpoint: string, options?: Options): string {
         const urlOptions: { [index: string]: string } = { ...this.options, ...options };
         let url = `${this.baseLink}${endpoint}?`;
 
@@ -47,7 +42,7 @@ class Loader {
         fetch(this.makeUrl(request.endpoint, request.options), { method })
             .then(this.errorHandler)
             .then((res: Response) => res.json())
-            .then((data: T) => callback(data))
+            .then((data: Omit<T, 'code' | 'message'>) => callback(data))
             .catch((err: Error) => console.error(err));
     }
 }

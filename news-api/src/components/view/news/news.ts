@@ -1,13 +1,13 @@
 import './news.css';
 import { Article } from '../../../interfaces';
 class News {
-    public draw(data: Article[]): void {
+    public draw(data: Readonly<Article[]>): void {
         const news = data.length >= 10 ? data.filter((_item, idx) => idx < 10) : data;
 
         const fragment: Node = document.createDocumentFragment() as Node;
         const newsItemTemp: HTMLTemplateElement = document.querySelector('#newsItemTemp') as HTMLTemplateElement;
 
-        news.forEach((item: Article, idx: number) => {
+        news.forEach((item: Readonly<Article>, idx: number) => {
             const newsClone = newsItemTemp.content.cloneNode(true) as HTMLElement;
 
             if (idx % 2) (newsClone.querySelector('.news__item') as Element).classList.add('alt');

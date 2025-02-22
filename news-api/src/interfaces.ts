@@ -41,15 +41,17 @@ interface SourceResponse {
     sources?: Source[];
 }
 
+interface Options {
+    [parameter: string]: string;
+}
+
 interface RequestParam {
     endpoint: Endpoint;
-    options?: {
-        sources?: string;
-    };
+    options?: Options;
 }
 
 interface Callback<T extends object> {
-    (data: T): void;
+    (data: Omit<T, 'code' | 'message'>): void;
 }
 
-export { Source, Article, RequestParam, Callback, EverythingResponse, SourceResponse };
+export { Source, Article, RequestParam, Callback, EverythingResponse, SourceResponse, Options };
