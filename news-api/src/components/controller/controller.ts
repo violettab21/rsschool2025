@@ -2,7 +2,7 @@ import AppLoader from './appLoader';
 import { EverythingResponse, SourceResponse, Callback } from '../../interfaces';
 import { Endpoint } from '../../enums';
 class AppController extends AppLoader {
-    getSources(callback: Callback<SourceResponse>): void {
+    public getSources(callback: Callback<SourceResponse>): void {
         super.getResp<SourceResponse>(
             {
                 endpoint: Endpoint.source,
@@ -11,7 +11,7 @@ class AppController extends AppLoader {
         );
     }
 
-    getNews(e: Event, callback: Callback<EverythingResponse>): void {
+    public getNews(e: Event, callback: Callback<EverythingResponse>): void {
         let target: Element = e.target as Element;
         const newsContainer: Element = e.currentTarget as Element;
 
