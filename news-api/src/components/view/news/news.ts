@@ -1,5 +1,6 @@
 import './news.css';
 import { Article } from '../../../interfaces';
+import Image from '../../../img/news_placeholder.jpeg';
 class News {
     public draw(data: Readonly<Article[]>): void {
         const news = data.length >= 10 ? data.filter((_item, idx) => idx < 10) : data;
@@ -13,7 +14,7 @@ class News {
             if (idx % 2) (newsClone.querySelector('.news__item') as Element).classList.add('alt');
 
             (newsClone.querySelector('.news__meta-photo') as HTMLElement).style.backgroundImage = `url(${
-                item.urlToImage || 'img/news_placeholder.jpg'
+                item.urlToImage || Image
             })`;
             (newsClone.querySelector('.news__meta-author') as HTMLElement).textContent =
                 item.author || item.source.name;

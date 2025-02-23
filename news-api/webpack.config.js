@@ -19,6 +19,13 @@ const baseConfig = {
                 use: 'ts-loader',
                 include: [path.resolve(__dirname, 'src')],
             },
+            {
+                test: /\.(png|jpe?g|gif|jp2|webp)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                },
+            },
         ],
     },
     resolve: {
