@@ -1,3 +1,7 @@
+.news {
+    margin: 1rem;
+}
+
 .news__item {
     display: flex;
     flex-direction: column;
@@ -90,7 +94,9 @@
     margin-left: -10px;
     opacity: 0;
     vertical-align: middle;
-    transition: margin 0.3s, opacity 0.3s;
+    transition:
+        margin 0.3s,
+        opacity 0.3s;
 }
 
 .news__item .news__description .news__read-more a:hover:after {
@@ -125,6 +131,8 @@
     .news__item {
         flex-direction: row;
         max-width: 700px;
+        flex-basis: 100%;
+        flex-grow: 1;
     }
 
     .news__item .news__meta {

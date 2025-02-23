@@ -3,9 +3,14 @@
     flex-wrap: nowrap;
     width: 100%;
     height: 120px;
-    overflow: auto;
+    overflow-x: scroll;
     align-items: center;
-    font: 300 1em 'Fira Sans', sans-serif;
+    font:
+        300 1em 'Fira Sans',
+        sans-serif;
+    scrollbar-color: #9dd7f1 rgb(47, 47, 49);
+    scrollbar-width: thin;
+    padding: 12px;
 }
 
 .source__item {
@@ -20,7 +25,6 @@
     cursor: pointer;
 }
 
-.source__item:hover,
 .source__item:focus {
     border-color: #3fcc59;
     color: #69db7e;
@@ -31,4 +35,13 @@
 .source__item-name {
     font-weight: 400;
     white-space: nowrap;
+}
+
+@media (hover: hover) {
+    .source__item:hover {
+        border-color: #3fcc59;
+        color: #69db7e;
+        box-shadow: 0 0.5em 0.5em -0.4em #3fcc59;
+        transform: translateY(-0.25em);
+    }
 }

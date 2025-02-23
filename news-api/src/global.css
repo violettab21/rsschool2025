@@ -1,5 +1,9 @@
 * {
+    padding: 0;
     margin: 0;
+    box-sizing: border-box;
+    outline: none;
+    border-collapse: collapse;
 }
 
 html {
@@ -10,6 +14,7 @@ body {
     background: #17181c;
     font-family: sans-serif;
     height: 100%;
+    max-width: 1980px;
 }
 .wrapper {
     display: flex;
@@ -22,6 +27,7 @@ main {
 }
 header {
     padding: 10px 30px;
+    background-color: #24272c;
 }
 
 header h1 {
@@ -35,10 +41,10 @@ footer {
     justify-content: center;
     flex-direction: column;
     padding: 12px;
+    background-color: #24272c;
 }
 .additional_info {
     display: flex;
-    gap: 10px;
     align-items: center;
     justify-content: center;
     list-style-type: none;
@@ -57,6 +63,7 @@ footer {
 .additional_info__course_link .icon {
     width: 50px;
 }
+
 .additional_info__logo {
     display: inline-block;
     background-image: url(img/rss-logo.svg);
@@ -67,19 +74,38 @@ footer {
 
 .additional_info__author_github {
     font-size: 14px;
-    color: #333;
+    color: #ddd8d8;
+    text-decoration: none;
 }
+
 footer .copyright {
     font-size: 14px;
-    color: #333;
+    color: #ddd8d8;
     text-align: center;
+    padding-bottom: 20px;
 }
 footer .copyright a {
-    color: #444;
+    color: #ddd8d8;
 }
-footer .copyright a:hover {
-    color: #555;
-}
+
 footer .copyright:before {
     content: '©';
+}
+@media (hover: hover) {
+    .additional_info__course_link:hover .icon path {
+        fill: #30c5ff;
+        transition: 0.5s;
+    }
+    .additional_info__course_link:hover .icon circle {
+        fill: white;
+        transition: 0.5s;
+    }
+    .additional_info__author_github:hover {
+        color: #9dd7f1;
+        transition: 0.5s;
+    }
+    footer .copyright a:hover {
+        transition: 0.5s;
+        color: #9dd7f1;
+    }
 }
