@@ -31,7 +31,7 @@ main {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 20px 0px;
+    padding: 20px 5px;
     gap: 10px;
 
     font:
