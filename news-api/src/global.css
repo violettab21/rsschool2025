@@ -25,6 +25,42 @@ body {
 main {
     flex: 1 1 auto;
 }
+
+.search {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 0px;
+    gap: 10px;
+
+    font:
+        300 1em 'Fira Sans',
+        sans-serif;
+}
+
+.search__field {
+    width: 270px;
+    border-radius: 6px;
+    border: none;
+    font:
+        300 1em 'Fira Sans',
+        sans-serif;
+    padding: 8px;
+}
+
+.search__button {
+    width: 100px;
+    border-radius: 6px;
+    border: none;
+    font:
+        300 1em 'Fira Sans',
+        sans-serif;
+    background-color: #9dd7f1;
+    cursor: pointer;
+    padding: 8px;
+}
+
 header {
     padding: 10px 30px;
     background-color: #24272c;
@@ -107,5 +143,11 @@ footer .copyright:before {
     footer .copyright a:hover {
         transition: 0.5s;
         color: #9dd7f1;
+    }
+}
+
+@media (min-width: 640px) {
+    .search__field {
+        width: 500px;
     }
 }
