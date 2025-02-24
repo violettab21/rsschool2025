@@ -1,6 +1,7 @@
 import AppLoader from './appLoader';
 import { EverythingResponse, SourceResponse, Callback } from '../../interfaces';
 import { Endpoint } from '../../enums';
+import { Category } from '../../types';
 class AppController extends AppLoader {
     public getSources(callback: Callback<SourceResponse>): void {
         super.getResp<SourceResponse>(
@@ -9,6 +10,29 @@ class AppController extends AppLoader {
             },
             callback
         );
+    }
+    public getSourcesByCategories(callback: Callback<SourceResponse>): void {
+        const selectedCategory: string = (document.querySelector('.categories') as HTMLInputElement)
+            .value as string as Category;
+
+        if (selectedCategory !== 'all') {
+            super.getResp<SourceResponse>(
+                {
+                    endpoint: Endpoint.source,
+                    options: {
+                        category: selectedCategory,
+                    },
+                },
+                callback
+            );
+        } else {
+            super.getResp<SourceResponse>(
+                {
+                    endpoint: Endpoint.source,
+                },
+                callback
+            );
+        }
     }
 
     public getNews(e: Event, callback: Callback<EverythingResponse>): void {

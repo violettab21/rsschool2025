@@ -22,6 +22,9 @@ class App {
             this.controller.getNewsBySearch(e, (data: Readonly<EverythingResponse>) => this.view.drawNews(data))
         );
         this.controller.getSources((data: Readonly<SourceResponse>) => this.view.drawSources(data));
+        (document.querySelector('.sources__categories') as Element).addEventListener('change', () =>
+            this.controller.getSourcesByCategories((data: Readonly<SourceResponse>) => this.view.drawSources(data))
+        );
     }
 }
 
