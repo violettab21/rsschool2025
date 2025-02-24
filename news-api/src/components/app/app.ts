@@ -18,8 +18,8 @@ class App {
                 (document.querySelector('.search__button') as HTMLButtonElement).disabled = false;
             } else (document.querySelector('.search__button') as HTMLButtonElement).disabled = true;
         });
-        (document.querySelector('.search') as Element).addEventListener('click', (e: Event) =>
-            this.controller.getNewsBySearch(e, (data: Readonly<EverythingResponse>) => this.view.drawNews(data))
+        (document.querySelector('.search__button') as Element).addEventListener('click', () =>
+            this.controller.getNewsBySearch((data: Readonly<EverythingResponse>) => this.view.drawNews(data))
         );
         this.controller.getSources((data: Readonly<SourceResponse>) => this.view.drawSources(data));
         (document.querySelector('.sources__categories') as Element).addEventListener('change', () =>

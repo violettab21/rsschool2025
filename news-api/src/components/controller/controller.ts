@@ -12,10 +12,10 @@ class AppController extends AppLoader {
         );
     }
     public getSourcesByCategories(callback: Callback<SourceResponse>): void {
-        const selectedCategory: string = (document.querySelector('.categories') as HTMLInputElement)
-            .value as string as Category;
+        const selectedValue: string = (document.querySelector('.categories') as HTMLInputElement).value;
 
-        if (selectedCategory !== 'all') {
+        if (selectedValue !== 'all') {
+            const selectedCategory: Category = selectedValue as Category;
             super.getResp<SourceResponse>(
                 {
                     endpoint: Endpoint.source,
@@ -41,6 +41,7 @@ class AppController extends AppLoader {
 
         while (target !== newsContainer) {
             if (target.classList.contains('source__item')) {
+                (document.querySelector('.search__field') as HTMLInputElement).value = '';
                 const sourceId: string = target.getAttribute('data-source-id') as string;
                 if (newsContainer.getAttribute('data-source') !== sourceId) {
                     newsContainer.setAttribute('data-source', sourceId);
@@ -59,20 +60,17 @@ class AppController extends AppLoader {
             target = target.parentNode as Element;
         }
     }
-    public getNewsBySearch(e: Event, callback: Callback<EverythingResponse>): void {
-        const target: Element = e.target as Element;
-        if (target.classList.contains('search__button')) {
-            const searchValue: string = (document.querySelector('.search__field') as HTMLInputElement).value;
-            super.getResp<EverythingResponse>(
-                {
-                    endpoint: Endpoint.news,
-                    options: {
-                        q: searchValue,
-                    },
+    public getNewsBySearch(callback: Callback<EverythingResponse>): void {
+        const searchValue: string = (document.querySelector('.search__field') as HTMLInputElement).value;
+        super.getResp<EverythingResponse>(
+            {
+                endpoint: Endpoint.news,
+                options: {
+                    q: searchValue,
                 },
-                callback
-            );
-        }
+            },
+            callback
+        );
     }
 }
 
