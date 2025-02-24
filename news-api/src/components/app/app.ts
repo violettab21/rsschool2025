@@ -13,6 +13,14 @@ class App {
         (document.querySelector('.sources') as Element).addEventListener('click', (e: Event) =>
             this.controller.getNews(e, (data: Readonly<EverythingResponse>) => this.view.drawNews(data))
         );
+        (document.querySelector('.search__field') as Element).addEventListener('input', () => {
+            if ((document.querySelector('.search__field') as HTMLInputElement).value) {
+                (document.querySelector('.search__button') as HTMLButtonElement).disabled = false;
+            } else (document.querySelector('.search__button') as HTMLButtonElement).disabled = true;
+        });
+        (document.querySelector('.search') as Element).addEventListener('click', (e: Event) =>
+            this.controller.getNewsBySearch(e, (data: Readonly<EverythingResponse>) => this.view.drawNews(data))
+        );
         this.controller.getSources((data: Readonly<SourceResponse>) => this.view.drawSources(data));
     }
 }

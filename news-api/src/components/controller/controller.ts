@@ -35,6 +35,21 @@ class AppController extends AppLoader {
             target = target.parentNode as Element;
         }
     }
+    public getNewsBySearch(e: Event, callback: Callback<EverythingResponse>): void {
+        const target: Element = e.target as Element;
+        if (target.classList.contains('search__button')) {
+            const searchValue: string = (document.querySelector('.search__field') as HTMLInputElement).value;
+            super.getResp<EverythingResponse>(
+                {
+                    endpoint: Endpoint.news,
+                    options: {
+                        q: searchValue,
+                    },
+                },
+                callback
+            );
+        }
+    }
 }
 
 export default AppController;

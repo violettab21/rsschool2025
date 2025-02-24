@@ -59,6 +59,12 @@ main {
     background-color: #9dd7f1;
     cursor: pointer;
     padding: 8px;
+    pointer-events: default;
+}
+
+.search__button:disabled {
+    background-color: #9dd6f1c7;
+    pointer-events: none;
 }
 
 header {
