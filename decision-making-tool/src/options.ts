@@ -1,16 +1,28 @@
 import { Button } from './button';
 import { ElementBase } from './element';
 class OptionsPage {
+    public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
     public optionsContainer?: ElementBase;
 
     constructor() {
+        this.pageTitle = new ElementBase({
+            tag: 'p',
+            className: ['title'],
+            textContent: 'Decision Making Tool',
+        });
         this.buttonsContainer = new ElementBase({
             tag: 'div',
             className: ['buttons'],
         });
+        this.configurePageView();
         this.configureButtonsView();
         this.configureOptionsView();
+    }
+    public configurePageView(): void {
+        const main = new ElementBase({ tag: 'main', className: ['main'] });
+        main.element.append(this.pageTitle.element);
+        document.querySelector('body')?.append(main.element);
     }
 
     public configureButtonsView(): void {
@@ -25,14 +37,15 @@ class OptionsPage {
             handlerFunction: this.addOptionElement.bind(this),
         });
         this.buttonsContainer.element.append(addOptions.element, start.element);
-        document.querySelector('body')?.append(this.buttonsContainer.element);
+        document.querySelector('main')?.append(this.buttonsContainer.element);
     }
     public configureOptionsView(): void {
         this.optionsContainer = new ElementBase({
             tag: 'div',
             className: ['options'],
         });
-        document.querySelector('body')?.prepend(this.optionsContainer.element);
+        this.buttonsContainer.element.before(this.optionsContainer.element);
+        this.addOptionElement();
     }
     public addOptionElement(): void {
         const option = new ElementBase({ tag: 'div', className: ['option'] });
