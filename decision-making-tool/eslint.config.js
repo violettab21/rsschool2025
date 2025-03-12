@@ -2,7 +2,6 @@ const globals = require('globals');
 const pluginJs = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const prettier = require('prettier');
-const eslintPluginUnicorn = require('eslint-plugin-unicorn');
 
 /** @type {import('eslint').Linter.Config[]} */
 module.exports = [
@@ -39,16 +38,12 @@ module.exports = [
             '@typescript-eslint/member-ordering': 'error',
             'class-methods-use-this': 'error',
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-            'unicorn/better-regex': 'error',
-            'unicorn/no-empty-file': 'error',
-            'unicorn/no-useless-undefined': 'error',
         },
     },
     {
         plugins: {
             prettier: prettier,
             tseslint: tseslint,
-            unicorn: eslintPluginUnicorn,
         },
     },
     pluginJs.configs.recommended,
