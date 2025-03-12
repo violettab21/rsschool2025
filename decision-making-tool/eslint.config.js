@@ -37,7 +37,10 @@ module.exports = [
             ],
             '@typescript-eslint/member-ordering': 'error',
             'class-methods-use-this': 'error',
-            '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+            '@typescript-eslint/consistent-type-definitions': [
+                'error',
+                'interface',
+            ],
         },
     },
     {

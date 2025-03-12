@@ -1,4 +1,6 @@
 import './index.html';
 import './_style.scss';
+import { OptionsPage } from './options';
 
-console.log('string');
+const object = new OptionsPage();
+console.log(object);
