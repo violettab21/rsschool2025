@@ -3,7 +3,7 @@ import { ElementBase } from './element';
 class OptionsPage {
     public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
-    public optionsContainer?: ElementBase;
+    public optionsContainer: ElementBase;
 
     constructor() {
         this.pageTitle = new ElementBase({
@@ -14,6 +14,10 @@ class OptionsPage {
         this.buttonsContainer = new ElementBase({
             tag: 'div',
             className: ['buttons'],
+        });
+        this.optionsContainer = new ElementBase({
+            tag: 'div',
+            className: ['options'],
         });
         this.configurePageView();
         this.configureButtonsView();
@@ -40,10 +44,6 @@ class OptionsPage {
         document.querySelector('main')?.append(this.buttonsContainer.element);
     }
     public configureOptionsView(): void {
-        this.optionsContainer = new ElementBase({
-            tag: 'div',
-            className: ['options'],
-        });
         this.buttonsContainer.element.before(this.optionsContainer.element);
         this.addOptionElement();
     }
@@ -52,7 +52,7 @@ class OptionsPage {
         const number = new ElementBase({
             tag: 'p',
             className: ['optition__number'],
-            textContent: '#1',
+            textContent: `#${this.generateIdForOption()}`,
         });
         const name = new ElementBase({
             tag: 'input',
@@ -75,6 +75,21 @@ class OptionsPage {
         );
 
         this.optionsContainer?.element.append(option.element);
+    }
+    public generateIdForOption(): number {
+        let value: string | null;
+        let id: number = 0;
+        const numberChildren = this.optionsContainer.element.children.length;
+        if (numberChildren === 0) return 1;
+        else {
+            const lastChild: Element | null =
+                this.optionsContainer.element.children.item(numberChildren - 1);
+            if (lastChild !== null) {
+                value = lastChild.children.item(0)!.textContent;
+                if (value) id = parseInt(value.slice(1));
+            }
+        }
+        return id + 1;
     }
 }
 
