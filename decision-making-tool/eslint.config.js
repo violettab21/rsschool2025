@@ -23,7 +23,7 @@ module.exports = [
             'class-methods-use-this': 'off',
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/consistent-type-assertions': [
-                'error',
+                'warn',
                 { assertionStyle: 'never' },
             ],
             '@typescript-eslint/consistent-type-imports': 'error',

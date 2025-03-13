@@ -1,6 +1,11 @@
 import { Button } from './button';
 import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
+interface Option {
+    id: string;
+    title: string;
+    weight: string;
+}
 class OptionsPage {
     public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
@@ -52,14 +57,64 @@ class OptionsPage {
             textContent: 'Save options to File',
             handlerFunction: this.saveOptionsToFile.bind(this),
         });
+        const inputFile = new ElementBase({
+            tag: 'input',
+            className: ['file-input'],
+        });
+        inputFile.element.id = 'upload-file';
+        if (inputFile.element instanceof HTMLInputElement) {
+            const input = inputFile.element;
+            input.type = 'file';
+            input.addEventListener('change', () => {
+                console.log('readfile');
+                let listOfOptions: Option[];
+                if (input.files) {
+                    console.log('readfile2');
+                    const file = input.files[0];
+                    console.log(file);
+                    const reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.addEventListener('load', () => {
+                        if (typeof reader.result === 'string') {
+                            const result = reader.result;
+                            if (typeof JSON.parse(result) === 'object') {
+                                listOfOptions = JSON.parse(result) as Option[];
+                                console.log(listOfOptions);
+                                this.creationOptionsBasedOnFileData(
+                                    listOfOptions
+                                );
+                            }
+                        }
+                    });
+                }
+            });
+            if (input.type === 'file') {
+                input.accept = 'application/json';
+            }
+        }
+        inputFile.element.style.display = 'none';
+
+        const upload = new Button({
+            className: ['upload'],
+            textContent: 'Upload options from File',
+            handlerFunction: (): void => {
+                const upload = document.getElementById('upload-file');
+                if (upload !== null) {
+                    upload.click();
+                }
+            },
+        });
         this.buttonsContainer.element.append(
             addOptions.element,
             start.element,
             parseList.element,
-            saveToJSON.element
+            saveToJSON.element,
+            upload.element,
+            inputFile.element
         );
         document.querySelector('main')?.append(this.buttonsContainer.element);
     }
+
     public configureOptionsView(): void {
         this.buttonsContainer.element.before(this.optionsContainer.element);
         this.addOptionElement();
@@ -167,9 +222,52 @@ class OptionsPage {
         link.download = 'options.json';
         link.click();
     }
-    protected getOptions(): { id: string; title: string; weight: string }[] {
+
+    public creationOptionsBasedOnFileData(
+        options: { id: string; title: string; weight: string }[]
+    ): void {
+        options.forEach((el) => {
+            const option = new ElementBase({
+                tag: 'div',
+                className: ['option'],
+            });
+            const number = new ElementBase({
+                tag: 'p',
+                className: ['option__number'],
+                textContent: `#${el.id}`,
+            });
+            const name = new ElementBase({
+                tag: 'input',
+                className: ['option__input'],
+            });
+            if (name.element instanceof HTMLInputElement) {
+                name.element.value = el.title;
+            }
+
+            const weight = new ElementBase({
+                tag: 'input',
+                className: ['option__input'],
+            });
+            if (weight.element instanceof HTMLInputElement) {
+                weight.element.value = el.weight;
+            }
+            const deleteBtn = new Button({
+                className: ['delete'],
+                textContent: 'Delete',
+                handlerFunction: this.addOptionElement.bind(this),
+            });
+            option.element.append(
+                number.element,
+                name.element,
+                weight.element,
+                deleteBtn.element
+            );
+            this.optionsContainer?.element.append(option.element);
+        });
+    }
+    protected getOptions(): Option[] {
         const numberChildren = this.optionsContainer.element.children.length;
-        const optionsList: { id: string; title: string; weight: string }[] = [];
+        const optionsList: Option[] = [];
         if (numberChildren !== 0) {
             const options = this.optionsContainer.element.children;
             for (const child of options) {
@@ -181,7 +279,7 @@ class OptionsPage {
                         return element.textContent ? element.textContent : '';
                 });
                 const [id, title, weight] = listOfValues;
-                const option = { id: id, title: title, weight: weight };
+                const option: Option = { id: id, title: title, weight: weight };
                 optionsList.push(option);
             }
         }
