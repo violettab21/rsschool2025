@@ -19,7 +19,7 @@ export class ParseListModal extends Modal {
     public configureModal(): void {
         const modalContent = new ElementBase({
             tag: 'div',
-            className: ['modal__content'],
+            className: ['modal-content'],
         });
 
         const modalButtons = new ElementBase({
