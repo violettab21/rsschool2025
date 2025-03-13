@@ -11,9 +11,13 @@ export class Button extends ElementBase {
         super(properties);
         this.addHandler(buttonProperties.handlerFunction);
     }
-    public addHandler(handler: () => void): void {
+    public addHandler(handler: (event?: Event) => void): void {
         try {
-            this.element.addEventListener('click', () => handler());
+            this.element.addEventListener('click', (event: Event) => {
+                if ((event.target as HTMLElement).textContent === 'Delete')
+                    handler(event);
+                else handler();
+            });
         } catch (e) {
             console.error(e);
         }

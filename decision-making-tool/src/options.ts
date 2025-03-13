@@ -126,10 +126,47 @@ class OptionsPage {
         this.buttonsContainer.element.before(this.optionsContainer.element);
         this.addOptionElement();
     }
-    public addOptionElement(
-        optionData?: { title: string; weight: string }[]
+    public addOptionElement(): void {
+        const option = new ElementBase({
+            tag: 'div',
+            className: ['option'],
+        });
+        const number = new ElementBase({
+            tag: 'p',
+            className: ['option__number'],
+            textContent: `#${this.generateIdForOption()}`,
+        });
+        const name = new ElementBase({
+            tag: 'input',
+            className: ['option__input'],
+        });
+        const weight = new ElementBase({
+            tag: 'input',
+            className: ['option__input'],
+        });
+        const deleteBtn = new Button({
+            className: ['delete'],
+            textContent: 'Delete',
+            handlerFunction: function (event?: Event): void {
+                if (event) {
+                    const optionToDelete = (event.target as Node).parentElement;
+                    if (optionToDelete) optionToDelete.remove();
+                }
+            },
+        });
+        option.element.append(
+            number.element,
+            name.element,
+            weight.element,
+            deleteBtn.element
+        );
+
+        this.optionsContainer?.element.append(option.element);
+    }
+    public addOptionElementFromModal(
+        optionData: { title: string; weight: string }[]
     ): void {
-        if (!optionData) {
+        optionData.forEach((optionRow) => {
             const option = new ElementBase({
                 tag: 'div',
                 className: ['option'],
@@ -143,14 +180,24 @@ class OptionsPage {
                 tag: 'input',
                 className: ['option__input'],
             });
+            if (name.element instanceof HTMLInputElement)
+                name.element.value = optionRow.title;
             const weight = new ElementBase({
                 tag: 'input',
                 className: ['option__input'],
             });
+            if (weight.element instanceof HTMLInputElement)
+                weight.element.value = optionRow.weight;
             const deleteBtn = new Button({
                 className: ['delete'],
                 textContent: 'Delete',
-                handlerFunction: this.addOptionElement.bind(this),
+                handlerFunction: function (event?: Event): void {
+                    if (event) {
+                        const optionToDelete = (event.target as Node)
+                            .parentElement;
+                        if (optionToDelete) optionToDelete.remove();
+                    }
+                },
             });
             option.element.append(
                 number.element,
@@ -160,44 +207,7 @@ class OptionsPage {
             );
 
             this.optionsContainer?.element.append(option.element);
-        } else {
-            optionData.forEach((optionRow) => {
-                const option = new ElementBase({
-                    tag: 'div',
-                    className: ['option'],
-                });
-                const number = new ElementBase({
-                    tag: 'p',
-                    className: ['option__number'],
-                    textContent: `#${this.generateIdForOption()}`,
-                });
-                const name = new ElementBase({
-                    tag: 'input',
-                    className: ['option__input'],
-                });
-                if (name.element instanceof HTMLInputElement)
-                    name.element.value = optionRow.title;
-                const weight = new ElementBase({
-                    tag: 'input',
-                    className: ['option__input'],
-                });
-                if (weight.element instanceof HTMLInputElement)
-                    weight.element.value = optionRow.weight;
-                const deleteBtn = new Button({
-                    className: ['delete'],
-                    textContent: 'Delete',
-                    handlerFunction: this.addOptionElement.bind(this),
-                });
-                option.element.append(
-                    number.element,
-                    name.element,
-                    weight.element,
-                    deleteBtn.element
-                );
-
-                this.optionsContainer?.element.append(option.element);
-            });
-        }
+        });
     }
     public generateIdForOption(): number {
         let value: string | null;
@@ -261,7 +271,13 @@ class OptionsPage {
             const deleteBtn = new Button({
                 className: ['delete'],
                 textContent: 'Delete',
-                handlerFunction: this.addOptionElement.bind(this),
+                handlerFunction: function (event?: Event): void {
+                    if (event) {
+                        const optionToDelete = (event.target as Node)
+                            .parentElement;
+                        if (optionToDelete) optionToDelete.remove();
+                    }
+                },
             });
             option.element.append(
                 number.element,

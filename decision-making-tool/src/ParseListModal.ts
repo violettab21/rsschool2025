@@ -46,7 +46,7 @@ export class ParseListModal extends Modal {
     }
     public createOptionsFromInput(): void {
         const options = this.parseInput();
-        this.page.addOptionElement(options);
+        this.page.addOptionElementFromModal(options);
         this.closeModal();
     }
     protected parseInput(): {
