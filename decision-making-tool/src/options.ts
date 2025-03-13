@@ -1,6 +1,6 @@
 import { Button } from './button';
 import { ElementBase } from './element';
-import { Modal } from './modal';
+import { ParseListModal } from './ParseListModal';
 class OptionsPage {
     public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
@@ -58,34 +58,78 @@ class OptionsPage {
         this.buttonsContainer.element.before(this.optionsContainer.element);
         this.addOptionElement();
     }
-    public addOptionElement(): void {
-        const option = new ElementBase({ tag: 'div', className: ['option'] });
-        const number = new ElementBase({
-            tag: 'p',
-            className: ['optition__number'],
-            textContent: `#${this.generateIdForOption()}`,
-        });
-        const name = new ElementBase({
-            tag: 'input',
-            className: ['optition__input'],
-        });
-        const weight = new ElementBase({
-            tag: 'input',
-            className: ['optition__input'],
-        });
-        const deleteBtn = new Button({
-            className: ['delete'],
-            textContent: 'Delete',
-            handlerFunction: this.addOptionElement.bind(this),
-        });
-        option.element.append(
-            number.element,
-            name.element,
-            weight.element,
-            deleteBtn.element
-        );
+    public addOptionElement(
+        optionData?: { title: string; weight: string }[]
+    ): void {
+        if (!optionData) {
+            const option = new ElementBase({
+                tag: 'div',
+                className: ['option'],
+            });
+            const number = new ElementBase({
+                tag: 'p',
+                className: ['optition__number'],
+                textContent: `#${this.generateIdForOption()}`,
+            });
+            const name = new ElementBase({
+                tag: 'input',
+                className: ['option__input'],
+            });
+            const weight = new ElementBase({
+                tag: 'input',
+                className: ['option__input'],
+            });
+            const deleteBtn = new Button({
+                className: ['delete'],
+                textContent: 'Delete',
+                handlerFunction: this.addOptionElement.bind(this),
+            });
+            option.element.append(
+                number.element,
+                name.element,
+                weight.element,
+                deleteBtn.element
+            );
 
-        this.optionsContainer?.element.append(option.element);
+            this.optionsContainer?.element.append(option.element);
+        } else {
+            optionData.forEach((optionRow) => {
+                const option = new ElementBase({
+                    tag: 'div',
+                    className: ['option'],
+                });
+                const number = new ElementBase({
+                    tag: 'p',
+                    className: ['option__number'],
+                    textContent: `#${this.generateIdForOption()}`,
+                });
+                const name = new ElementBase({
+                    tag: 'input',
+                    className: ['option__input'],
+                });
+                if (name.element instanceof HTMLInputElement)
+                    name.element.value = optionRow.title;
+                const weight = new ElementBase({
+                    tag: 'input',
+                    className: ['option__input'],
+                });
+                if (weight.element instanceof HTMLInputElement)
+                    weight.element.value = optionRow.weight;
+                const deleteBtn = new Button({
+                    className: ['delete'],
+                    textContent: 'Delete',
+                    handlerFunction: this.addOptionElement.bind(this),
+                });
+                option.element.append(
+                    number.element,
+                    name.element,
+                    weight.element,
+                    deleteBtn.element
+                );
+
+                this.optionsContainer?.element.append(option.element);
+            });
+        }
     }
     public generateIdForOption(): number {
         let value: string | null;
@@ -103,31 +147,7 @@ class OptionsPage {
         return id + 1;
     }
     public parseListHandler(): void {
-        const modalContent = new ElementBase({
-            tag: 'div',
-            className: ['modal__content'],
-        });
-        const textarea = new ElementBase({
-            tag: 'textarea',
-            className: ['textarea'],
-        });
-        const modalButtons = new ElementBase({
-            tag: 'div',
-            className: ['modal__buttons'],
-        });
-        const createButton = new Button({
-            className: ['button', 'button__confirm'],
-            textContent: 'Confirm',
-            handlerFunction: this.addOptionElement.bind(this),
-        });
-        const cancelButton = new Button({
-            className: ['button', 'button__cancel'],
-            textContent: 'Cancel',
-            handlerFunction: this.addOptionElement.bind(this),
-        });
-        modalButtons.element.append(createButton.element, cancelButton.element);
-        modalContent.element.append(textarea.element, modalButtons.element);
-        const modal = new Modal(modalContent);
+        const modal = new ParseListModal(this);
         this.main.element.append(modal.modalContainer.element);
     }
 }
