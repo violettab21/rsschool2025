@@ -47,10 +47,16 @@ class OptionsPage {
             textContent: 'Parse List',
             handlerFunction: this.parseListHandler.bind(this),
         });
+        const saveToJSON = new Button({
+            className: ['save'],
+            textContent: 'Save options to File',
+            handlerFunction: this.saveOptionsToFile.bind(this),
+        });
         this.buttonsContainer.element.append(
             addOptions.element,
             start.element,
-            parseList.element
+            parseList.element,
+            saveToJSON.element
         );
         document.querySelector('main')?.append(this.buttonsContainer.element);
     }
@@ -68,7 +74,7 @@ class OptionsPage {
             });
             const number = new ElementBase({
                 tag: 'p',
-                className: ['optition__number'],
+                className: ['option__number'],
                 textContent: `#${this.generateIdForOption()}`,
             });
             const name = new ElementBase({
@@ -150,6 +156,36 @@ class OptionsPage {
         const modal = new ParseListModal(this);
         this.main.element.append(modal.modalContainer.element);
     }
+    public saveOptionsToFile(): void {
+        const json = JSON.stringify(this.getOptions());
+        const file = new File([json], 'options.json', {
+            type: 'application/json',
+        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'options.json';
+        link.click();
+    }
+    protected getOptions(): { id: string; title: string; weight: string }[] {
+        const numberChildren = this.optionsContainer.element.children.length;
+        const optionsList: { id: string; title: string; weight: string }[] = [];
+        if (numberChildren !== 0) {
+            const options = this.optionsContainer.element.children;
+            for (const child of options) {
+                const optionDetails = Array.from(child.children).slice(0, 3);
+                const listOfValues = optionDetails.map((element) => {
+                    if (element instanceof HTMLInputElement) {
+                        return element.value ? element.value : '';
+                    } else
+                        return element.textContent ? element.textContent : '';
+                });
+                const [id, title, weight] = listOfValues;
+                const option = { id: id, title: title, weight: weight };
+                optionsList.push(option);
+            }
+        }
+        return optionsList;
+    }
 }
-
 export { OptionsPage };
