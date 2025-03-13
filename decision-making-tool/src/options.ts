@@ -80,6 +80,7 @@ class OptionsPage {
                             if (typeof JSON.parse(result) === 'object') {
                                 listOfOptions = JSON.parse(result) as Option[];
                                 console.log(listOfOptions);
+                                this.clearAllOptions();
                                 this.creationOptionsBasedOnFileData(
                                     listOfOptions
                                 );
@@ -104,13 +105,19 @@ class OptionsPage {
                 }
             },
         });
+        const clear = new Button({
+            className: ['clear'],
+            textContent: 'Clear All Options',
+            handlerFunction: this.clearAllOptions.bind(this),
+        });
         this.buttonsContainer.element.append(
             addOptions.element,
             start.element,
             parseList.element,
             saveToJSON.element,
             upload.element,
-            inputFile.element
+            inputFile.element,
+            clear.element
         );
         document.querySelector('main')?.append(this.buttonsContainer.element);
     }
@@ -264,6 +271,13 @@ class OptionsPage {
             );
             this.optionsContainer?.element.append(option.element);
         });
+    }
+    public clearAllOptions(): void {
+        const numberChildren = this.optionsContainer.element.children.length;
+        if (numberChildren !== 0) {
+            const options = this.optionsContainer.element.children;
+            Array.from(options).forEach((el) => el.remove());
+        }
     }
     protected getOptions(): Option[] {
         const numberChildren = this.optionsContainer.element.children.length;
