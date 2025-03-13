@@ -1,9 +1,11 @@
 import { Button } from './button';
 import { ElementBase } from './element';
+import { Modal } from './modal';
 class OptionsPage {
     public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
+    public main: ElementBase;
 
     constructor() {
         this.pageTitle = new ElementBase({
@@ -19,14 +21,14 @@ class OptionsPage {
             tag: 'div',
             className: ['options'],
         });
+        this.main = new ElementBase({ tag: 'main', className: ['main'] });
         this.configurePageView();
         this.configureButtonsView();
         this.configureOptionsView();
     }
     public configurePageView(): void {
-        const main = new ElementBase({ tag: 'main', className: ['main'] });
-        main.element.append(this.pageTitle.element);
-        document.querySelector('body')?.append(main.element);
+        this.main.element.append(this.pageTitle.element);
+        document.querySelector('body')?.append(this.main.element);
     }
 
     public configureButtonsView(): void {
@@ -40,7 +42,16 @@ class OptionsPage {
             textContent: 'Start',
             handlerFunction: this.addOptionElement.bind(this),
         });
-        this.buttonsContainer.element.append(addOptions.element, start.element);
+        const parseList = new Button({
+            className: ['parse_list'],
+            textContent: 'Parse List',
+            handlerFunction: this.parseListHandler.bind(this),
+        });
+        this.buttonsContainer.element.append(
+            addOptions.element,
+            start.element,
+            parseList.element
+        );
         document.querySelector('main')?.append(this.buttonsContainer.element);
     }
     public configureOptionsView(): void {
@@ -90,6 +101,34 @@ class OptionsPage {
             }
         }
         return id + 1;
+    }
+    public parseListHandler(): void {
+        const modalContent = new ElementBase({
+            tag: 'div',
+            className: ['modal__content'],
+        });
+        const textarea = new ElementBase({
+            tag: 'textarea',
+            className: ['textarea'],
+        });
+        const modalButtons = new ElementBase({
+            tag: 'div',
+            className: ['modal__buttons'],
+        });
+        const createButton = new Button({
+            className: ['button', 'button__confirm'],
+            textContent: 'Confirm',
+            handlerFunction: this.addOptionElement.bind(this),
+        });
+        const cancelButton = new Button({
+            className: ['button', 'button__cancel'],
+            textContent: 'Cancel',
+            handlerFunction: this.addOptionElement.bind(this),
+        });
+        modalButtons.element.append(createButton.element, cancelButton.element);
+        modalContent.element.append(textarea.element, modalButtons.element);
+        const modal = new Modal(modalContent);
+        this.main.element.append(modal.modalContainer.element);
     }
 }
 
