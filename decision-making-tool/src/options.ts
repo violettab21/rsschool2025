@@ -4,7 +4,7 @@ import { ParseListModal } from './ParseListModal';
 import { Picker } from './picker';
 import type { Main } from './main';
 import { LocalStorage } from './localStorage';
-interface Option {
+export interface Option {
     id: string;
     title: string;
     weight: string;
