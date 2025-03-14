@@ -3,6 +3,7 @@ import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
 import { Picker } from './picker';
 import type { Main } from './main';
+import { LocalStorage } from './localStorage';
 interface Option {
     id: string;
     title: string;
@@ -36,6 +37,10 @@ class OptionsPage {
             textContent: 'Start',
             handlerFunction: (): void => {
                 if (main.content instanceof OptionsPage) {
+                    const localStorage = new LocalStorage(
+                        'decision-maker_options'
+                    );
+                    localStorage.saveData(this.getOptions());
                     main.content.optionsContainer.element.remove();
                     main.content.buttonsContainer.element.remove();
                     main.content = new Picker(main);
