@@ -1,6 +1,5 @@
 import './index.html';
 import './_style.scss';
-import { OptionsPage } from './options';
+import { Main } from './main';
 
-const object = new OptionsPage();
-console.log(object);
+new Main();

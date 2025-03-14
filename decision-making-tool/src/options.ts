@@ -1,23 +1,18 @@
 import { Button } from './button';
 import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
+import { Picker } from './picker';
+import type { Main } from './main';
 interface Option {
     id: string;
     title: string;
     weight: string;
 }
 class OptionsPage {
-    public pageTitle: ElementBase;
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
-    public main: ElementBase;
 
-    constructor() {
-        this.pageTitle = new ElementBase({
-            tag: 'p',
-            className: ['title'],
-            textContent: 'Decision Making Tool',
-        });
+    constructor(main: Main) {
         this.buttonsContainer = new ElementBase({
             tag: 'div',
             className: ['buttons'],
@@ -26,17 +21,11 @@ class OptionsPage {
             tag: 'div',
             className: ['options'],
         });
-        this.main = new ElementBase({ tag: 'main', className: ['main'] });
-        this.configurePageView();
-        this.configureButtonsView();
+        this.configureButtonsView(main);
         this.configureOptionsView();
     }
-    public configurePageView(): void {
-        this.main.element.append(this.pageTitle.element);
-        document.querySelector('body')?.append(this.main.element);
-    }
 
-    public configureButtonsView(): void {
+    public configureButtonsView(main: Main): void {
         const addOptions = new Button({
             className: ['add_option'],
             textContent: 'Add Option',
@@ -45,12 +34,21 @@ class OptionsPage {
         const start = new Button({
             className: ['start'],
             textContent: 'Start',
-            handlerFunction: this.addOptionElement.bind(this),
+            handlerFunction: (): void => {
+                if (main.content instanceof OptionsPage) {
+                    main.content.optionsContainer.element.remove();
+                    main.content.buttonsContainer.element.remove();
+                    main.content = new Picker(main);
+                }
+            },
         });
         const parseList = new Button({
             className: ['parse_list'],
             textContent: 'Parse List',
-            handlerFunction: this.parseListHandler.bind(this),
+            handlerFunction: this.parseListHandler.bind(
+                this,
+                main.main.element
+            ),
         });
         const saveToJSON = new Button({
             className: ['save'],
@@ -119,7 +117,7 @@ class OptionsPage {
             inputFile.element,
             clear.element
         );
-        document.querySelector('main')?.append(this.buttonsContainer.element);
+        main.main.element?.append(this.buttonsContainer.element);
     }
 
     public configureOptionsView(): void {
@@ -224,9 +222,9 @@ class OptionsPage {
         }
         return id + 1;
     }
-    public parseListHandler(): void {
+    public parseListHandler(main: HTMLElement): void {
         const modal = new ParseListModal(this);
-        this.main.element.append(modal.modalContainer.element);
+        main.append(modal.modalContainer.element);
     }
     public saveOptionsToFile(): void {
         const json = JSON.stringify(this.getOptions());
