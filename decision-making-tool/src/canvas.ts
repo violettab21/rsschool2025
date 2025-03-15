@@ -11,7 +11,8 @@ export class Wheel {
     public startTime: number;
     constructor() {
         this.wheelElement = document.createElement('canvas');
-        this.wheelElement.id = '#wheel';
+        this.wheelElement.width = 500;
+        this.wheelElement.height = 450;
         this.rotation = 0;
         this.options = getValidOptions();
         this.colors = this.generateColors();
@@ -28,7 +29,8 @@ export class Wheel {
         const ctx = this.wheelElement.getContext('2d');
         if (ctx) {
             ctx.clearRect(0, 0, 400, 250);
-
+            const centerX = this.wheelElement.width / 2;
+            const centerY = this.wheelElement.height / 2;
             let weightSum = 0;
             let startRadians = rotation;
             let endRadians = 0;
@@ -41,21 +43,21 @@ export class Wheel {
                     startRadians +
                     radiansPerOneWeight * parseInt(options[i].weight);
                 ctx.beginPath();
-                ctx.arc(150, 75, 70, startRadians, endRadians);
+                ctx.arc(centerX, centerY, 220, startRadians, endRadians);
                 const textX =
-                    150 +
-                    (70 / 2) *
+                    centerX +
+                    (220 / 2) *
                         Math.cos(
                             startRadians + (endRadians - startRadians) / 2
                         );
                 const textY =
-                    75 +
-                    (70 / 2) *
+                    centerY +
+                    (220 / 2) *
                         Math.sin(
                             startRadians + (endRadians - startRadians) / 2
                         );
 
-                ctx.lineTo(150, 75);
+                ctx.lineTo(centerX, centerY);
 
                 ctx.closePath();
                 ctx.strokeStyle = 'yellow';
@@ -66,7 +68,7 @@ export class Wheel {
                 ctx.save();
                 ctx.translate(textX, textY);
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
-                ctx.font = '12px';
+                ctx.font = '30px Arial';
                 ctx.fillStyle = 'black';
                 ctx.fillText(options[i].title, -10, 0);
                 ctx.restore();
@@ -87,16 +89,16 @@ export class Wheel {
             }
 
             ctx.beginPath();
-            ctx.moveTo(150, 15);
-            ctx.lineTo(160, 0);
-            ctx.lineTo(140, 0);
-            ctx.lineTo(150, 15);
+            ctx.moveTo(centerX, 15);
+            ctx.lineTo(centerX + 10, 0);
+            ctx.lineTo(centerX - 10, 0);
+            ctx.lineTo(centerX, 15);
             ctx.fillStyle = 'white';
             ctx.fill();
 
             ctx.beginPath();
-            ctx.moveTo(150, 75);
-            ctx.arc(150, 75, 10, 0, 2 * Math.PI);
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
             ctx.fillStyle = 'white';
             ctx.fill();
         }

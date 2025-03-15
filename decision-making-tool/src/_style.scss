@@ -44,6 +44,8 @@ body {
 .main {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    align-items: center;
     width: 500px;
 }
 
@@ -51,18 +53,19 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 100%;
 }
 
 .option {
     display: flex;
     justify-content: space-between;
-    width: 100%;
 }
 
 .buttons {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 100%;
 }
 
 .buttons > button {
@@ -79,4 +82,47 @@ body {
     width: 90%;
     height: 100px;
     border-radius: 5px;
+}
+
+.decision-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 45%;
+}
+
+.top-elements {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.time-label {
+    margin-left: 10px;
+}
+
+.input-time {
+    width: 50px;
+    margin-left: 6px;
+    padding: 6px;
+    border-radius: 5px;
+}
+
+.decision-back {
+    width: 70px;
+    border-radius: 5px;
+}
+
+.decision-pick {
+    width: 100%;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.input-final-option {
+    width: 80%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 11px;
 }

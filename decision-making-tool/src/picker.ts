@@ -26,6 +26,10 @@ export class Picker {
         main.main.element.append(this.wheel.wheelElement);
     }
     public configureMenu(main: Main): void {
+        const container = new ElementBase({
+            tag: 'div',
+            className: ['top-elements'],
+        });
         const backButton = new Button({
             className: ['decision-back'],
             textContent: 'Back',
@@ -43,13 +47,19 @@ export class Picker {
                 else this.wheel.startWheel(10000, this.finalOption);
             },
         });
+        const timeLabel = new ElementBase({
+            tag: 'label',
+            className: ['time-label'],
+            textContent: 'Duration',
+        });
+        timeLabel.element.append(this.time.element);
         if (this.time.element instanceof HTMLInputElement) {
             this.time.element.value = '10';
         }
+        container.element.append(backButton.element, timeLabel.element);
         this.menuContainer.element.append(
-            backButton.element,
-            pickButton.element,
-            this.time.element
+            container.element,
+            pickButton.element
         );
         if (this.finalOption.element instanceof HTMLInputElement) {
             this.finalOption.element.disabled = true;
