@@ -23,7 +23,7 @@ export class Picker {
         const pickButton = new Button({
             className: ['decision-pick'],
             textContent: 'Pick',
-            handlerFunction: (): void => console.log('pick'),
+            handlerFunction: (): void => this.wheel.startWheel(),
         });
         this.menuContainer.element.append(
             backButton.element,

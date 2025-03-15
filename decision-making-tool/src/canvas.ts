@@ -4,69 +4,101 @@ import type { Option } from './options';
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;
+    public colors: string[];
+    public options: Option[];
+    public duration: number;
+    public isSpinning: boolean;
+    public startTime: number;
     constructor() {
         this.wheelElement = document.createElement('canvas');
         this.wheelElement.id = '#wheel';
         this.rotation = 0;
-        this.drawWheel(this.rotation);
+        this.options = getValidOptions();
+        this.colors = this.generateColors();
+        this.drawWheel(this.rotation, this.options);
+        this.duration = 16000;
+        this.isSpinning = false;
+        this.startTime = 0;
     }
-    public drawWheel(rotation: number): void {
+    public drawWheel(rotation: number, options: Option[]): void {
         const ctx = this.wheelElement.getContext('2d');
         if (ctx) {
-            const localStorage = new LocalStorage('decision-maker_options');
-            const options: Option[] = localStorage.getData();
-            const filteredOptions = options.filter(
-                (option) =>
-                    option.title.length !== 0 && option.weight.length !== 0
-            );
+            ctx.clearRect(0, 0, 400, 250);
+            ctx.save();
+            ctx.translate(150, 75);
+            ctx.rotate(rotation);
 
             let weightSum = 0;
             let startRadians = rotation;
             let endRadians = 0;
-            for (let i = 0; i < filteredOptions.length; i += 1) {
-                weightSum += parseInt(filteredOptions[i].weight);
+            for (let i = 0; i < options.length; i += 1) {
+                weightSum += parseInt(options[i].weight);
             }
             const radiansPerOneWeight = (Math.PI * 2) / weightSum;
-            for (let i = 0; i < filteredOptions.length; i += 1) {
+            for (let i = 0; i < options.length; i += 1) {
                 endRadians =
                     startRadians +
-                    radiansPerOneWeight * parseInt(filteredOptions[i].weight);
+                    radiansPerOneWeight * parseInt(options[i].weight);
                 ctx.beginPath();
-                ctx.arc(150, 75, 70, startRadians, endRadians);
+                ctx.arc(0, 0, 70, startRadians, endRadians);
                 const textX =
-                    150 +
                     (70 / 2) *
-                        Math.cos(
-                            startRadians + (endRadians - startRadians) / 2
-                        );
+                    Math.cos(startRadians + (endRadians - startRadians) / 2);
                 const textY =
-                    75 +
                     (70 / 2) *
-                        Math.sin(
-                            startRadians + (endRadians - startRadians) / 2
-                        );
+                    Math.sin(startRadians + (endRadians - startRadians) / 2);
 
-                ctx.lineTo(150, 75);
+                ctx.lineTo(0, 0);
 
                 ctx.closePath();
                 ctx.strokeStyle = 'yellow';
                 ctx.lineWidth = 3;
                 ctx.stroke();
-                ctx.fillStyle = generateRandomColor();
+                ctx.fillStyle = this.colors[i];
                 ctx.fill();
                 ctx.save();
                 ctx.translate(textX, textY);
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
                 ctx.font = '12px';
                 ctx.fillStyle = 'black';
-                ctx.fillText(filteredOptions[i].title, -10, 0);
+                ctx.fillText(options[i].title, -10, 0);
                 ctx.restore();
                 startRadians = endRadians;
             }
+            ctx.restore();
         }
+    }
+    public animateWheel(): void {
+        const progress =
+            (performance.now() - this.startTime) / this.duration < 1
+                ? (performance.now() - this.startTime) / this.duration
+                : 1;
+
+        const diff = Math.PI * 2 * 10 * easeInOutSine(progress);
+        this.rotation = diff;
+        if (progress < 1) {
+            this.drawWheel(this.rotation, this.options);
+            window.requestAnimationFrame(() => this.animateWheel());
+        } else this.isSpinning = false;
+    }
+    public startWheel(): void {
+        if (!this.isSpinning) {
+            this.isSpinning = true;
+            this.rotation = 0;
+            this.startTime = performance.now();
+            window.requestAnimationFrame(() => this.animateWheel());
+        }
+    }
+    public generateColors(): string[] {
+        const colors: string[] = [];
+        this.options.forEach(() => colors.push(generateRandomColor()));
+        return colors;
     }
 }
 
+function easeInOutSine(x: number): number {
+    return -(Math.cos(Math.PI * x) - 1) / 2;
+}
 function generateRandomColor(): string {
     const hexCharacters = [
         0,
@@ -93,4 +125,12 @@ function generateRandomColor(): string {
         colorCode += hexCharacters[randomIndex];
     }
     return `#${colorCode}`;
+}
+function getValidOptions(): Option[] {
+    const localStorage = new LocalStorage('decision-maker_options');
+    const options: Option[] = localStorage.getData();
+    const filteredOptions = options.filter(
+        (option) => option.title.length !== 0 && option.weight.length !== 0
+    );
+    return filteredOptions;
 }
