@@ -16,7 +16,7 @@ export class Wheel {
         this.options = getValidOptions();
         this.colors = this.generateColors();
         this.drawWheel(this.rotation, this.options);
-        this.duration = 16000;
+        this.duration = 6000;
         this.isSpinning = false;
         this.startTime = 0;
     }
@@ -68,31 +68,39 @@ export class Wheel {
             ctx.restore();
         }
     }
-    public animateWheel(): void {
+    public animateWheel(rotationCount: number): void {
         const progress =
             (performance.now() - this.startTime) / this.duration < 1
                 ? (performance.now() - this.startTime) / this.duration
                 : 1;
 
-        const diff = Math.PI * 2 * 10 * easeInOutSine(progress);
+        const diff = Math.PI * 2 * rotationCount * easeInOutSine(progress);
         this.rotation = diff;
         if (progress < 1) {
             this.drawWheel(this.rotation, this.options);
-            window.requestAnimationFrame(() => this.animateWheel());
+            window.requestAnimationFrame(() =>
+                this.animateWheel(rotationCount)
+            );
         } else this.isSpinning = false;
     }
     public startWheel(): void {
+        const rotationCount = this.generateRotationCount();
         if (!this.isSpinning) {
             this.isSpinning = true;
             this.rotation = 0;
             this.startTime = performance.now();
-            window.requestAnimationFrame(() => this.animateWheel());
+            window.requestAnimationFrame(() =>
+                this.animateWheel(rotationCount)
+            );
         }
     }
     public generateColors(): string[] {
         const colors: string[] = [];
         this.options.forEach(() => colors.push(generateRandomColor()));
         return colors;
+    }
+    public generateRotationCount(): number {
+        return Math.random() * 2 + this.duration / 1000;
     }
 }
 
