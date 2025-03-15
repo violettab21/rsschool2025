@@ -66,6 +66,19 @@ export class Wheel {
                 startRadians = endRadians;
             }
             ctx.restore();
+            ctx.beginPath();
+            ctx.moveTo(150, 15);
+            ctx.lineTo(160, 0);
+            ctx.lineTo(140, 0);
+            ctx.lineTo(150, 15);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(150, 75);
+            ctx.arc(150, 75, 10, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
         }
     }
     public animateWheel(rotationCount: number): void {
