@@ -1,6 +1,5 @@
 import { LocalStorage } from './localStorage';
 import type { Option } from './options';
-
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;
@@ -16,7 +15,7 @@ export class Wheel {
         this.options = getValidOptions();
         this.colors = this.generateColors();
         this.drawWheel(this.rotation, this.options);
-        this.duration = 6000;
+        this.duration = 10000;
         this.isSpinning = false;
         this.startTime = 0;
     }
@@ -96,7 +95,8 @@ export class Wheel {
             );
         } else this.isSpinning = false;
     }
-    public startWheel(): void {
+    public startWheel(duration: number): void {
+        this.duration = duration;
         const rotationCount = this.generateRotationCount();
         if (!this.isSpinning) {
             this.isSpinning = true;
