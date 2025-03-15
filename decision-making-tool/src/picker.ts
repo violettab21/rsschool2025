@@ -6,12 +6,16 @@ export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
     public time: ElementBase;
+    public finalOption: ElementBase;
     constructor(main: Main) {
         this.time = new ElementBase({
             tag: 'input',
             className: ['input-time'],
         });
-
+        this.finalOption = new ElementBase({
+            tag: 'input',
+            className: ['input-final-option'],
+        });
         this.wheel = new Wheel();
         this.menuContainer = new ElementBase({
             tag: 'div',
@@ -33,9 +37,10 @@ export class Picker {
             handlerFunction: (): void => {
                 if (this.time.element instanceof HTMLInputElement)
                     this.wheel.startWheel(
-                        parseInt(this.time.element.value) * 1000
+                        parseInt(this.time.element.value) * 1000,
+                        this.finalOption
                     );
-                else this.wheel.startWheel(10000);
+                else this.wheel.startWheel(10000, this.finalOption);
             },
         });
         if (this.time.element instanceof HTMLInputElement) {
@@ -46,6 +51,13 @@ export class Picker {
             pickButton.element,
             this.time.element
         );
-        main.main.element.append(this.menuContainer.element);
+        if (this.finalOption.element instanceof HTMLInputElement) {
+            this.finalOption.element.disabled = true;
+            this.finalOption.element.value = 'Spin the wheel';
+        }
+        main.main.element.append(
+            this.menuContainer.element,
+            this.finalOption.element
+        );
     }
 }

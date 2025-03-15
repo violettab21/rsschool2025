@@ -1,3 +1,4 @@
+import type { ElementBase } from './element';
 import { LocalStorage } from './localStorage';
 import type { Option } from './options';
 export class Wheel {
@@ -19,13 +20,14 @@ export class Wheel {
         this.isSpinning = false;
         this.startTime = 0;
     }
-    public drawWheel(rotation: number, options: Option[]): void {
+    public drawWheel(
+        rotation: number,
+        options: Option[],
+        result?: ElementBase
+    ): void {
         const ctx = this.wheelElement.getContext('2d');
         if (ctx) {
             ctx.clearRect(0, 0, 400, 250);
-            ctx.save();
-            ctx.translate(150, 75);
-            ctx.rotate(rotation);
 
             let weightSum = 0;
             let startRadians = rotation;
@@ -39,15 +41,21 @@ export class Wheel {
                     startRadians +
                     radiansPerOneWeight * parseInt(options[i].weight);
                 ctx.beginPath();
-                ctx.arc(0, 0, 70, startRadians, endRadians);
+                ctx.arc(150, 75, 70, startRadians, endRadians);
                 const textX =
+                    150 +
                     (70 / 2) *
-                    Math.cos(startRadians + (endRadians - startRadians) / 2);
+                        Math.cos(
+                            startRadians + (endRadians - startRadians) / 2
+                        );
                 const textY =
+                    75 +
                     (70 / 2) *
-                    Math.sin(startRadians + (endRadians - startRadians) / 2);
+                        Math.sin(
+                            startRadians + (endRadians - startRadians) / 2
+                        );
 
-                ctx.lineTo(0, 0);
+                ctx.lineTo(150, 75);
 
                 ctx.closePath();
                 ctx.strokeStyle = 'yellow';
@@ -62,9 +70,22 @@ export class Wheel {
                 ctx.fillStyle = 'black';
                 ctx.fillText(options[i].title, -10, 0);
                 ctx.restore();
+                if (
+                    (startRadians % (Math.PI * 2) < (3 * Math.PI) / 2 &&
+                        endRadians % (Math.PI * 2) > (3 * Math.PI) / 2 &&
+                        result) ||
+                    (startRadians < (3 * Math.PI) / 2 &&
+                        endRadians > (3 * Math.PI) / 2 &&
+                        result)
+                ) {
+                    if (result.element instanceof HTMLInputElement)
+                        result.element.value = options[i].title;
+                    console.log(options[i].title);
+                }
+
                 startRadians = endRadians;
             }
-            ctx.restore();
+
             ctx.beginPath();
             ctx.moveTo(150, 15);
             ctx.lineTo(160, 0);
@@ -80,7 +101,7 @@ export class Wheel {
             ctx.fill();
         }
     }
-    public animateWheel(rotationCount: number): void {
+    public animateWheel(rotationCount: number, result: ElementBase): void {
         const progress =
             (performance.now() - this.startTime) / this.duration < 1
                 ? (performance.now() - this.startTime) / this.duration
@@ -89,13 +110,13 @@ export class Wheel {
         const diff = Math.PI * 2 * rotationCount * easeInOutSine(progress);
         this.rotation = diff;
         if (progress < 1) {
-            this.drawWheel(this.rotation, this.options);
+            this.drawWheel(this.rotation, this.options, result);
             window.requestAnimationFrame(() =>
-                this.animateWheel(rotationCount)
+                this.animateWheel(rotationCount, result)
             );
         } else this.isSpinning = false;
     }
-    public startWheel(duration: number): void {
+    public startWheel(duration: number, result: ElementBase): void {
         this.duration = duration;
         const rotationCount = this.generateRotationCount();
         if (!this.isSpinning) {
@@ -103,7 +124,7 @@ export class Wheel {
             this.rotation = 0;
             this.startTime = performance.now();
             window.requestAnimationFrame(() =>
-                this.animateWheel(rotationCount)
+                this.animateWheel(rotationCount, result)
             );
         }
     }
