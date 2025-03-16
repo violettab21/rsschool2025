@@ -3,6 +3,7 @@ import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
 import type { Main } from './main';
 import type { Router } from './router';
+import { LocalStorage } from './localStorage';
 export interface Option {
     id?: string;
     title: string;
@@ -11,6 +12,7 @@ export interface Option {
 class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
+    public options: Option[];
     constructor(main: Main, router: Router) {
         this.buttonsContainer = new ElementBase({
             tag: 'div',
@@ -20,6 +22,8 @@ class OptionsPage {
             tag: 'div',
             className: ['options'],
         });
+        this.options = [];
+        this.getOptionsFromStorage();
         this.configureButtonsView(main, router);
         this.configureOptionsView();
     }
@@ -115,7 +119,8 @@ class OptionsPage {
 
     public configureOptionsView(): void {
         this.buttonsContainer.element.before(this.optionsContainer.element);
-        this.addOptionElement();
+        if (this.options.length === 0) this.addOptionElement();
+        else this.addOptionElements(this.options);
     }
     public addOptionElement(optionData?: Option): void {
         const option = new ElementBase({
@@ -222,6 +227,12 @@ class OptionsPage {
             }
         }
         return optionsList;
+    }
+
+    public getOptionsFromStorage(): void {
+        const localStorage = new LocalStorage('decision-maker_options');
+        const options: Option[] = localStorage.getData();
+        this.options = options;
     }
 }
 export { OptionsPage };
