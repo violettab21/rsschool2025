@@ -5,7 +5,7 @@ import { Picker } from './picker';
 import type { Main } from './main';
 import { LocalStorage } from './localStorage';
 export interface Option {
-    id: string;
+    id?: string;
     title: string;
     weight: string;
 }
@@ -84,9 +84,7 @@ class OptionsPage {
                                 listOfOptions = JSON.parse(result) as Option[];
                                 console.log(listOfOptions);
                                 this.clearAllOptions();
-                                this.creationOptionsBasedOnFileData(
-                                    listOfOptions
-                                );
+                                this.addOptionElements(listOfOptions);
                             }
                         }
                     });
@@ -129,24 +127,32 @@ class OptionsPage {
         this.buttonsContainer.element.before(this.optionsContainer.element);
         this.addOptionElement();
     }
-    public addOptionElement(): void {
+    public addOptionElement(optionData?: Option): void {
         const option = new ElementBase({
             tag: 'div',
             className: ['option'],
         });
+        const id = optionData?.id
+            ? optionData.id
+            : `#${this.generateIdForOption()}`;
         const number = new ElementBase({
             tag: 'p',
             className: ['option__number'],
-            textContent: `#${this.generateIdForOption()}`,
+            textContent: id,
         });
+
         const name = new ElementBase({
             tag: 'input',
             className: ['option__input'],
         });
+        if (name.element instanceof HTMLInputElement && optionData?.title)
+            name.element.value = optionData.title;
         const weight = new ElementBase({
             tag: 'input',
             className: ['option__input'],
         });
+        if (weight.element instanceof HTMLInputElement && optionData?.weight)
+            weight.element.value = optionData.weight;
         const deleteBtn = new Button({
             className: ['delete'],
             textContent: 'Delete',
@@ -166,51 +172,8 @@ class OptionsPage {
 
         this.optionsContainer?.element.append(option.element);
     }
-    public addOptionElementFromModal(
-        optionData: { title: string; weight: string }[]
-    ): void {
-        optionData.forEach((optionRow) => {
-            const option = new ElementBase({
-                tag: 'div',
-                className: ['option'],
-            });
-            const number = new ElementBase({
-                tag: 'p',
-                className: ['option__number'],
-                textContent: `#${this.generateIdForOption()}`,
-            });
-            const name = new ElementBase({
-                tag: 'input',
-                className: ['option__input'],
-            });
-            if (name.element instanceof HTMLInputElement)
-                name.element.value = optionRow.title;
-            const weight = new ElementBase({
-                tag: 'input',
-                className: ['option__input'],
-            });
-            if (weight.element instanceof HTMLInputElement)
-                weight.element.value = optionRow.weight;
-            const deleteBtn = new Button({
-                className: ['delete'],
-                textContent: 'Delete',
-                handlerFunction: function (event?: Event): void {
-                    if (event) {
-                        const optionToDelete = (event.target as Node)
-                            .parentElement;
-                        if (optionToDelete) optionToDelete.remove();
-                    }
-                },
-            });
-            option.element.append(
-                number.element,
-                name.element,
-                weight.element,
-                deleteBtn.element
-            );
-
-            this.optionsContainer?.element.append(option.element);
-        });
+    public addOptionElements(optionData: Option[]): void {
+        optionData.forEach((option) => this.addOptionElement(option));
     }
     public generateIdForOption(): number {
         let value: string | null;
@@ -243,54 +206,6 @@ class OptionsPage {
         link.click();
     }
 
-    public creationOptionsBasedOnFileData(
-        options: { id: string; title: string; weight: string }[]
-    ): void {
-        options.forEach((el) => {
-            const option = new ElementBase({
-                tag: 'div',
-                className: ['option'],
-            });
-            const number = new ElementBase({
-                tag: 'p',
-                className: ['option__number'],
-                textContent: `#${el.id}`,
-            });
-            const name = new ElementBase({
-                tag: 'input',
-                className: ['option__input'],
-            });
-            if (name.element instanceof HTMLInputElement) {
-                name.element.value = el.title;
-            }
-
-            const weight = new ElementBase({
-                tag: 'input',
-                className: ['option__input'],
-            });
-            if (weight.element instanceof HTMLInputElement) {
-                weight.element.value = el.weight;
-            }
-            const deleteBtn = new Button({
-                className: ['delete'],
-                textContent: 'Delete',
-                handlerFunction: function (event?: Event): void {
-                    if (event) {
-                        const optionToDelete = (event.target as Node)
-                            .parentElement;
-                        if (optionToDelete) optionToDelete.remove();
-                    }
-                },
-            });
-            option.element.append(
-                number.element,
-                name.element,
-                weight.element,
-                deleteBtn.element
-            );
-            this.optionsContainer?.element.append(option.element);
-        });
-    }
     public clearAllOptions(): void {
         const numberChildren = this.optionsContainer.element.children.length;
         if (numberChildren !== 0) {
