@@ -7,9 +7,15 @@ export class Router {
     constructor(routes: Route[]) {
         this.routes = routes;
     }
-    public openPage(path: string): void {
+    public openPage(path?: string): void {
+        const isHistory: boolean = path !== undefined;
+        if (isHistory) {
+            history.pushState(null, '', path);
+            console.log('added to history');
+        }
+        const url = window.location.pathname.substring(1);
         const selectedRoute = this.routes.find(
-            (element) => element.url === path
+            (element) => element.url === url
         );
         if (selectedRoute) selectedRoute.handler();
     }

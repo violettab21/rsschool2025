@@ -11,7 +11,15 @@ interface Route {
     handler: () => void;
 }
 const router = new Router(getRoutes());
-const main = new Main(router);
+
+document.addEventListener('DOMContentLoaded', () => {
+    router.openPage();
+});
+window.addEventListener('popstate', () => {
+    console.log('event triggered');
+    router.openPage();
+});
+const main = new Main();
 
 function getRoutes(): Route[] {
     const routes: Route[] = [
@@ -39,7 +47,7 @@ function getRoutes(): Route[] {
                     main.content.optionsContainer.element.remove();
                     main.content.buttonsContainer.element.remove();
                     main.content = new Picker(main, router);
-                }
+                } else main.content = new Picker(main, router);
             },
         },
         {

@@ -11,6 +11,7 @@ module.exports = {
     devtool,
     devServer: {
         open: true,
+        historyApiFallback: true
     },
     entry: './src/index.ts',
     output: {
@@ -28,7 +29,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'main.[contenthash].css',
         }),
-        /* new ESLintPlugin({ extensions: 'ts' }),*/
+        new ESLintPlugin({ extensions: 'ts' }),
     ],
     module: {
         rules: [

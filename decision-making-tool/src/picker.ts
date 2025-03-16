@@ -34,7 +34,7 @@ export class Picker {
         const backButton = new Button({
             className: ['decision-back'],
             textContent: 'Back',
-            handlerFunction: (): void => router.openPage('options'),
+            handlerFunction: (): void => router.openPage('/'),
         });
         const pickButton = new Button({
             className: ['decision-pick'],
