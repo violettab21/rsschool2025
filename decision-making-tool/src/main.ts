@@ -1,11 +1,12 @@
 import { ElementBase } from './element';
 import { OptionsPage } from './options';
 import type { Picker } from './picker';
+import type { Router } from './router';
 export class Main {
     public pageTitle: ElementBase;
     public main: ElementBase;
-    public content: OptionsPage | Picker;
-    constructor() {
+    public content: OptionsPage | Picker | null;
+    constructor(router: Router) {
         this.pageTitle = new ElementBase({
             tag: 'p',
             className: ['title'],
@@ -13,7 +14,7 @@ export class Main {
         });
         this.main = new ElementBase({ tag: 'main', className: ['main'] });
         this.configurePageView();
-        this.content = new OptionsPage(this);
+        this.content = new OptionsPage(this, router);
     }
     public configurePageView(): void {
         this.main.element.append(this.pageTitle.element);

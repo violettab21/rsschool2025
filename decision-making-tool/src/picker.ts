@@ -2,12 +2,13 @@ import { Button } from './button';
 import { ElementBase } from './element';
 import type { Main } from './main';
 import { Wheel } from './canvas';
+import type { Router } from './router';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
     public time: ElementBase;
     public finalOption: ElementBase;
-    constructor(main: Main) {
+    constructor(main: Main, router: Router) {
         this.time = new ElementBase({
             tag: 'input',
             className: ['input-time'],
@@ -22,10 +23,10 @@ export class Picker {
             className: ['decision-menu'],
         });
 
-        this.configureMenu(main);
+        this.configureMenu(main, router);
         main.main.element.append(this.wheel.wheelElement);
     }
-    public configureMenu(main: Main): void {
+    public configureMenu(main: Main, router: Router): void {
         const container = new ElementBase({
             tag: 'div',
             className: ['top-elements'],
@@ -33,7 +34,7 @@ export class Picker {
         const backButton = new Button({
             className: ['decision-back'],
             textContent: 'Back',
-            handlerFunction: (): void => console.log('back'),
+            handlerFunction: (): void => router.openPage('options'),
         });
         const pickButton = new Button({
             className: ['decision-pick'],

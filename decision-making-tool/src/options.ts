@@ -1,9 +1,8 @@
 import { Button } from './button';
 import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
-import { Picker } from './picker';
 import type { Main } from './main';
-import { LocalStorage } from './localStorage';
+import type { Router } from './router';
 export interface Option {
     id?: string;
     title: string;
@@ -12,8 +11,7 @@ export interface Option {
 class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
-
-    constructor(main: Main) {
+    constructor(main: Main, router: Router) {
         this.buttonsContainer = new ElementBase({
             tag: 'div',
             className: ['buttons'],
@@ -22,11 +20,11 @@ class OptionsPage {
             tag: 'div',
             className: ['options'],
         });
-        this.configureButtonsView(main);
+        this.configureButtonsView(main, router);
         this.configureOptionsView();
     }
 
-    public configureButtonsView(main: Main): void {
+    public configureButtonsView(main: Main, router: Router): void {
         const addOptions = new Button({
             className: ['add_option'],
             textContent: 'Add Option',
@@ -36,15 +34,7 @@ class OptionsPage {
             className: ['start'],
             textContent: 'Start',
             handlerFunction: (): void => {
-                if (main.content instanceof OptionsPage) {
-                    const localStorage = new LocalStorage(
-                        'decision-maker_options'
-                    );
-                    localStorage.saveData(this.getOptions());
-                    main.content.optionsContainer.element.remove();
-                    main.content.buttonsContainer.element.remove();
-                    main.content = new Picker(main);
-                }
+                router.openPage('decision-picker');
             },
         });
         const parseList = new Button({
@@ -213,7 +203,7 @@ class OptionsPage {
             Array.from(options).forEach((el) => el.remove());
         }
     }
-    protected getOptions(): Option[] {
+    public getOptions(): Option[] {
         const numberChildren = this.optionsContainer.element.children.length;
         const optionsList: Option[] = [];
         if (numberChildren !== 0) {
