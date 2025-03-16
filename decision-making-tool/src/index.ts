@@ -5,7 +5,7 @@ import { Router } from './router';
 import { Picker } from './picker';
 import { OptionsPage } from './options';
 import { LocalStorage } from './localStorage';
-
+import { ErrorPage } from './error-page';
 interface Route {
     url: string;
     handler: () => void;
@@ -33,6 +33,9 @@ function getRoutes(): Route[] {
                     main.content.time.element.remove();
                     main.content.finalOption.element.remove();
                     main.content = new OptionsPage(main, router);
+                } else if (main.content instanceof ErrorPage) {
+                    main.content.text.element.remove();
+                    main.content.button.element.remove();
                 }
             },
         },
@@ -47,6 +50,10 @@ function getRoutes(): Route[] {
                     main.content.optionsContainer.element.remove();
                     main.content.buttonsContainer.element.remove();
                     main.content = new Picker(main, router);
+                } else if (main.content instanceof ErrorPage) {
+                    main.content.text.element.remove();
+                    main.content.button.element.remove();
+                    main.content = new Picker(main, router);
                 } else main.content = new Picker(main, router);
             },
         },
@@ -59,7 +66,31 @@ function getRoutes(): Route[] {
                     main.content.time.element.remove();
                     main.content.finalOption.element.remove();
                     main.content = new OptionsPage(main, router);
+                } else if (main.content instanceof ErrorPage) {
+                    main.content.text.element.remove();
+                    main.content.button.element.remove();
+                    main.content = new OptionsPage(main, router);
                 } else main.content = new OptionsPage(main, router);
+            },
+        },
+        {
+            url: 'error',
+            handler: (): void => {
+                if (main.content instanceof Picker) {
+                    main.content.wheel.wheelElement.remove();
+                    main.content.menuContainer.element.remove();
+                    main.content.time.element.remove();
+                    main.content.finalOption.element.remove();
+                    main.content = new ErrorPage(main, router);
+                } else if (main.content instanceof OptionsPage) {
+                    const localStorage = new LocalStorage(
+                        'decision-maker_options'
+                    );
+                    localStorage.saveData(main.content.getOptions());
+                    main.content.optionsContainer.element.remove();
+                    main.content.buttonsContainer.element.remove();
+                    main.content = new ErrorPage(main, router);
+                } else main.content = new ErrorPage(main, router);
             },
         },
     ];

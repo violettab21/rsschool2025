@@ -17,6 +17,11 @@ export class Router {
         const selectedRoute = this.routes.find(
             (element) => element.url === url
         );
-        if (selectedRoute) selectedRoute.handler();
+        if (selectedRoute) {
+            selectedRoute.handler();
+        } else {
+            console.log('not found');
+            this.routes[3].handler();
+        }
     }
 }

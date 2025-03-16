@@ -1,10 +1,11 @@
 import { ElementBase } from './element';
 import type { OptionsPage } from './options';
 import type { Picker } from './picker';
+import type { ErrorPage } from './error-page';
 export class Main {
     public pageTitle: ElementBase;
     public main: ElementBase;
-    public content: OptionsPage | Picker | null;
+    public content: OptionsPage | Picker | ErrorPage | null;
     constructor() {
         this.pageTitle = new ElementBase({
             tag: 'p',

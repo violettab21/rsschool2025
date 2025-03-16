@@ -2,6 +2,7 @@ import { ElementBase } from './element';
 import { Button } from './button';
 import { Modal } from './modal';
 import type { OptionsPage } from './options';
+import { LocalStorage } from './localStorage';
 export class ParseListModal extends Modal {
     public inputForParse?: HTMLTextAreaElement;
     public page: OptionsPage;
@@ -29,7 +30,11 @@ export class ParseListModal extends Modal {
         const createButton = new Button({
             className: ['button', 'button__confirm'],
             textContent: 'Confirm',
-            handlerFunction: this.createOptionsFromInput.bind(this),
+            handlerFunction: (): void => {
+                this.createOptionsFromInput.call(this);
+                const localStorage = new LocalStorage('decision-maker_options');
+                localStorage.saveData(this.page.getOptions());
+            },
         });
         const cancelButton = new Button({
             className: ['button', 'button__cancel'],

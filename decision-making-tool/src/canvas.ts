@@ -170,7 +170,7 @@ function generateRandomColor(): string {
     }
     return `#${colorCode}`;
 }
-function getValidOptions(): Option[] {
+export function getValidOptions(): Option[] {
     const localStorage = new LocalStorage('decision-maker_options');
     const options: Option[] = localStorage.getData();
     const filteredOptions = options.filter(

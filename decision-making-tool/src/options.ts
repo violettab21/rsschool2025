@@ -1,9 +1,11 @@
 import { Button } from './button';
 import { ElementBase } from './element';
 import { ParseListModal } from './ParseListModal';
+import { Modal } from './modal';
 import type { Main } from './main';
 import type { Router } from './router';
 import { LocalStorage } from './localStorage';
+import { getValidOptions } from './canvas';
 export interface Option {
     id?: string;
     title: string;
@@ -32,13 +34,27 @@ class OptionsPage {
         const addOptions = new Button({
             className: ['add_option'],
             textContent: 'Add Option',
-            handlerFunction: this.addOptionElement.bind(this),
+            handlerFunction: (): void => {
+                this.addOptionElement.call(this);
+                const localStorage = new LocalStorage('decision-maker_options');
+                localStorage.saveData(this.getOptions());
+            },
         });
         const start = new Button({
             className: ['start'],
             textContent: 'Start',
             handlerFunction: (): void => {
-                router.openPage('decision-picker');
+                if (getValidOptions().length < 2) {
+                    const modal = new Modal();
+                    const modalContent = new ElementBase({
+                        tag: 'p',
+                        className: ['modal-message'],
+                        textContent:
+                            'Please, create at least 2 options with title and weight',
+                    });
+                    modal.modal.element.append(modalContent.element);
+                    main.main.element.append(modal.modalContainer.element);
+                } else router.openPage('decision-picker');
             },
         });
         const parseList = new Button({
@@ -79,6 +95,10 @@ class OptionsPage {
                                 console.log(listOfOptions);
                                 this.clearAllOptions();
                                 this.addOptionElements(listOfOptions);
+                                const localStorage = new LocalStorage(
+                                    'decision-maker_options'
+                                );
+                                localStorage.saveData(this.getOptions());
                             }
                         }
                     });
@@ -140,21 +160,39 @@ class OptionsPage {
             tag: 'input',
             className: ['option__input'],
         });
-        if (name.element instanceof HTMLInputElement && optionData?.title)
+        if (name.element instanceof HTMLInputElement && optionData?.title) {
             name.element.value = optionData.title;
+        }
+        name.element.addEventListener('change', () => {
+            const localStorage = new LocalStorage('decision-maker_options');
+            localStorage.saveData(this.getOptions());
+        });
         const weight = new ElementBase({
             tag: 'input',
             className: ['option__input'],
         });
-        if (weight.element instanceof HTMLInputElement && optionData?.weight)
+        if (weight.element instanceof HTMLInputElement && optionData?.weight) {
             weight.element.value = optionData.weight;
+        }
+        if (weight.element instanceof HTMLInputElement) {
+            weight.element.type = 'number';
+            weight.element.min = '0.1';
+        }
+        weight.element.addEventListener('change', () => {
+            const localStorage = new LocalStorage('decision-maker_options');
+            localStorage.saveData(this.getOptions());
+        });
         const deleteBtn = new Button({
             className: ['delete'],
             textContent: 'Delete',
-            handlerFunction: function (event?: Event): void {
+            handlerFunction: (event?: Event): void => {
                 if (event) {
                     const optionToDelete = (event.target as Node).parentElement;
                     if (optionToDelete) optionToDelete.remove();
+                    const localStorage = new LocalStorage(
+                        'decision-maker_options'
+                    );
+                    localStorage.saveData(this.getOptions());
                 }
             },
         });
