@@ -148,24 +148,26 @@ class OptionsPage {
             : `#${this.generateIdForOption()}`;
         const number = new ElementBase({
             tag: 'p',
-            className: ['option__number'],
+            className: ['option-number'],
             textContent: id,
         });
 
         const name = new ElementBase({
             tag: 'input',
-            className: ['option__input'],
+            className: ['option-input'],
         });
         if (name.element instanceof HTMLInputElement && optionData?.title) {
             name.element.value = optionData.title;
         }
+        if (name.element instanceof HTMLInputElement)
+            name.element.placeholder = 'Option Title';
         name.element.addEventListener('change', () => {
             const localStorage = new LocalStorage('decision-maker_options');
             localStorage.saveData(this.getOptions());
         });
         const weight = new ElementBase({
             tag: 'input',
-            className: ['option__input'],
+            className: ['option-input', 'input-weight'],
         });
         if (weight.element instanceof HTMLInputElement && optionData?.weight) {
             weight.element.value = optionData.weight;
@@ -173,6 +175,7 @@ class OptionsPage {
         if (weight.element instanceof HTMLInputElement) {
             weight.element.type = 'number';
             weight.element.min = '0.1';
+            weight.element.placeholder = 'Weight';
         }
         weight.element.addEventListener('change', () => {
             const localStorage = new LocalStorage('decision-maker_options');

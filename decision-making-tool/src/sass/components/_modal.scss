@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .dark-view {
     position: fixed;
     top: 0;
@@ -17,7 +19,7 @@
     margin: 0 auto;
     padding: 20px;
     border-radius: 20px;
-    background-color: white;
+    background-color: constants.$color-body;
 }
 
 .icon-close {
@@ -28,6 +30,9 @@
 }
 
 .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     padding: 25px;
 }
 
@@ -36,4 +41,24 @@
     width: 90%;
     height: 100px;
     border-radius: 5px;
+    background-color: constants.$color-option-field;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: constants.$color-title-text;
+    background-color: #6f7099;
+}
+
+.modal-message {
+    padding: 20px;
+    font-family: Roboto, sans-serif;
 }

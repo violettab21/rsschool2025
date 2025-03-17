@@ -25,10 +25,10 @@ export class ParseListModal extends Modal {
 
         const modalButtons = new ElementBase({
             tag: 'div',
-            className: ['modal__buttons'],
+            className: ['modal-buttons'],
         });
         const createButton = new Button({
-            className: ['button', 'button__confirm'],
+            className: ['button', 'button-confirm'],
             textContent: 'Confirm',
             handlerFunction: (): void => {
                 this.createOptionsFromInput.call(this);
@@ -37,7 +37,7 @@ export class ParseListModal extends Modal {
             },
         });
         const cancelButton = new Button({
-            className: ['button', 'button__cancel'],
+            className: ['button', 'button-cancel'],
             textContent: 'Cancel',
             handlerFunction: this.closeModal.bind(this),
         });

@@ -1,9 +1,12 @@
+@use '../abstracts/constants';
+
 body {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: rgb(170 147 147);
+    font-family: Roboto, sans-serif;
+    background-color: constants.$color-body;
 }
 
 .main {
@@ -12,4 +15,13 @@ body {
     gap: 10px;
     align-items: center;
     width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: constants.$color-main;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 600;
+    color: constants.$color-title-text;
 }
