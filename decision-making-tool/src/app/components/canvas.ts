@@ -117,9 +117,13 @@ export class Wheel {
             window.requestAnimationFrame(() =>
                 this.animateWheel(rotationCount, result)
             );
-        } else this.isSpinning = false;
+        } else {
+            this.isSpinning = false;
+            highlightResult(result.element);
+        }
     }
     public startWheel(duration: number, result: ElementBase): void {
+        removeHighlight(result.element);
         this.duration = duration;
         const rotationCount = this.generateRotationCount();
         if (!this.isSpinning) {
@@ -140,7 +144,12 @@ export class Wheel {
         return Math.random() * 2 + this.duration / 1000;
     }
 }
-
+function highlightResult(element: HTMLElement): void {
+    element.classList.add('highlight');
+}
+function removeHighlight(element: HTMLElement): void {
+    element.classList.remove('highlight');
+}
 function easeInOutSine(x: number): number {
     return -(Math.cos(Math.PI * x) - 1) / 2;
 }
