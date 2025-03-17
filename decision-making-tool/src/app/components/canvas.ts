@@ -1,6 +1,6 @@
 import type { ElementBase } from './element';
 import { LocalStorage } from './localStorage';
-import type { Option } from './options';
+import type { Option } from '../interfaces';
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;

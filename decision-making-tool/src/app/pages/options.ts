@@ -1,16 +1,12 @@
-import { Button } from './button';
-import { ElementBase } from './element';
-import { ParseListModal } from './ParseListModal';
-import { Modal } from './modal';
-import type { Main } from './main';
-import type { Router } from './router';
-import { LocalStorage } from './localStorage';
-import { getValidOptions } from './canvas';
-export interface Option {
-    id?: string;
-    title: string;
-    weight: string;
-}
+import { Button } from '../components/button';
+import { ElementBase } from '../components/element';
+import { ParseListModal } from '../components/ParseListModal';
+import { Modal } from '../components/modal';
+import type { Main } from '../components/main';
+import type { Router } from '../components/router';
+import { LocalStorage } from '../components/localStorage';
+import { getValidOptions } from '../components/canvas';
+import type { Option } from '../interfaces';
 class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;

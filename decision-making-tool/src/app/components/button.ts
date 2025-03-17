@@ -1,4 +1,4 @@
-import type { ButtonProperties } from './interfaces';
+import type { ButtonProperties } from '../interfaces';
 import { ElementBase } from './element';
 
 export class Button extends ElementBase {

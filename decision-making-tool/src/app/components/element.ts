@@ -1,4 +1,4 @@
-import type { Properties } from './interfaces';
+import type { Properties } from '../interfaces';
 
 export class ElementBase {
     public properties: Properties;

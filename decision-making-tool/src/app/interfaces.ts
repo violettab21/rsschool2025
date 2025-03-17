@@ -9,5 +9,14 @@ interface ButtonProperties {
     textContent: string;
     handlerFunction: () => void;
 }
+interface Route {
+    url: string;
+    handler: () => void;
+}
 
-export { Properties, ButtonProperties };
+interface Option {
+    id?: string;
+    title: string;
+    weight: string;
+}
+export { Properties, ButtonProperties, Route, Option };

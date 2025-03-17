@@ -1,8 +1,8 @@
-import { Button } from './button';
-import { ElementBase } from './element';
-import type { Main } from './main';
-import { Wheel } from './canvas';
-import type { Router } from './router';
+import { Button } from '../components/button';
+import { ElementBase } from '../components/element';
+import type { Main } from '../components/main';
+import { Wheel } from '../components/canvas';
+import type { Router } from '../components/router';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;

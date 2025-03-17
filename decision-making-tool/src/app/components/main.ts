@@ -1,7 +1,7 @@
 import { ElementBase } from './element';
-import type { OptionsPage } from './options';
-import type { Picker } from './picker';
-import type { ErrorPage } from './error-page';
+import type { OptionsPage } from '../pages/options';
+import type { Picker } from '../pages/picker';
+import type { ErrorPage } from '../pages/error-page';
 export class Main {
     public pageTitle: ElementBase;
     public main: ElementBase;

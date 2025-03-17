@@ -1,7 +1,7 @@
-import { Button } from './button';
-import { ElementBase } from './element';
-import type { Main } from './main';
-import type { Router } from './router';
+import { Button } from '../components/button';
+import { ElementBase } from '../components/element';
+import type { Main } from '../components/main';
+import type { Router } from '../components/router';
 
 export class ErrorPage {
     public text: ElementBase;

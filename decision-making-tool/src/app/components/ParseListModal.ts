@@ -1,7 +1,7 @@
 import { ElementBase } from './element';
 import { Button } from './button';
 import { Modal } from './modal';
-import type { OptionsPage } from './options';
+import type { OptionsPage } from '../pages/options';
 import { LocalStorage } from './localStorage';
 export class ParseListModal extends Modal {
     public inputForParse?: HTMLTextAreaElement;

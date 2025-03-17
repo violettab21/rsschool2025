@@ -1,0 +1,23 @@
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.option {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.buttons > button {
+    display: block;
+    width: 100%;
+}
