@@ -1,0 +1,9 @@
+@use '../abstracts/constants';
+
+.back {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: constants.$color-option-buttons;
+}
