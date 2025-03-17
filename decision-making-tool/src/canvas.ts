@@ -14,12 +14,13 @@ export class Wheel {
         this.wheelElement.width = 500;
         this.wheelElement.height = 450;
         this.rotation = 0;
-        this.options = getValidOptions();
+        this.options = shuffleOptions();
         this.colors = this.generateColors();
         this.drawWheel(this.rotation, this.options);
         this.duration = 10000;
         this.isSpinning = false;
         this.startTime = 0;
+        shuffleOptions();
     }
     public drawWheel(
         rotation: number,
@@ -177,4 +178,24 @@ export function getValidOptions(): Option[] {
         (option) => option.title.length !== 0 && option.weight.length !== 0
     );
     return filteredOptions;
+}
+
+function shuffleOptions(): Option[] {
+    const options = getValidOptions();
+    const randomIndexes = generateRandomIndex(options.length);
+    const shuffledOptions: Option[] = [];
+    randomIndexes.forEach((index) => shuffledOptions.push(options[index]));
+    return shuffledOptions;
+}
+
+function generateRandomIndex(interval: number): number[] {
+    const indexes: number[] = [];
+    for (let i = 0; i < interval; i += 1) {
+        let index = Math.floor(Math.random() * interval);
+        while (indexes.includes(index)) {
+            index = Math.floor(Math.random() * interval);
+        }
+        indexes.push(index);
+    }
+    return indexes;
 }
