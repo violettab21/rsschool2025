@@ -6,12 +6,13 @@ import { Picker } from './picker';
 import { OptionsPage } from './options';
 import { LocalStorage } from './localStorage';
 import { ErrorPage } from './error-page';
+import { getValidOptions } from './canvas';
 interface Route {
     url: string;
     handler: () => void;
 }
 const router = new Router(getRoutes());
-
+const localStorage = new LocalStorage('decision-maker_options');
 document.addEventListener('DOMContentLoaded', () => {
     router.openPage();
 });
@@ -43,9 +44,6 @@ function getRoutes(): Route[] {
             url: 'decision-picker',
             handler: (): void => {
                 if (main.content instanceof OptionsPage) {
-                    const localStorage = new LocalStorage(
-                        'decision-maker_options'
-                    );
                     localStorage.saveData(main.content.getOptions());
                     main.content.optionsContainer.element.remove();
                     main.content.buttonsContainer.element.remove();
@@ -54,7 +52,15 @@ function getRoutes(): Route[] {
                     main.content.text.element.remove();
                     main.content.button.element.remove();
                     main.content = new Picker(main, router);
-                } else main.content = new Picker(main, router);
+                } else {
+                    const validOptions = getValidOptions();
+                    if (validOptions.length >= 2)
+                        main.content = new Picker(main, router);
+                    else {
+                        main.content = new OptionsPage(main, router);
+                        history.replaceState(null, '', '/');
+                    }
+                }
             },
         },
         {
@@ -83,9 +89,6 @@ function getRoutes(): Route[] {
                     main.content.finalOption.element.remove();
                     main.content = new ErrorPage(main, router);
                 } else if (main.content instanceof OptionsPage) {
-                    const localStorage = new LocalStorage(
-                        'decision-maker_options'
-                    );
                     localStorage.saveData(main.content.getOptions());
                     main.content.optionsContainer.element.remove();
                     main.content.buttonsContainer.element.remove();
