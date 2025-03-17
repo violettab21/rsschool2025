@@ -1,6 +1,9 @@
 import type { ElementBase } from './element';
 import { LocalStorage } from './localStorage';
 import type { Option } from '../interfaces';
+
+import win from './game-bonus.mp3';
+
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;
@@ -120,6 +123,7 @@ export class Wheel {
         } else {
             this.isSpinning = false;
             highlightResult(result.element);
+            playAudio();
         }
     }
     public startWheel(duration: number, result: ElementBase): void {
@@ -188,7 +192,10 @@ export function getValidOptions(): Option[] {
     );
     return filteredOptions;
 }
-
+function playAudio(): void {
+    const audioWin = new Audio(win);
+    audioWin.play();
+}
 function shuffleOptions(): Option[] {
     const options = getValidOptions();
     const randomIndexes = generateRandomIndex(options.length);
