@@ -13,6 +13,11 @@ export class Picker {
             tag: 'input',
             className: ['input-time'],
         });
+        if (this.time.element instanceof HTMLInputElement) {
+            this.time.element.type = 'number';
+            this.time.element.min = '5';
+            this.time.element.max = '30';
+        }
         this.finalOption = new ElementBase({
             tag: 'input',
             className: ['input-final-option'],
