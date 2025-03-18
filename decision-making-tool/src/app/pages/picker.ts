@@ -59,9 +59,15 @@ export class Picker {
                 if (this.time.element instanceof HTMLInputElement)
                     this.wheel.startWheel(
                         parseInt(this.time.element.value) * 1000,
-                        this.finalOption
+                        this.finalOption,
+                        this.menuContainer
                     );
-                else this.wheel.startWheel(10000, this.finalOption);
+                else
+                    this.wheel.startWheel(
+                        10000,
+                        this.finalOption,
+                        this.menuContainer
+                    );
             },
         });
 

@@ -120,7 +120,11 @@ export class Wheel {
             ctx.fill();
         }
     }
-    public animateWheel(rotationCount: number, result: ElementBase): void {
+    public animateWheel(
+        rotationCount: number,
+        result: ElementBase,
+        menuContainer: ElementBase
+    ): void {
         const progress =
             (performance.now() - this.startTime) / this.duration < 1
                 ? (performance.now() - this.startTime) / this.duration
@@ -131,12 +135,16 @@ export class Wheel {
         if (progress < 1) {
             this.drawWheel(this.rotation, this.options, result);
             window.requestAnimationFrame(() =>
-                this.animateWheel(rotationCount, result)
+                this.animateWheel(rotationCount, result, menuContainer)
             );
         } else {
             this.isSpinning = false;
             highlightResult(result.element);
-
+            changeMenuState(menuContainer.element, {
+                state: false,
+                pointer: 'auto',
+                className: 'disabled',
+            });
             const soundStatusData: { sound: boolean } | null =
                 this.soundStatus.getData();
             if (soundStatusData !== null) {
@@ -144,8 +152,17 @@ export class Wheel {
             } else playAudio();
         }
     }
-    public startWheel(duration: number, result: ElementBase): void {
+    public startWheel(
+        duration: number,
+        result: ElementBase,
+        menuContainer: ElementBase
+    ): void {
         removeHighlight(result.element);
+        changeMenuState(menuContainer.element, {
+            state: true,
+            pointer: 'none',
+            className: 'disabled',
+        });
         this.duration = duration;
         const rotationCount = this.generateRotationCount();
         if (!this.isSpinning) {
@@ -153,7 +170,7 @@ export class Wheel {
             this.rotation = 0;
             this.startTime = performance.now();
             window.requestAnimationFrame(() =>
-                this.animateWheel(rotationCount, result)
+                this.animateWheel(rotationCount, result, menuContainer)
             );
         }
     }
@@ -238,4 +255,33 @@ function generateRandomIndex(interval: number): number[] {
         indexes.push(index);
     }
     return indexes;
+}
+function changeMenuState(
+    container: HTMLElement | HTMLInputElement | HTMLButtonElement,
+    properties: { state: boolean; pointer: string; className: string }
+): void {
+    const childrenElementsCount = container.children.length;
+    if (childrenElementsCount !== 0) {
+        const children = Array.from(container.children);
+        children.forEach((child) => {
+            if (
+                (child.children.length === 0 &&
+                    child instanceof HTMLInputElement) ||
+                child instanceof HTMLButtonElement
+            ) {
+                child.disabled = properties.state;
+            } else if (
+                child.children.length === 0 &&
+                child instanceof HTMLElement
+            ) {
+                child.style.pointerEvents = properties.pointer;
+                child.classList.toggle(properties.className);
+            } else if (child.children.length > 0) {
+                if (child instanceof HTMLElement) {
+                    child.style.pointerEvents = properties.pointer;
+                    changeMenuState(child, properties);
+                }
+            }
+        });
+    }
 }

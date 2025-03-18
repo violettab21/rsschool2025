@@ -23,6 +23,7 @@
 .input-time {
     margin-left: 6px;
     padding: 10px;
+    border-color: #6a70a4;
     border-radius: 5px;
     font-size: 20px;
     background-color: constants.$color-option-field;
@@ -49,16 +50,27 @@
     background-color: constants.$color-button-pick;
 }
 
+.decision-pick:disabled {
+    opacity: 0.7;
+}
+
 .input-final-option {
     width: 80%;
     padding: 8px 12px;
-    border: none;
+    border: 1px solid;
+    border-color: #6a70a4;
     border-radius: 11px;
     font-size: 20px;
 }
 
 .highlight {
-    background-color: #e2d584;
+    border: 1px solid;
+    border-color: #eade75;
+    background-color: #d8ce31d1;
+}
+
+.disabled {
+    opacity: 0.7;
 }
 
 .sound-image img {
