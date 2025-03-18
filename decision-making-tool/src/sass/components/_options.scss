@@ -42,20 +42,34 @@
 }
 
 .buttons > button {
+    cursor: pointer;
     display: block;
     width: 100%;
     padding: 6px 12px;
     border: none;
     border-radius: 5px;
+    font-family: Roboto, sans-serif;
     font-size: 16px;
     background-color: constants.$color-option-buttons;
 }
 
+.buttons > button:hover {
+    color: constants.$color-title-text;
+    background-color: #4a4b79;
+}
+
 .delete {
+    cursor: pointer;
     width: 20%;
     padding: 6px 12px;
     border: none;
     border-radius: 5px;
+    font-family: Roboto, sans-serif;
     font-size: 16px;
     background-color: constants.$color-option-buttons;
+}
+
+.delete:hover {
+    color: constants.$color-title-text;
+    background-color: #4a4b79;
 }

@@ -58,7 +58,7 @@ export class Wheel {
                 ctx.lineTo(centerX, centerY);
 
                 ctx.closePath();
-                ctx.strokeStyle = 'yellow';
+                ctx.strokeStyle = '#6a70a4';
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 ctx.fillStyle = this.colors[i];
@@ -68,7 +68,7 @@ export class Wheel {
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
 
                 ctx.font = '25px Arial';
-                ctx.shadowColor = 'yellow';
+                ctx.shadowColor = 'white';
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
                 ctx.textAlign = 'center';
@@ -106,18 +106,22 @@ export class Wheel {
             }
 
             ctx.beginPath();
+            ctx.strokeStyle = '#6a70a4';
             ctx.moveTo(centerX, 15);
             ctx.lineTo(centerX + 10, 0);
             ctx.lineTo(centerX - 10, 0);
             ctx.lineTo(centerX, 15);
             ctx.fillStyle = 'white';
             ctx.fill();
+            ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
+            ctx.strokeStyle = '#6a70a4';
+            /*ctx.moveTo(centerX, centerY);*/
             ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
             ctx.fillStyle = 'white';
             ctx.fill();
+            ctx.stroke();
         }
     }
     public animateWheel(
@@ -270,6 +274,7 @@ function changeMenuState(
                 child instanceof HTMLButtonElement
             ) {
                 child.disabled = properties.state;
+                child.style.pointerEvents = properties.pointer;
             } else if (
                 child.children.length === 0 &&
                 child instanceof HTMLElement

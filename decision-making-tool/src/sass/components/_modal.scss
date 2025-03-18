@@ -50,12 +50,17 @@
 }
 
 .modal-buttons button {
+    cursor: pointer;
     padding: 6px 12px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     color: constants.$color-title-text;
     background-color: #6f7099;
+}
+
+.modal-buttons button:hover {
+    background-color: #4a4b79;
 }
 
 .modal-message {

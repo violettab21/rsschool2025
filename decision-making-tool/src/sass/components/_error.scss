@@ -1,9 +1,19 @@
 @use '../abstracts/constants';
 
+.error-text {
+    font-size: 20px;
+}
+
 .back {
+    cursor: pointer;
     padding: 6px 12px;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 20px;
     background-color: constants.$color-option-buttons;
+}
+
+.back:hover {
+    color: constants.$color-title-text;
+    background-color: #6c5c9ea8;
 }
