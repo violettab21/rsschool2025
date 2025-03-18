@@ -1,19 +1,18 @@
 import type { Properties } from '../interfaces';
+import type { CustomElement } from '../interfaces';
 
 export class ElementBase {
-    public properties: Properties;
+    public element: CustomElement;
+    protected properties: Properties;
 
-    public element: HTMLElement | HTMLInputElement | HTMLTextAreaElement;
     constructor(properties: Properties) {
         this.properties = properties;
         this.element = this.createElement();
         this.addClasses();
         this.setContent();
     }
-    public createElement():
-        | HTMLElement
-        | HTMLInputElement
-        | HTMLTextAreaElement {
+
+    public createElement(): CustomElement {
         const element = document.createElement(this.properties.tag);
         return element;
     }

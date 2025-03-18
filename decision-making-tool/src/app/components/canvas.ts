@@ -1,8 +1,11 @@
 import type { ElementBase } from './element';
 import { LocalStorage } from './localStorage';
 import type { Option } from '../interfaces';
-
+import type { ControlState } from '../interfaces';
 import win from './game-bonus.mp3';
+import type { CustomElement } from '../interfaces';
+import { isOptions } from '../pages/options';
+import { isSound } from '../pages/picker';
 
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
@@ -149,10 +152,11 @@ export class Wheel {
                 pointer: 'auto',
                 className: 'disabled',
             });
-            const soundStatusData: { sound: boolean } | null =
-                this.soundStatus.getData();
-            if (soundStatusData !== null) {
-                if (soundStatusData.sound) playAudio();
+
+            const soundStatusData = this.soundStatus.getData();
+            if (isSound(soundStatusData)) {
+                const soundStatus = soundStatusData;
+                if (soundStatus.sound) playAudio();
             } else playAudio();
         }
     }
@@ -224,14 +228,15 @@ function generateRandomColor(): string {
     return `#${colorCode}`;
 }
 export function getValidOptions(): Option[] {
-    const localStorage = new LocalStorage('decision-maker_options');
-    const options: Option[] | null = localStorage.getData();
-    if (options !== null) {
+    const storage = new LocalStorage('decision-maker_options');
+    const options = storage.getData();
+    if (isOptions(options)) {
         const filteredOptions = options.filter(
             (option) => option.title.length !== 0 && option.weight.length !== 0
         );
         return filteredOptions;
     }
+
     return [];
 }
 function playAudio(): void {
@@ -261,8 +266,8 @@ function generateRandomIndex(interval: number): number[] {
     return indexes;
 }
 function changeMenuState(
-    container: HTMLElement | HTMLInputElement | HTMLButtonElement,
-    properties: { state: boolean; pointer: string; className: string }
+    container: CustomElement,
+    properties: ControlState
 ): void {
     const childrenElementsCount = container.children.length;
     if (childrenElementsCount !== 0) {

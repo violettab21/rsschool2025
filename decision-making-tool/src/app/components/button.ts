@@ -14,9 +14,7 @@ export class Button extends ElementBase {
     public addHandler(handler: (event?: Event) => void): void {
         try {
             this.element.addEventListener('click', (event: Event) => {
-                if ((event.target as HTMLElement).textContent === 'Delete')
-                    handler(event);
-                else handler();
+                handler(event);
             });
         } catch (e) {
             console.error(e);

@@ -13,6 +13,7 @@ export class ParseListModal extends Modal {
             className: ['textarea'],
         });
         this.page = page;
+
         if (textarea.element instanceof HTMLTextAreaElement) {
             this.inputForParse = textarea.element;
             this.inputForParse.placeholder =
@@ -31,6 +32,7 @@ export class ParseListModal extends Modal {
             tag: 'div',
             className: ['modal-buttons'],
         });
+
         const createButton = new Button({
             className: ['button', 'button-confirm'],
             textContent: 'Confirm',
@@ -40,17 +42,21 @@ export class ParseListModal extends Modal {
                 localStorage.saveData(this.page.getOptions());
             },
         });
+
         const cancelButton = new Button({
             className: ['button', 'button-cancel'],
             textContent: 'Cancel',
             handlerFunction: this.closeModal.bind(this),
         });
+
         modalButtons.element.append(createButton.element, cancelButton.element);
         if (this.inputForParse)
             modalContent.element.append(
                 this.inputForParse,
                 modalButtons.element
             );
+        else modalContent.element.append(modalButtons.element);
+
         this.addModalContent(modalContent);
     }
     public createOptionsFromInput(): void {

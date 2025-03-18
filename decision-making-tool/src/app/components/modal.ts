@@ -12,7 +12,29 @@ class Modal {
         this.configureBaseModal();
     }
 
-    public configureBaseModal(): void {
+    public addModalContent(content: ElementBase): void {
+        this.modal.element.append(content.element);
+    }
+
+    public closeModal(): void {
+        this.modalContainer.element.remove();
+    }
+
+    public closeModalOnEsc(): void {
+        document.addEventListener('keydown', (event) => {
+            if (event.code == 'Escape') {
+                this.closeModal();
+            }
+        });
+    }
+
+    public closeModalOutsideClick(): void {
+        this.modalContainer.element.addEventListener('click', (event) => {
+            if (event.target === event.currentTarget) this.closeModal();
+        });
+    }
+
+    protected configureBaseModal(): void {
         const spanCross = new ElementBase({
             tag: 'span',
             className: ['icon-close'],
@@ -20,25 +42,15 @@ class Modal {
         spanCross.element.addEventListener('click', () => {
             this.closeModal();
         });
-        this.modalContainer.element.addEventListener('click', (event) => {
-            if (event.target === event.currentTarget) this.closeModal();
-        });
+
         const crossImage = new Image();
         crossImage.src = image;
+
         spanCross.element.append(crossImage);
         this.modalContainer.element.append(this.modal.element);
         this.modal.element.append(spanCross.element);
-        document.addEventListener('keydown', (event) => {
-            if (event.code == 'Escape') {
-                this.closeModal();
-            }
-        });
-    }
-    public addModalContent(content: ElementBase): void {
-        this.modal.element.append(content.element);
-    }
-    public closeModal(): void {
-        this.modalContainer.element.remove();
+        this.closeModalOnEsc();
+        this.closeModalOutsideClick();
     }
 }
 export { Modal };

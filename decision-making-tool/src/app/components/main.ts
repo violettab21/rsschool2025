@@ -2,6 +2,7 @@ import { ElementBase } from './element';
 import type { OptionsPage } from '../pages/options';
 import type { Picker } from '../pages/picker';
 import type { ErrorPage } from '../pages/error-page';
+
 export class Main {
     public pageTitle: ElementBase;
     public main: ElementBase;
@@ -13,11 +14,11 @@ export class Main {
             textContent: 'Decision Making Tool',
         });
         this.main = new ElementBase({ tag: 'main', className: ['main'] });
-        this.configurePageView();
+        this.configureBasicView();
         this.content = null;
     }
-    public configurePageView(): void {
+    public configureBasicView(): void {
         this.main.element.append(this.pageTitle.element);
-        document.querySelector('body')?.append(this.main.element);
+        document.body.append(this.main.element);
     }
 }

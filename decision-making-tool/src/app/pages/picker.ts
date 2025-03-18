@@ -6,6 +6,7 @@ import type { Router } from '../components/router';
 import imageSoundOff from './sound-off-filled-svgrepo-com.svg';
 import imageSoundOn from './sound-loud-filled-svgrepo-com.svg';
 import { LocalStorage } from '../components/localStorage';
+import type { Sound } from '../interfaces';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
@@ -72,13 +73,13 @@ export class Picker {
         });
 
         const soundImage = new Image();
-        const soundStatusData: { sound: boolean } | null =
-            this.soundStatus.getData();
-        if (soundStatusData !== null) {
-            soundImage.src = soundStatusData.sound
-                ? imageSoundOn
-                : imageSoundOff;
+
+        const soundStatusData = this.soundStatus.getData();
+        if (isSound(soundStatusData)) {
+            const soundStatus = soundStatusData;
+            soundImage.src = soundStatus.sound ? imageSoundOn : imageSoundOff;
         } else soundImage.src = imageSoundOn;
+
         this.sound.element.addEventListener('click', () => {
             if (soundImage.src === imageSoundOn) {
                 soundImage.src = imageSoundOff;
@@ -123,3 +124,13 @@ export class Picker {
         this.soundStatus.saveData({ sound: true });
     }
 }
+
+function isSound(data: unknown): data is Sound {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+    const object: Partial<Sound> = data;
+    return typeof object.sound === 'boolean';
+}
+
+export { isSound };

@@ -8,10 +8,11 @@ export class LocalStorage {
         localStorage.setItem(this.key, JSON.stringify(object));
     }
 
-    public getData<T>(): T | null {
+    public getData(): unknown {
         const data = localStorage.getItem(this.key);
         if (data !== null) {
-            return JSON.parse(data) as T;
+            const object: unknown = JSON.parse(data);
+            return object;
         } else return null;
     }
 }

@@ -7,6 +7,7 @@ import type { Router } from '../components/router';
 import { LocalStorage } from '../components/localStorage';
 import { getValidOptions } from '../components/canvas';
 import type { Option } from '../interfaces';
+
 class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
@@ -86,9 +87,9 @@ class OptionsPage {
                     reader.addEventListener('load', () => {
                         if (typeof reader.result === 'string') {
                             const result = reader.result;
-                            if (typeof JSON.parse(result) === 'object') {
-                                listOfOptions = JSON.parse(result) as Option[];
-                                console.log(listOfOptions);
+                            const receivedData: unknown = JSON.parse(result);
+                            if (isOptions(receivedData)) {
+                                listOfOptions = receivedData;
                                 this.clearAllOptions();
                                 this.addOptionElements(listOfOptions);
                                 const localStorage = new LocalStorage(
@@ -190,12 +191,15 @@ class OptionsPage {
             textContent: 'Delete',
             handlerFunction: (event?: Event): void => {
                 if (event) {
-                    const optionToDelete = (event.target as Node).parentElement;
-                    if (optionToDelete) optionToDelete.remove();
-                    const localStorage = new LocalStorage(
-                        'decision-maker_options'
-                    );
-                    localStorage.saveData(this.getOptions());
+                    const clickedItem = event.target;
+                    if (clickedItem instanceof Node) {
+                        const optionToDelete = clickedItem.parentElement;
+                        if (optionToDelete) optionToDelete.remove();
+                        const localStorage = new LocalStorage(
+                            'decision-maker_options'
+                        );
+                        localStorage.saveData(this.getOptions());
+                    }
                 }
             },
         });
@@ -271,10 +275,28 @@ class OptionsPage {
     }
 
     public getOptionsFromStorage(): void {
-        const localStorage = new LocalStorage('decision-maker_options');
-        const options: Option[] | null = localStorage.getData();
-        if (options !== null) this.options = options;
-        else this.options = null;
+        const storage = new LocalStorage('decision-maker_options');
+        const options = storage.getData();
+        if (isOptions(options)) {
+            this.options = options;
+        } else this.options = null;
     }
 }
-export { OptionsPage };
+
+function isOptions(data: unknown): data is Option[] {
+    if (!Array.isArray(data) || data === null) {
+        return false;
+    } else if (Array.isArray(data) && !data.every((el) => isOption(el)))
+        return false;
+    return typeof data[0].title === 'string';
+}
+
+function isOption(data: unknown): data is Option {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    const object: Partial<Option> = data;
+    return typeof object.title === 'string';
+}
+export { OptionsPage, isOptions };
