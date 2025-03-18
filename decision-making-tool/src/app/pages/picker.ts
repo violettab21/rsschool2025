@@ -3,16 +3,24 @@ import { ElementBase } from '../components/element';
 import type { Main } from '../components/main';
 import { Wheel } from '../components/canvas';
 import type { Router } from '../components/router';
+/*import imageSoundOff from './sound-off-filled-svgrepo-com.svg';*/
+import imageSoundOn from './sound-loud-filled-svgrepo-com.svg';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
     public time: ElementBase;
     public finalOption: ElementBase;
+    public sound: ElementBase;
     constructor(main: Main, router: Router) {
         this.time = new ElementBase({
             tag: 'input',
             className: ['input-time'],
         });
+        this.sound = new ElementBase({
+            tag: 'span',
+            className: ['sound-image'],
+        });
+
         if (this.time.element instanceof HTMLInputElement) {
             this.time.element.type = 'number';
             this.time.element.min = '5';
@@ -53,6 +61,9 @@ export class Picker {
                 else this.wheel.startWheel(10000, this.finalOption);
             },
         });
+        const soundImage = new Image();
+        soundImage.src = imageSoundOn;
+        this.sound.element.append(soundImage);
         const timeLabel = new ElementBase({
             tag: 'label',
             className: ['time-label'],
@@ -62,7 +73,11 @@ export class Picker {
         if (this.time.element instanceof HTMLInputElement) {
             this.time.element.value = '10';
         }
-        container.element.append(backButton.element, timeLabel.element);
+        container.element.append(
+            backButton.element,
+            this.sound.element,
+            timeLabel.element
+        );
         this.menuContainer.element.append(
             container.element,
             pickButton.element

@@ -194,7 +194,10 @@ export function getValidOptions(): Option[] {
 }
 function playAudio(): void {
     const audioWin = new Audio(win);
-    audioWin.play();
+    audioWin
+        .play()
+        .then(() => {})
+        .catch(() => {});
 }
 function shuffleOptions(): Option[] {
     const options = getValidOptions();
