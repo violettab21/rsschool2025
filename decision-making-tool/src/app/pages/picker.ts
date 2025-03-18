@@ -3,15 +3,18 @@ import { ElementBase } from '../components/element';
 import type { Main } from '../components/main';
 import { Wheel } from '../components/canvas';
 import type { Router } from '../components/router';
-/*import imageSoundOff from './sound-off-filled-svgrepo-com.svg';*/
+import imageSoundOff from './sound-off-filled-svgrepo-com.svg';
 import imageSoundOn from './sound-loud-filled-svgrepo-com.svg';
+import { LocalStorage } from '../components/localStorage';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
     public time: ElementBase;
     public finalOption: ElementBase;
     public sound: ElementBase;
+    public soundStatus: LocalStorage;
     constructor(main: Main, router: Router) {
+        this.soundStatus = new LocalStorage('sound');
         this.time = new ElementBase({
             tag: 'input',
             className: ['input-time'],
@@ -30,7 +33,7 @@ export class Picker {
             tag: 'input',
             className: ['input-final-option'],
         });
-        this.wheel = new Wheel();
+        this.wheel = new Wheel(this.soundStatus);
         this.menuContainer = new ElementBase({
             tag: 'div',
             className: ['decision-menu'],
@@ -61,8 +64,24 @@ export class Picker {
                 else this.wheel.startWheel(10000, this.finalOption);
             },
         });
+
         const soundImage = new Image();
-        soundImage.src = imageSoundOn;
+        const soundStatusData: { sound: boolean } | null =
+            this.soundStatus.getData();
+        if (soundStatusData !== null) {
+            soundImage.src = soundStatusData.sound
+                ? imageSoundOn
+                : imageSoundOff;
+        } else soundImage.src = imageSoundOn;
+        this.sound.element.addEventListener('click', () => {
+            if (soundImage.src === imageSoundOn) {
+                soundImage.src = imageSoundOff;
+                this.disableAudio();
+            } else if (soundImage.src === imageSoundOff) {
+                soundImage.src = imageSoundOn;
+                this.enableAudio();
+            }
+        });
         this.sound.element.append(soundImage);
         const timeLabel = new ElementBase({
             tag: 'label',
@@ -90,5 +109,11 @@ export class Picker {
             this.menuContainer.element,
             this.finalOption.element
         );
+    }
+    public disableAudio(): void {
+        this.soundStatus.saveData({ sound: false });
+    }
+    public enableAudio(): void {
+        this.soundStatus.saveData({ sound: true });
     }
 }

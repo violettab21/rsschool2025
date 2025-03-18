@@ -268,8 +268,9 @@ class OptionsPage {
 
     public getOptionsFromStorage(): void {
         const localStorage = new LocalStorage('decision-maker_options');
-        const options: Option[] = localStorage.getData();
-        this.options = options;
+        const options: Option[] | null = localStorage.getData();
+        if (options !== null) this.options = options;
+        else this.options = [];
     }
 }
 export { OptionsPage };

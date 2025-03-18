@@ -12,7 +12,8 @@ export class Wheel {
     public duration: number;
     public isSpinning: boolean;
     public startTime: number;
-    constructor() {
+    public soundStatus: LocalStorage;
+    constructor(soundStatus: LocalStorage) {
         this.wheelElement = document.createElement('canvas');
         this.wheelElement.width = 500;
         this.wheelElement.height = 450;
@@ -24,6 +25,7 @@ export class Wheel {
         this.isSpinning = false;
         this.startTime = 0;
         shuffleOptions();
+        this.soundStatus = soundStatus;
     }
     public drawWheel(
         rotation: number,
@@ -134,7 +136,12 @@ export class Wheel {
         } else {
             this.isSpinning = false;
             highlightResult(result.element);
-            playAudio();
+
+            const soundStatusData: { sound: boolean } | null =
+                this.soundStatus.getData();
+            if (soundStatusData !== null) {
+                if (soundStatusData.sound) playAudio();
+            } else playAudio();
         }
     }
     public startWheel(duration: number, result: ElementBase): void {
@@ -197,11 +204,14 @@ function generateRandomColor(): string {
 }
 export function getValidOptions(): Option[] {
     const localStorage = new LocalStorage('decision-maker_options');
-    const options: Option[] = localStorage.getData();
-    const filteredOptions = options.filter(
-        (option) => option.title.length !== 0 && option.weight.length !== 0
-    );
-    return filteredOptions;
+    const options: Option[] | null = localStorage.getData();
+    if (options !== null) {
+        const filteredOptions = options.filter(
+            (option) => option.title.length !== 0 && option.weight.length !== 0
+        );
+        return filteredOptions;
+    }
+    return [];
 }
 function playAudio(): void {
     const audioWin = new Audio(win);

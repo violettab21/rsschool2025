@@ -9,6 +9,7 @@ export class App {
     constructor() {
         this.main = new Main();
         this.localStorage = new LocalStorage('decision-maker_options');
+
         this.router = new Router(this.main, this.localStorage);
         document.addEventListener('DOMContentLoaded', () => {
             this.router.openPage();
