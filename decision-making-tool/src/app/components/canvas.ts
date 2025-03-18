@@ -42,6 +42,7 @@ export class Wheel {
             );
             const centerX = this.wheelElement.width / 2;
             const centerY = this.wheelElement.height / 2;
+            const radius = 215;
             let weightSum = 0;
             let startRadians = rotation;
             let endRadians = 0;
@@ -54,7 +55,7 @@ export class Wheel {
                     startRadians +
                     radiansPerOneWeight * parseInt(options[i].weight);
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, 220, startRadians, endRadians);
+                ctx.arc(centerX, centerY, radius, startRadians, endRadians);
                 ctx.lineTo(centerX, centerY);
 
                 ctx.closePath();
@@ -107,17 +108,16 @@ export class Wheel {
 
             ctx.beginPath();
             ctx.strokeStyle = '#6a70a4';
-            ctx.moveTo(centerX, 15);
-            ctx.lineTo(centerX + 10, 0);
-            ctx.lineTo(centerX - 10, 0);
-            ctx.lineTo(centerX, 15);
+            ctx.moveTo(centerX, 30);
+            ctx.lineTo(centerX + 15, 0);
+            ctx.lineTo(centerX - 15, 0);
+            ctx.lineTo(centerX, 30);
             ctx.fillStyle = 'white';
             ctx.fill();
             ctx.stroke();
 
             ctx.beginPath();
             ctx.strokeStyle = '#6a70a4';
-            /*ctx.moveTo(centerX, centerY);*/
             ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
             ctx.fillStyle = 'white';
             ctx.fill();
