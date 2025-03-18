@@ -64,12 +64,27 @@ export class Wheel {
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
-                ctx.font = '30px Arial';
+
+                ctx.font = '25px Arial';
                 ctx.shadowColor = 'yellow';
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
+                ctx.textAlign = 'center';
                 ctx.fillStyle = 'black';
-                ctx.fillText(options[i].title, 40, 0);
+                const textWidth = ctx.measureText(options[i].title);
+                if (
+                    textWidth.width < 155 &&
+                    startRadians + (endRadians - startRadians) > Math.PI / 4.5
+                ) {
+                    ctx.fillText(options[i].title, 110, 0);
+                } else if (
+                    textWidth.width > 155 &&
+                    startRadians + (endRadians - startRadians) > Math.PI / 4.5
+                ) {
+                    const clippedTitle = options[i].title.slice(0, 13) + '...';
+
+                    ctx.fillText(clippedTitle, 110, 0);
+                }
 
                 ctx.restore();
                 if (

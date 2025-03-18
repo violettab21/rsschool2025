@@ -1,4 +1,4 @@
 {
-    "*.scss": ["stylelint --fix", "prettier --write"],
-    "src/*.ts|src/*.js": ["prettier --write", "eslint"]
+    "src/sass/*.scss": ["stylelint --fix", "prettier --write"],
+    "src/*.ts|src/*.js|src/app/*.ts": ["prettier --write", "eslint"]
 }

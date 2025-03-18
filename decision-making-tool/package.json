@@ -8,7 +8,7 @@
         "build-dev": "webpack",
         "format": "prettier --write ./src",
         "lint": "eslint ./src",
-        "stylelint": "stylelint src/*.scss",
+        "stylelint": "stylelint ./src/sass",
         "prepare": "cd .. && husky decision-making-tool/.husky"
     },
     "author": "",
