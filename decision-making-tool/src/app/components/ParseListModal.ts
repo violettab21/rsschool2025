@@ -13,8 +13,12 @@ export class ParseListModal extends Modal {
             className: ['textarea'],
         });
         this.page = page;
-        if (textarea.element instanceof HTMLTextAreaElement)
+        if (textarea.element instanceof HTMLTextAreaElement) {
             this.inputForParse = textarea.element;
+            this.inputForParse.placeholder =
+                'Enter data in CSV format: title, weight';
+        }
+
         this.configureModal();
     }
     public configureModal(): void {
@@ -63,7 +67,7 @@ export class ParseListModal extends Modal {
             const listOfRows = inputText.split('\n');
             const arrayOfOptions = listOfRows.map((row) => {
                 const [title, weight] = row.split(',');
-                return { title: title, weight: weight };
+                return { title: title.trim(), weight: weight.trim() };
             });
             return arrayOfOptions;
         } else return [{ title: '', weight: '' }];

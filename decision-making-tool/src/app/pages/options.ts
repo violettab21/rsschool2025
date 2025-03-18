@@ -55,7 +55,7 @@ class OptionsPage {
         });
         const parseList = new Button({
             className: ['parse_list'],
-            textContent: 'Parse List',
+            textContent: 'Paste List',
             handlerFunction: this.parseListHandler.bind(
                 this,
                 main.main.element
