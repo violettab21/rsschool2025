@@ -10,7 +10,7 @@ import type { Option } from '../interfaces';
 class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
-    public options: Option[];
+    public options: Option[] | null;
     constructor(main: Main, router: Router) {
         this.buttonsContainer = new ElementBase({
             tag: 'div',
@@ -119,7 +119,11 @@ class OptionsPage {
         const clear = new Button({
             className: ['clear'],
             textContent: 'Clear All Options',
-            handlerFunction: this.clearAllOptions.bind(this),
+            handlerFunction: (): void => {
+                this.clearAllOptions.call(this);
+                const localStorage = new LocalStorage('decision-maker_options');
+                localStorage.saveData(this.getOptions());
+            },
         });
         this.buttonsContainer.element.append(
             addOptions.element,
@@ -135,7 +139,7 @@ class OptionsPage {
 
     public configureOptionsView(): void {
         this.buttonsContainer.element.before(this.optionsContainer.element);
-        if (this.options.length === 0) this.addOptionElement();
+        if (this.options === null) this.addOptionElement();
         else this.addOptionElements(this.options);
     }
     public addOptionElement(optionData?: Option): void {
@@ -270,7 +274,7 @@ class OptionsPage {
         const localStorage = new LocalStorage('decision-maker_options');
         const options: Option[] | null = localStorage.getData();
         if (options !== null) this.options = options;
-        else this.options = [];
+        else this.options = null;
     }
 }
 export { OptionsPage };
