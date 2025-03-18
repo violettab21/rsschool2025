@@ -32,7 +32,12 @@ export class Wheel {
     ): void {
         const ctx = this.wheelElement.getContext('2d');
         if (ctx) {
-            ctx.clearRect(0, 0, 400, 250);
+            ctx.clearRect(
+                0,
+                0,
+                this.wheelElement.width,
+                this.wheelElement.height
+            );
             const centerX = this.wheelElement.width / 2;
             const centerY = this.wheelElement.height / 2;
             let weightSum = 0;
@@ -48,19 +53,6 @@ export class Wheel {
                     radiansPerOneWeight * parseInt(options[i].weight);
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, 220, startRadians, endRadians);
-                const textX =
-                    centerX +
-                    (220 / 2) *
-                        Math.cos(
-                            startRadians + (endRadians - startRadians) / 2
-                        );
-                const textY =
-                    centerY +
-                    (220 / 2) *
-                        Math.sin(
-                            startRadians + (endRadians - startRadians) / 2
-                        );
-
                 ctx.lineTo(centerX, centerY);
 
                 ctx.closePath();
@@ -70,11 +62,15 @@ export class Wheel {
                 ctx.fillStyle = this.colors[i];
                 ctx.fill();
                 ctx.save();
-                ctx.translate(textX, textY);
+                ctx.translate(centerX, centerY);
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
                 ctx.font = '30px Arial';
+                ctx.shadowColor = 'yellow';
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
                 ctx.fillStyle = 'black';
-                ctx.fillText(options[i].title, -10, 0);
+                ctx.fillText(options[i].title, 40, 0);
+
                 ctx.restore();
                 if (
                     (startRadians % (Math.PI * 2) < (3 * Math.PI) / 2 &&
