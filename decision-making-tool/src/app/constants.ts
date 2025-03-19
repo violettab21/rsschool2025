@@ -1,0 +1,9 @@
+export const CANVAS_WIDTH = 500;
+export const CANVAS_HEIGHT = 450;
+export const WHEEL_RADIUS = 215;
+export const WHEEL_TITLE_LIMIT_WIDTH = 155;
+export const WHEEL_TITLE_SECTOR_LIMIT = Math.PI / 4.5;
+export const WHEEL_TITLE_OFFSET = 110;
+export const CENTER_ELEMENT_RADIUS = 20;
+export const CURSOR_ELEMENT_X_OFFSET = 15;
+export const CURSOR_ELEMENT_Y_OFFSET = 30;

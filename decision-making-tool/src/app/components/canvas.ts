@@ -6,7 +6,18 @@ import win from './game-bonus.mp3';
 import type { CustomElement } from '../interfaces';
 import { isOptions } from '../pages/options';
 import { isSound } from '../pages/picker';
-
+import {
+    WHEEL_RADIUS,
+    WHEEL_TITLE_LIMIT_WIDTH,
+    WHEEL_TITLE_SECTOR_LIMIT,
+    WHEEL_TITLE_OFFSET,
+    CANVAS_HEIGHT,
+    CANVAS_WIDTH,
+    CENTER_ELEMENT_RADIUS,
+    CURSOR_ELEMENT_X_OFFSET,
+    CURSOR_ELEMENT_Y_OFFSET,
+} from '../constants';
+import { wheelColors } from '../enums';
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;
@@ -18,8 +29,8 @@ export class Wheel {
     public soundStatus: LocalStorage;
     constructor(soundStatus: LocalStorage) {
         this.wheelElement = document.createElement('canvas');
-        this.wheelElement.width = 500;
-        this.wheelElement.height = 450;
+        this.wheelElement.width = CANVAS_WIDTH;
+        this.wheelElement.height = CANVAS_HEIGHT;
         this.rotation = 0;
         this.options = shuffleOptions();
         this.colors = this.generateColors();
@@ -45,14 +56,16 @@ export class Wheel {
             );
             const centerX = this.wheelElement.width / 2;
             const centerY = this.wheelElement.height / 2;
-            const radius = 215;
+            const radius = WHEEL_RADIUS;
             let weightSum = 0;
             let startRadians = rotation;
             let endRadians = 0;
+
             for (let i = 0; i < options.length; i += 1) {
                 weightSum += parseInt(options[i].weight);
             }
             const radiansPerOneWeight = (Math.PI * 2) / weightSum;
+
             for (let i = 0; i < options.length; i += 1) {
                 endRadians =
                     startRadians +
@@ -62,7 +75,7 @@ export class Wheel {
                 ctx.lineTo(centerX, centerY);
 
                 ctx.closePath();
-                ctx.strokeStyle = '#6a70a4';
+                ctx.strokeStyle = wheelColors.COLOR_STROKE;
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 ctx.fillStyle = this.colors[i];
@@ -72,24 +85,26 @@ export class Wheel {
                 ctx.rotate(startRadians + (endRadians - startRadians) / 2);
 
                 ctx.font = '25px Arial';
-                ctx.shadowColor = 'white';
+                ctx.shadowColor = wheelColors.LIGHT;
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
                 ctx.textAlign = 'center';
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = wheelColors.DARK;
                 const textWidth = ctx.measureText(options[i].title);
                 if (
-                    textWidth.width < 155 &&
-                    startRadians + (endRadians - startRadians) > Math.PI / 4.5
+                    textWidth.width < WHEEL_TITLE_LIMIT_WIDTH &&
+                    startRadians + (endRadians - startRadians) >
+                        WHEEL_TITLE_SECTOR_LIMIT
                 ) {
-                    ctx.fillText(options[i].title, 110, 0);
+                    ctx.fillText(options[i].title, WHEEL_TITLE_OFFSET, 0);
                 } else if (
-                    textWidth.width > 155 &&
-                    startRadians + (endRadians - startRadians) > Math.PI / 4.5
+                    textWidth.width > WHEEL_TITLE_LIMIT_WIDTH &&
+                    startRadians + (endRadians - startRadians) >
+                        WHEEL_TITLE_SECTOR_LIMIT
                 ) {
                     const clippedTitle = options[i].title.slice(0, 13) + '...';
 
-                    ctx.fillText(clippedTitle, 110, 0);
+                    ctx.fillText(clippedTitle, WHEEL_TITLE_OFFSET, 0);
                 }
 
                 ctx.restore();
@@ -108,25 +123,11 @@ export class Wheel {
 
                 startRadians = endRadians;
             }
-
-            ctx.beginPath();
-            ctx.strokeStyle = '#6a70a4';
-            ctx.moveTo(centerX, 30);
-            ctx.lineTo(centerX + 15, 0);
-            ctx.lineTo(centerX - 15, 0);
-            ctx.lineTo(centerX, 30);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.strokeStyle = '#6a70a4';
-            ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-            ctx.stroke();
+            drawCursor(ctx, centerX);
+            drawCenterElement(ctx, centerX, centerY);
         }
     }
+
     public animateWheel(
         rotationCount: number,
         result: ElementBase,
@@ -294,4 +295,28 @@ function changeMenuState(
             }
         });
     }
+}
+function drawCursor(ctx: CanvasRenderingContext2D, CenterX: number): void {
+    ctx.beginPath();
+    ctx.strokeStyle = wheelColors.COLOR_STROKE;
+    ctx.moveTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
+    ctx.lineTo(CenterX + CURSOR_ELEMENT_X_OFFSET, 0);
+    ctx.lineTo(CenterX - CURSOR_ELEMENT_X_OFFSET, 0);
+    ctx.lineTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
+    ctx.fillStyle = wheelColors.LIGHT;
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawCenterElement(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number
+): void {
+    ctx.beginPath();
+    ctx.strokeStyle = wheelColors.COLOR_STROKE;
+    ctx.arc(centerX, centerY, CENTER_ELEMENT_RADIUS, 0, 2 * Math.PI);
+    ctx.fillStyle = wheelColors.LIGHT;
+    ctx.fill();
+    ctx.stroke();
 }
