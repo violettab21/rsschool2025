@@ -1,5 +1,5 @@
 import type { ElementBase } from './element';
-import { LocalStorage } from './localStorage';
+import type { LocalStorage } from './localStorage';
 import type { Option } from '../interfaces';
 import type { ControlState } from '../interfaces';
 import win from './game-bonus.mp3';
@@ -18,27 +18,26 @@ import {
     CURSOR_ELEMENT_Y_OFFSET,
 } from '../constants';
 import { wheelColors } from '../enums';
+
 export class Wheel {
     public wheelElement: HTMLCanvasElement;
     public rotation: number;
     public colors: string[];
     public options: Option[];
     public duration: number;
-    public isSpinning: boolean;
     public startTime: number;
     public soundStatus: LocalStorage;
-    constructor(soundStatus: LocalStorage) {
+
+    constructor(soundStatus: LocalStorage, optionsStorage: LocalStorage) {
         this.wheelElement = document.createElement('canvas');
         this.wheelElement.width = CANVAS_WIDTH;
         this.wheelElement.height = CANVAS_HEIGHT;
         this.rotation = 0;
-        this.options = shuffleOptions();
+        this.options = shuffleOptions(optionsStorage);
         this.colors = this.generateColors();
         this.drawWheel(this.rotation, this.options);
         this.duration = 10000;
-        this.isSpinning = false;
         this.startTime = 0;
-        shuffleOptions();
         this.soundStatus = soundStatus;
     }
     public drawWheel(
@@ -70,55 +69,31 @@ export class Wheel {
                 endRadians =
                     startRadians +
                     radiansPerOneWeight * parseInt(options[i].weight);
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, startRadians, endRadians);
-                ctx.lineTo(centerX, centerY);
+                drawSector(
+                    ctx,
+                    centerX,
+                    centerY,
+                    radius,
+                    startRadians,
+                    endRadians,
+                    this.colors[i]
+                );
 
-                ctx.closePath();
-                ctx.strokeStyle = wheelColors.COLOR_STROKE;
-                ctx.lineWidth = 3;
-                ctx.stroke();
-                ctx.fillStyle = this.colors[i];
-                ctx.fill();
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate(startRadians + (endRadians - startRadians) / 2);
-
-                ctx.font = '25px Arial';
-                ctx.shadowColor = wheelColors.LIGHT;
-                ctx.shadowOffsetX = 1;
-                ctx.shadowOffsetY = 1;
-                ctx.textAlign = 'center';
-                ctx.fillStyle = wheelColors.DARK;
-                const textWidth = ctx.measureText(options[i].title);
-                if (
-                    textWidth.width < WHEEL_TITLE_LIMIT_WIDTH &&
-                    startRadians + (endRadians - startRadians) >
-                        WHEEL_TITLE_SECTOR_LIMIT
-                ) {
-                    ctx.fillText(options[i].title, WHEEL_TITLE_OFFSET, 0);
-                } else if (
-                    textWidth.width > WHEEL_TITLE_LIMIT_WIDTH &&
-                    startRadians + (endRadians - startRadians) >
-                        WHEEL_TITLE_SECTOR_LIMIT
-                ) {
-                    const clippedTitle = options[i].title.slice(0, 13) + '...';
-
-                    ctx.fillText(clippedTitle, WHEEL_TITLE_OFFSET, 0);
-                }
-
-                ctx.restore();
-                if (
-                    (startRadians % (Math.PI * 2) < (3 * Math.PI) / 2 &&
-                        endRadians % (Math.PI * 2) > (3 * Math.PI) / 2 &&
-                        result) ||
-                    (startRadians < (3 * Math.PI) / 2 &&
-                        endRadians > (3 * Math.PI) / 2 &&
-                        result)
-                ) {
-                    if (result.element instanceof HTMLInputElement)
-                        result.element.value = options[i].title;
-                    console.log(options[i].title);
+                setTitleForSectors(
+                    ctx,
+                    centerX,
+                    centerY,
+                    startRadians,
+                    endRadians - startRadians,
+                    options[i].title
+                );
+                if (result) {
+                    fillInResultField(
+                        result,
+                        startRadians,
+                        endRadians,
+                        options[i].title
+                    );
                 }
 
                 startRadians = endRadians;
@@ -146,7 +121,6 @@ export class Wheel {
                 this.animateWheel(rotationCount, result, menuContainer)
             );
         } else {
-            this.isSpinning = false;
             highlightResult(result.element);
             changeMenuState(menuContainer.element, {
                 state: false,
@@ -174,14 +148,12 @@ export class Wheel {
         });
         this.duration = duration;
         const rotationCount = this.generateRotationCount();
-        if (!this.isSpinning) {
-            this.isSpinning = true;
-            this.rotation = 0;
-            this.startTime = performance.now();
-            window.requestAnimationFrame(() =>
-                this.animateWheel(rotationCount, result, menuContainer)
-            );
-        }
+
+        this.rotation = 0;
+        this.startTime = performance.now();
+        window.requestAnimationFrame(() =>
+            this.animateWheel(rotationCount, result, menuContainer)
+        );
     }
     public generateColors(): string[] {
         const colors: string[] = [];
@@ -228,9 +200,8 @@ function generateRandomColor(): string {
     }
     return `#${colorCode}`;
 }
-export function getValidOptions(): Option[] {
-    const storage = new LocalStorage('decision-maker_options');
-    const options = storage.getData();
+export function getValidOptions(optionsStorage: LocalStorage): Option[] {
+    const options = optionsStorage.getData();
     if (isOptions(options)) {
         const filteredOptions = options.filter(
             (option) =>
@@ -250,8 +221,8 @@ function playAudio(): void {
         .then(() => {})
         .catch(() => {});
 }
-function shuffleOptions(): Option[] {
-    const options = getValidOptions();
+function shuffleOptions(optionsStorage: LocalStorage): Option[] {
+    const options = getValidOptions(optionsStorage);
     const randomIndexes = generateRandomIndex(options.length);
     const shuffledOptions: Option[] = [];
     randomIndexes.forEach((index) => shuffledOptions.push(options[index]));
@@ -322,4 +293,75 @@ function drawCenterElement(
     ctx.fillStyle = wheelColors.LIGHT;
     ctx.fill();
     ctx.stroke();
+}
+
+function setTitleForSectors(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    startRadians: number,
+    angle: number,
+    title: string
+): void {
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(startRadians + angle / 2);
+    ctx.font = '25px Arial';
+    ctx.shadowColor = wheelColors.LIGHT;
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = wheelColors.DARK;
+    const textWidth = ctx.measureText(title);
+    if (
+        textWidth.width < WHEEL_TITLE_LIMIT_WIDTH &&
+        startRadians + angle > WHEEL_TITLE_SECTOR_LIMIT
+    ) {
+        ctx.fillText(title, WHEEL_TITLE_OFFSET, 0);
+    } else if (
+        textWidth.width > WHEEL_TITLE_LIMIT_WIDTH &&
+        startRadians + angle > WHEEL_TITLE_SECTOR_LIMIT
+    ) {
+        const clippedTitle = title.slice(0, 13) + '...';
+
+        ctx.fillText(clippedTitle, WHEEL_TITLE_OFFSET, 0);
+    }
+
+    ctx.restore();
+}
+
+function fillInResultField(
+    result: ElementBase,
+    startAngle: number,
+    endAngle: number,
+    text: string
+): void {
+    if (
+        (startAngle % (Math.PI * 2) < (3 * Math.PI) / 2 &&
+            endAngle % (Math.PI * 2) > (3 * Math.PI) / 2) ||
+        (startAngle < (3 * Math.PI) / 2 && endAngle > (3 * Math.PI) / 2)
+    ) {
+        if (result.element instanceof HTMLInputElement)
+            result.element.value = text;
+    }
+}
+
+function drawSector(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    startRadians: number,
+    endRadians: number,
+    color: string
+): void {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, startRadians, endRadians);
+    ctx.lineTo(centerX, centerY);
+    ctx.closePath();
+    ctx.strokeStyle = wheelColors.COLOR_STROKE;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.fill();
 }

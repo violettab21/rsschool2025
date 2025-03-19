@@ -4,7 +4,7 @@ import { ParseListModal } from '../components/ParseListModal';
 import { Modal } from '../components/modal';
 import type { Main } from '../components/main';
 import type { Router } from '../components/router';
-import { LocalStorage } from '../components/localStorage';
+import type { LocalStorage } from '../components/localStorage';
 import { getValidOptions } from '../components/canvas';
 import type { Option } from '../interfaces';
 
@@ -12,7 +12,9 @@ class OptionsPage {
     public buttonsContainer: ElementBase;
     public optionsContainer: ElementBase;
     public options: Option[] | null;
-    constructor(main: Main, router: Router) {
+    public optionsStorage: LocalStorage;
+    constructor(main: Main, router: Router, optionsStorage: LocalStorage) {
+        this.optionsStorage = optionsStorage;
         this.buttonsContainer = new ElementBase({
             tag: 'div',
             className: ['buttons'],
@@ -28,32 +30,8 @@ class OptionsPage {
     }
 
     public configureButtonsView(main: Main, router: Router): void {
-        const addOptions = new Button({
-            className: ['add_option'],
-            textContent: 'Add Option',
-            handlerFunction: (): void => {
-                this.addOptionElement.call(this);
-                const localStorage = new LocalStorage('decision-maker_options');
-                localStorage.saveData(this.getOptions());
-            },
-        });
-        const start = new Button({
-            className: ['start'],
-            textContent: 'Start',
-            handlerFunction: (): void => {
-                if (getValidOptions().length < 2) {
-                    const modal = new Modal();
-                    const modalContent = new ElementBase({
-                        tag: 'p',
-                        className: ['modal-message'],
-                        textContent:
-                            'Please, create at least 2 options with title and weight',
-                    });
-                    modal.modal.element.append(modalContent.element);
-                    main.main.element.append(modal.modalContainer.element);
-                } else router.openPage('decision-picker');
-            },
-        });
+        this.configureAddOptionButton();
+        this.configureStartButton(main, router);
         const parseList = new Button({
             className: ['parse_list'],
             textContent: 'Paste List',
@@ -67,21 +45,52 @@ class OptionsPage {
             textContent: 'Save options to File',
             handlerFunction: this.saveOptionsToFile.bind(this),
         });
+        this.configureFileLoadControls();
+        const clear = new Button({
+            className: ['clear'],
+            textContent: 'Clear All Options',
+            handlerFunction: (): void => {
+                this.clearAllOptions.call(this);
+                this.optionsStorage.saveData(this.getOptions());
+            },
+        });
+        this.buttonsContainer.element.append(
+            parseList.element,
+            saveToJSON.element,
+            clear.element
+        );
+        main.main.element?.append(this.buttonsContainer.element);
+    }
+
+    public configureFileLoadControls(): void {
         const inputFile = new ElementBase({
             tag: 'input',
             className: ['file-input'],
         });
+        this.configureFileInput(inputFile);
+
+        const upload = new Button({
+            className: ['upload'],
+            textContent: 'Upload options from File',
+            handlerFunction: (): void => {
+                const upload = inputFile.element;
+                if (upload !== null) {
+                    upload.click();
+                }
+            },
+        });
+        this.buttonsContainer.element.append(upload.element, inputFile.element);
+    }
+    public configureFileInput(inputFile: ElementBase): void {
         inputFile.element.id = 'upload-file';
         if (inputFile.element instanceof HTMLInputElement) {
             const input = inputFile.element;
             input.type = 'file';
             input.addEventListener('change', () => {
-                console.log('readfile');
                 let listOfOptions: Option[];
                 if (input.files) {
-                    console.log('readfile2');
                     const file = input.files[0];
-                    console.log(file);
+
                     const reader = new FileReader();
                     reader.readAsText(file);
                     reader.addEventListener('load', () => {
@@ -92,10 +101,7 @@ class OptionsPage {
                                 listOfOptions = receivedData;
                                 this.clearAllOptions();
                                 this.addOptionElements(listOfOptions);
-                                const localStorage = new LocalStorage(
-                                    'decision-maker_options'
-                                );
-                                localStorage.saveData(this.getOptions());
+                                this.optionsStorage.saveData(this.getOptions());
                             }
                         }
                     });
@@ -106,36 +112,39 @@ class OptionsPage {
             }
         }
         inputFile.element.style.display = 'none';
+    }
+    public configureAddOptionButton(): void {
+        const addOptions = new Button({
+            className: ['add_option'],
+            textContent: 'Add Option',
+            handlerFunction: (): void => {
+                this.addOptionElement.call(this);
 
-        const upload = new Button({
-            className: ['upload'],
-            textContent: 'Upload options from File',
-            handlerFunction: (): void => {
-                const upload = document.getElementById('upload-file');
-                if (upload !== null) {
-                    upload.click();
-                }
+                this.optionsStorage.saveData(this.getOptions());
             },
         });
-        const clear = new Button({
-            className: ['clear'],
-            textContent: 'Clear All Options',
+        this.buttonsContainer.element.append(addOptions.element);
+    }
+
+    public configureStartButton(main: Main, router: Router): void {
+        const start = new Button({
+            className: ['start'],
+            textContent: 'Start',
             handlerFunction: (): void => {
-                this.clearAllOptions.call(this);
-                const localStorage = new LocalStorage('decision-maker_options');
-                localStorage.saveData(this.getOptions());
+                if (getValidOptions(this.optionsStorage).length < 2) {
+                    const modal = new Modal();
+                    const modalContent = new ElementBase({
+                        tag: 'p',
+                        className: ['modal-message'],
+                        textContent:
+                            'Please, create at least 2 options with title and weight',
+                    });
+                    modal.modal.element.append(modalContent.element);
+                    main.main.element.append(modal.modalContainer.element);
+                } else router.openPage('decision-picker');
             },
         });
-        this.buttonsContainer.element.append(
-            addOptions.element,
-            start.element,
-            parseList.element,
-            saveToJSON.element,
-            upload.element,
-            inputFile.element,
-            clear.element
-        );
-        main.main.element?.append(this.buttonsContainer.element);
+        this.buttonsContainer.element.append(start.element);
     }
 
     public configureOptionsView(): void {
@@ -167,8 +176,7 @@ class OptionsPage {
         if (name.element instanceof HTMLInputElement)
             name.element.placeholder = 'Option Title';
         name.element.addEventListener('change', () => {
-            const localStorage = new LocalStorage('decision-maker_options');
-            localStorage.saveData(this.getOptions());
+            this.optionsStorage.saveData(this.getOptions());
         });
         const weight = new ElementBase({
             tag: 'input',
@@ -183,8 +191,7 @@ class OptionsPage {
             weight.element.placeholder = 'Weight';
         }
         weight.element.addEventListener('change', () => {
-            const localStorage = new LocalStorage('decision-maker_options');
-            localStorage.saveData(this.getOptions());
+            this.optionsStorage.saveData(this.getOptions());
         });
         const deleteBtn = new Button({
             className: ['delete'],
@@ -195,10 +202,7 @@ class OptionsPage {
                     if (clickedItem instanceof Node) {
                         const optionToDelete = clickedItem.parentElement;
                         if (optionToDelete) optionToDelete.remove();
-                        const localStorage = new LocalStorage(
-                            'decision-maker_options'
-                        );
-                        localStorage.saveData(this.getOptions());
+                        this.optionsStorage.saveData(this.getOptions());
                     }
                 }
             },
@@ -275,8 +279,7 @@ class OptionsPage {
     }
 
     public getOptionsFromStorage(): void {
-        const storage = new LocalStorage('decision-maker_options');
-        const options = storage.getData();
+        const options = this.optionsStorage.getData();
         if (isOptions(options)) {
             this.options = options;
         } else this.options = null;

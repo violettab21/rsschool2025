@@ -29,3 +29,13 @@ export class ElementBase {
             : '';
     }
 }
+function removeAllChildElements(element: HTMLElement | Element): void {
+    const childrenElementsCount = element.children.length;
+    if (childrenElementsCount !== 0) {
+        const children = Array.from(element.children).slice(1);
+        children.forEach((child) => {
+            child.remove();
+        });
+    }
+}
+export { removeAllChildElements };

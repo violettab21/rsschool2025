@@ -15,7 +15,7 @@ export class Picker {
     public finalOption: ElementBase;
     public sound: ElementBase;
     public soundStatus: LocalStorage;
-    constructor(main: Main, router: Router) {
+    constructor(main: Main, router: Router, optionsStorage: LocalStorage) {
         this.soundStatus = new LocalStorage('sound');
         this.time = new ElementBase({
             tag: 'input',
@@ -35,7 +35,7 @@ export class Picker {
             tag: 'input',
             className: ['input-final-option'],
         });
-        this.wheel = new Wheel(this.soundStatus);
+        this.wheel = new Wheel(this.soundStatus, optionsStorage);
         this.menuContainer = new ElementBase({
             tag: 'div',
             className: ['decision-menu'],
