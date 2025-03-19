@@ -7,6 +7,7 @@ import imageSoundOff from './sound-off-filled-svgrepo-com.svg';
 import imageSoundOn from './sound-loud-filled-svgrepo-com.svg';
 import { LocalStorage } from '../components/localStorage';
 import type { Sound } from '../interfaces';
+import { Modal } from '../components/modal';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
@@ -57,13 +58,24 @@ export class Picker {
             className: ['decision-pick'],
             textContent: 'Pick',
             handlerFunction: (): void => {
-                if (this.time.element instanceof HTMLInputElement)
-                    this.wheel.startWheel(
-                        parseInt(this.time.element.value) * 1000,
-                        this.finalOption,
-                        this.menuContainer
-                    );
-                else
+                if (this.time.element instanceof HTMLInputElement) {
+                    if (parseInt(this.time.element.value) < 5) {
+                        const modal = new Modal();
+                        const modalContent = new ElementBase({
+                            tag: 'p',
+                            className: ['modal-message'],
+                            textContent:
+                                'Please, provide value greater than or equal to 5',
+                        });
+                        modal.modal.element.append(modalContent.element);
+                        main.main.element.append(modal.modalContainer.element);
+                    } else
+                        this.wheel.startWheel(
+                            parseInt(this.time.element.value) * 1000,
+                            this.finalOption,
+                            this.menuContainer
+                        );
+                } else
                     this.wheel.startWheel(
                         10000,
                         this.finalOption,
