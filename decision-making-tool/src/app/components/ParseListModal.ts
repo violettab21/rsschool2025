@@ -3,6 +3,7 @@ import { Button } from './button';
 import { Modal } from './modal';
 import type { OptionsPage } from '../pages/options';
 import { LocalStorage } from './localStorage';
+import { inputPlaceholders, buttonName } from '../enums';
 export class ParseListModal extends Modal {
     public inputForParse?: HTMLTextAreaElement;
     public page: OptionsPage;
@@ -16,8 +17,7 @@ export class ParseListModal extends Modal {
 
         if (textarea.element instanceof HTMLTextAreaElement) {
             this.inputForParse = textarea.element;
-            this.inputForParse.placeholder =
-                'Enter data in CSV format: title, weight';
+            this.inputForParse.placeholder = inputPlaceholders.PASTE_TEXTAREA;
         }
 
         this.configureModal();
@@ -35,7 +35,7 @@ export class ParseListModal extends Modal {
 
         const createButton = new Button({
             className: ['button', 'button-confirm'],
-            textContent: 'Confirm',
+            textContent: buttonName.CONFIRM,
             handlerFunction: (): void => {
                 this.createOptionsFromInput.call(this);
                 const localStorage = new LocalStorage('decision-maker_options');
@@ -45,7 +45,7 @@ export class ParseListModal extends Modal {
 
         const cancelButton = new Button({
             className: ['button', 'button-cancel'],
-            textContent: 'Cancel',
+            textContent: buttonName.CANCEL,
             handlerFunction: this.closeModal.bind(this),
         });
 

@@ -6,6 +6,7 @@ import type { Main } from './main';
 import type { LocalStorage } from './localStorage';
 import { getValidOptions } from './canvas';
 import { removeAllChildElements } from './element';
+import { pagePath } from '../enums';
 export class Router {
     public routes: Route[];
     constructor(main: Main, localStorage: LocalStorage) {
@@ -30,25 +31,25 @@ export class Router {
     protected setRoutes(main: Main, localStorage: LocalStorage): Route[] {
         const routes: Route[] = [
             {
-                url: 'options',
+                url: pagePath.OPTIONS,
                 handler: (): void => {
                     this.configureOptionsPage(main, localStorage);
                 },
             },
             {
-                url: 'decision-picker',
+                url: pagePath.PICKER,
                 handler: (): void => {
                     this.configurePickerPage(main, localStorage);
                 },
             },
             {
-                url: '',
+                url: pagePath.DEFAULT,
                 handler: (): void => {
                     this.configureOptionsPage(main, localStorage);
                 },
             },
             {
-                url: 'error',
+                url: pagePath.ERROR,
                 handler: (): void => {
                     this.configureErrorPage(main, localStorage);
                 },

@@ -8,6 +8,7 @@ import imageSoundOn from './sound-loud-filled-svgrepo-com.svg';
 import { LocalStorage } from '../components/localStorage';
 import type { Sound } from '../interfaces';
 import { Modal } from '../components/modal';
+import { buttonName } from '../enums';
 export class Picker {
     public wheel: Wheel;
     public menuContainer: ElementBase;
@@ -51,12 +52,12 @@ export class Picker {
         });
         const backButton = new Button({
             className: ['decision-back'],
-            textContent: 'Back',
+            textContent: buttonName.BACK,
             handlerFunction: (): void => router.openPage('/'),
         });
         const pickButton = new Button({
             className: ['decision-pick'],
-            textContent: 'Pick',
+            textContent: buttonName.PICK,
             handlerFunction: (): void => {
                 if (this.time.element instanceof HTMLInputElement) {
                     if (parseInt(this.time.element.value) < 5) {

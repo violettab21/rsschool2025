@@ -2,6 +2,7 @@ import { Button } from '../components/button';
 import { ElementBase } from '../components/element';
 import type { Main } from '../components/main';
 import type { Router } from '../components/router';
+import { buttonName } from '../enums';
 
 export class ErrorPage {
     public text: ElementBase;
@@ -14,7 +15,7 @@ export class ErrorPage {
         });
         this.button = new Button({
             className: ['back'],
-            textContent: 'Back to main page',
+            textContent: buttonName.BACK_HOME,
             handlerFunction: (): void => router.openPage('/'),
         });
 

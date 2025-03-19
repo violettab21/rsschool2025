@@ -7,6 +7,7 @@ import type { Router } from '../components/router';
 import type { LocalStorage } from '../components/localStorage';
 import { getValidOptions } from '../components/canvas';
 import type { Option } from '../interfaces';
+import { buttonName, inputPlaceholders } from '../enums';
 
 class OptionsPage {
     public buttonsContainer: ElementBase;
@@ -34,7 +35,7 @@ class OptionsPage {
         this.configureStartButton(main, router);
         const parseList = new Button({
             className: ['parse_list'],
-            textContent: 'Paste List',
+            textContent: buttonName.PASTE_LIST,
             handlerFunction: this.parseListHandler.bind(
                 this,
                 main.main.element
@@ -42,13 +43,13 @@ class OptionsPage {
         });
         const saveToJSON = new Button({
             className: ['save'],
-            textContent: 'Save options to File',
+            textContent: buttonName.SAVE_FILE,
             handlerFunction: this.saveOptionsToFile.bind(this),
         });
         this.configureFileLoadControls();
         const clear = new Button({
             className: ['clear'],
-            textContent: 'Clear All Options',
+            textContent: buttonName.CLEAR_ALL,
             handlerFunction: (): void => {
                 this.clearAllOptions.call(this);
                 this.optionsStorage.saveData(this.getOptions());
@@ -71,7 +72,7 @@ class OptionsPage {
 
         const upload = new Button({
             className: ['upload'],
-            textContent: 'Upload options from File',
+            textContent: buttonName.UPLOAD_FILE,
             handlerFunction: (): void => {
                 const upload = inputFile.element;
                 if (upload !== null) {
@@ -82,7 +83,6 @@ class OptionsPage {
         this.buttonsContainer.element.append(upload.element, inputFile.element);
     }
     public configureFileInput(inputFile: ElementBase): void {
-        inputFile.element.id = 'upload-file';
         if (inputFile.element instanceof HTMLInputElement) {
             const input = inputFile.element;
             input.type = 'file';
@@ -116,7 +116,7 @@ class OptionsPage {
     public configureAddOptionButton(): void {
         const addOptions = new Button({
             className: ['add_option'],
-            textContent: 'Add Option',
+            textContent: buttonName.ADD_OPTION,
             handlerFunction: (): void => {
                 this.addOptionElement.call(this);
 
@@ -129,7 +129,7 @@ class OptionsPage {
     public configureStartButton(main: Main, router: Router): void {
         const start = new Button({
             className: ['start'],
-            textContent: 'Start',
+            textContent: buttonName.START,
             handlerFunction: (): void => {
                 if (getValidOptions(this.optionsStorage).length < 2) {
                     const modal = new Modal();
@@ -165,37 +165,53 @@ class OptionsPage {
             className: ['option-number'],
             textContent: id,
         });
+        option.element.append(number.element);
 
+        this.configureTitleInput(option, optionData?.title);
+        this.configureWeightInput(option, optionData?.weight);
+        this.configureDeleteControl(option);
+
+        this.optionsContainer?.element.append(option.element);
+    }
+
+    public configureTitleInput(container: ElementBase, title?: string): void {
         const name = new ElementBase({
             tag: 'input',
             className: ['option-input'],
         });
-        if (name.element instanceof HTMLInputElement && optionData?.title) {
-            name.element.value = optionData.title;
+        if (name.element instanceof HTMLInputElement) {
+            if (title) name.element.value = title;
+            name.element.placeholder = inputPlaceholders.OPTION_TITLE;
+            name.element.addEventListener('change', () => {
+                this.optionsStorage.saveData(this.getOptions());
+            });
         }
-        if (name.element instanceof HTMLInputElement)
-            name.element.placeholder = 'Option Title';
-        name.element.addEventListener('change', () => {
-            this.optionsStorage.saveData(this.getOptions());
-        });
+        container.element.append(name.element);
+    }
+
+    public configureWeightInput(
+        container: ElementBase,
+        weightValue?: string
+    ): void {
         const weight = new ElementBase({
             tag: 'input',
             className: ['option-input', 'input-weight'],
         });
-        if (weight.element instanceof HTMLInputElement && optionData?.weight) {
-            weight.element.value = optionData.weight;
-        }
         if (weight.element instanceof HTMLInputElement) {
+            if (weightValue) weight.element.value = weightValue;
             weight.element.type = 'number';
             weight.element.min = '0.1';
-            weight.element.placeholder = 'Weight';
+            weight.element.placeholder = inputPlaceholders.WEIGHT;
+            weight.element.addEventListener('change', () => {
+                this.optionsStorage.saveData(this.getOptions());
+            });
         }
-        weight.element.addEventListener('change', () => {
-            this.optionsStorage.saveData(this.getOptions());
-        });
+        container.element.append(weight.element);
+    }
+    public configureDeleteControl(container: ElementBase): void {
         const deleteBtn = new Button({
             className: ['delete'],
-            textContent: 'Delete',
+            textContent: buttonName.DELETE,
             handlerFunction: (event?: Event): void => {
                 if (event) {
                     const clickedItem = event.target;
@@ -207,18 +223,12 @@ class OptionsPage {
                 }
             },
         });
-        option.element.append(
-            number.element,
-            name.element,
-            weight.element,
-            deleteBtn.element
-        );
-
-        this.optionsContainer?.element.append(option.element);
+        container.element.append(deleteBtn.element);
     }
     public addOptionElements(optionData: Option[]): void {
         optionData.forEach((option) => this.addOptionElement(option));
     }
+
     public generateIdForOption(): number {
         let value: string | null;
         let id: number = 0;
@@ -291,7 +301,7 @@ function isOptions(data: unknown): data is Option[] {
         return false;
     } else if (Array.isArray(data) && !data.every((el) => isOption(el)))
         return false;
-    return typeof data[0].title === 'string';
+    return typeof data[0]?.title === 'string' || data.length === 0;
 }
 
 function isOption(data: unknown): data is Option {
