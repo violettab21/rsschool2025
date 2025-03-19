@@ -233,7 +233,10 @@ export function getValidOptions(): Option[] {
     const options = storage.getData();
     if (isOptions(options)) {
         const filteredOptions = options.filter(
-            (option) => option.title.length !== 0 && option.weight.length !== 0
+            (option) =>
+                option.title.length !== 0 &&
+                option.weight.length !== 0 &&
+                parseInt(option.weight) > 0
         );
         return filteredOptions;
     }
