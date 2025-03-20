@@ -1,10 +1,10 @@
 import { Button } from '../components/button';
 import { ElementBase } from '../components/element';
-import { ParseListModal } from '../components/pasteListModal';
+import { ParseListModal } from '../components/paste-list-modal';
 import { Modal } from '../components/modal';
 import type { Main } from '../components/main';
 import type { Router } from '../components/router';
-import type { LocalStorage } from '../components/localStorage';
+import type { LocalStorage } from '../components/local-storage';
 import { getValidOptions } from '../components/canvas';
 import type { Option } from '../interfaces';
 import { buttonName, inputPlaceholders, pagePath } from '../enums';
@@ -209,7 +209,7 @@ class OptionsPage {
         container.element.append(weight.element);
     }
     public configureDeleteControl(container: ElementBase): void {
-        const deleteBtn = new Button({
+        const deleteButton = new Button({
             className: ['delete'],
             textContent: buttonName.DELETE,
             handlerFunction: (event?: Event): void => {
@@ -223,7 +223,7 @@ class OptionsPage {
                 }
             },
         });
-        container.element.append(deleteBtn.element);
+        container.element.append(deleteButton.element);
     }
     public addOptionElements(optionData: Option[]): void {
         optionData.forEach((option) => this.addOptionElement(option));
@@ -239,7 +239,7 @@ class OptionsPage {
                 this.optionsContainer.element.children.item(numberChildren - 1);
             if (lastChild !== null) {
                 value = lastChild.children.item(0)!.textContent;
-                if (value) id = parseInt(value.slice(1));
+                if (value) id = Number.parseInt(value.slice(1));
             }
         }
         return id + 1;
@@ -264,7 +264,7 @@ class OptionsPage {
         const numberChildren = this.optionsContainer.element.children.length;
         if (numberChildren !== 0) {
             const options = this.optionsContainer.element.children;
-            Array.from(options).forEach((el) => el.remove());
+            [...options].forEach((element) => element.remove());
         }
     }
     public getOptions(): Option[] {
@@ -273,12 +273,17 @@ class OptionsPage {
         if (numberChildren !== 0) {
             const options = this.optionsContainer.element.children;
             for (const child of options) {
-                const optionDetails = Array.from(child.children).slice(0, 3);
+                const optionDetails = [...child.children].slice(0, 3);
                 const listOfValues = optionDetails.map((element) => {
                     if (element instanceof HTMLInputElement) {
-                        return element.value ? element.value : '';
-                    } else
-                        return element.textContent ? element.textContent : '';
+                        const value = element.value ? element.value : '';
+                        return value;
+                    } else {
+                        const value = element.textContent
+                            ? element.textContent
+                            : '';
+                        return value;
+                    }
                 });
                 const [id, title, weight] = listOfValues;
                 const option: Option = { id: id, title: title, weight: weight };
@@ -290,16 +295,18 @@ class OptionsPage {
 
     public getOptionsFromStorage(): void {
         const options = this.optionsStorage.getData();
-        if (isOptions(options)) {
-            this.options = options;
-        } else this.options = null;
+
+        this.options = isOptions(options) ? options : null;
     }
 }
 
 function isOptions(data: unknown): data is Option[] {
     if (!Array.isArray(data) || data === null) {
         return false;
-    } else if (Array.isArray(data) && !data.every((el) => isOption(el)))
+    } else if (
+        Array.isArray(data) &&
+        !data.every((element) => isOption(element))
+    )
         return false;
     return typeof data[0]?.title === 'string' || data.length === 0;
 }

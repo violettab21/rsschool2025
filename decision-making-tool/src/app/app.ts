@@ -1,6 +1,6 @@
 import { Router } from './components/router';
 import { Main } from './components/main';
-import { LocalStorage } from './components/localStorage';
+import { LocalStorage } from './components/local-storage';
 
 export class App {
     public router: Router;
@@ -14,7 +14,7 @@ export class App {
         document.addEventListener('DOMContentLoaded', () => {
             this.router.openPage();
         });
-        window.addEventListener('popstate', () => {
+        globalThis.addEventListener('popstate', () => {
             console.log('popstate event triggered');
             this.router.openPage();
         });

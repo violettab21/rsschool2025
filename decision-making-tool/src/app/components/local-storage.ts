@@ -10,9 +10,10 @@ export class LocalStorage {
 
     public getData(): unknown {
         const data = localStorage.getItem(this.key);
-        if (data !== null) {
-            const object: unknown = JSON.parse(data);
-            return object;
-        } else return null;
+        if (data === null) {
+            return null;
+        }
+        const object: unknown = JSON.parse(data);
+        return object;
     }
 }

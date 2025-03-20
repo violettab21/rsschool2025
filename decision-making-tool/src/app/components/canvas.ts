@@ -1,5 +1,5 @@
 import type { ElementBase } from './element';
-import type { LocalStorage } from './localStorage';
+import type { LocalStorage } from './local-storage';
 import type { Option } from '../interfaces';
 import type { ControlState } from '../interfaces';
 import win from '../../assets/game-bonus.mp3';
@@ -36,7 +36,7 @@ export class Wheel {
         this.options = shuffleOptions(optionsStorage);
         this.colors = this.generateColors();
         this.drawWheel(this.rotation, this.options);
-        this.duration = 10000;
+        this.duration = 10_000;
         this.startTime = 0;
         this.soundStatus = soundStatus;
     }
@@ -45,9 +45,9 @@ export class Wheel {
         options: Option[],
         result?: ElementBase
     ): void {
-        const ctx = this.wheelElement.getContext('2d');
-        if (ctx) {
-            ctx.clearRect(
+        const context = this.wheelElement.getContext('2d');
+        if (context) {
+            context.clearRect(
                 0,
                 0,
                 this.wheelElement.width,
@@ -60,17 +60,17 @@ export class Wheel {
             let startRadians = rotation;
             let endRadians = 0;
 
-            for (let i = 0; i < options.length; i += 1) {
-                weightSum += parseInt(options[i].weight);
+            for (const i of options) {
+                weightSum += Number.parseInt(i.weight);
             }
             const radiansPerOneWeight = (Math.PI * 2) / weightSum;
 
-            for (let i = 0; i < options.length; i += 1) {
+            options.forEach((element, i) => {
                 endRadians =
                     startRadians +
-                    radiansPerOneWeight * parseInt(options[i].weight);
+                    radiansPerOneWeight * Number.parseInt(element.weight);
                 drawSector(
-                    ctx,
+                    context,
                     centerX,
                     centerY,
                     radius,
@@ -80,26 +80,26 @@ export class Wheel {
                 );
 
                 setTitleForSectors(
-                    ctx,
+                    context,
                     centerX,
                     centerY,
                     startRadians,
                     endRadians - startRadians,
-                    options[i].title
+                    element.title
                 );
                 if (result) {
                     fillInResultField(
                         result,
                         startRadians,
                         endRadians,
-                        options[i].title
+                        element.title
                     );
                 }
 
                 startRadians = endRadians;
-            }
-            drawCursor(ctx, centerX);
-            drawCenterElement(ctx, centerX, centerY);
+            });
+            drawCursor(context, centerX);
+            drawCenterElement(context, centerX, centerY);
         }
     }
 
@@ -108,16 +108,16 @@ export class Wheel {
         result: ElementBase,
         menuContainer: ElementBase
     ): void {
-        const progress =
-            (performance.now() - this.startTime) / this.duration < 1
-                ? (performance.now() - this.startTime) / this.duration
-                : 1;
+        const progress = Math.min(
+            (performance.now() - this.startTime) / this.duration,
+            1
+        );
 
         const diff = Math.PI * 2 * rotationCount * easeInOutSine(progress);
         this.rotation = diff;
         if (progress < 1) {
             this.drawWheel(this.rotation, this.options, result);
-            window.requestAnimationFrame(() =>
+            globalThis.requestAnimationFrame(() =>
                 this.animateWheel(rotationCount, result, menuContainer)
             );
         } else {
@@ -151,7 +151,7 @@ export class Wheel {
 
         this.rotation = 0;
         this.startTime = performance.now();
-        window.requestAnimationFrame(() =>
+        globalThis.requestAnimationFrame(() =>
             this.animateWheel(rotationCount, result, menuContainer)
         );
     }
@@ -205,9 +205,9 @@ export function getValidOptions(optionsStorage: LocalStorage): Option[] {
     if (isOptions(options)) {
         const filteredOptions = options.filter(
             (option) =>
-                option.title.length !== 0 &&
-                option.weight.length !== 0 &&
-                parseInt(option.weight) > 0
+                option.title.length > 0 &&
+                option.weight.length > 0 &&
+                Number.parseInt(option.weight) > 0
         );
         return filteredOptions;
     }
@@ -246,8 +246,8 @@ function changeMenuState(
 ): void {
     const childrenElementsCount = container.children.length;
     if (childrenElementsCount !== 0) {
-        const children = Array.from(container.children);
-        children.forEach((child) => {
+        const children = container.children;
+        [...children].forEach((child) => {
             if (
                 (child.children.length === 0 &&
                     child instanceof HTMLInputElement) ||
@@ -261,73 +261,74 @@ function changeMenuState(
             ) {
                 child.style.pointerEvents = properties.pointer;
                 child.classList.toggle(properties.className);
-            } else if (child.children.length > 0) {
-                if (child instanceof HTMLElement) {
-                    child.style.pointerEvents = properties.pointer;
-                    changeMenuState(child, properties);
-                }
+            } else if (
+                child.children.length > 0 &&
+                child instanceof HTMLElement
+            ) {
+                child.style.pointerEvents = properties.pointer;
+                changeMenuState(child, properties);
             }
         });
     }
 }
-function drawCursor(ctx: CanvasRenderingContext2D, CenterX: number): void {
-    ctx.beginPath();
-    ctx.strokeStyle = wheelColors.COLOR_STROKE;
-    ctx.moveTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
-    ctx.lineTo(CenterX + CURSOR_ELEMENT_X_OFFSET, 0);
-    ctx.lineTo(CenterX - CURSOR_ELEMENT_X_OFFSET, 0);
-    ctx.lineTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
-    ctx.fillStyle = wheelColors.LIGHT;
-    ctx.fill();
-    ctx.stroke();
+function drawCursor(context: CanvasRenderingContext2D, CenterX: number): void {
+    context.beginPath();
+    context.strokeStyle = wheelColors.COLOR_STROKE;
+    context.moveTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
+    context.lineTo(CenterX + CURSOR_ELEMENT_X_OFFSET, 0);
+    context.lineTo(CenterX - CURSOR_ELEMENT_X_OFFSET, 0);
+    context.lineTo(CenterX, CURSOR_ELEMENT_Y_OFFSET);
+    context.fillStyle = wheelColors.LIGHT;
+    context.fill();
+    context.stroke();
 }
 
 function drawCenterElement(
-    ctx: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D,
     centerX: number,
     centerY: number
 ): void {
-    ctx.beginPath();
-    ctx.strokeStyle = wheelColors.COLOR_STROKE;
-    ctx.arc(centerX, centerY, CENTER_ELEMENT_RADIUS, 0, 2 * Math.PI);
-    ctx.fillStyle = wheelColors.LIGHT;
-    ctx.fill();
-    ctx.stroke();
+    context.beginPath();
+    context.strokeStyle = wheelColors.COLOR_STROKE;
+    context.arc(centerX, centerY, CENTER_ELEMENT_RADIUS, 0, 2 * Math.PI);
+    context.fillStyle = wheelColors.LIGHT;
+    context.fill();
+    context.stroke();
 }
 
 function setTitleForSectors(
-    ctx: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D,
     centerX: number,
     centerY: number,
     startRadians: number,
     angle: number,
     title: string
 ): void {
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(startRadians + angle / 2);
-    ctx.font = '25px Arial';
-    ctx.shadowColor = wheelColors.LIGHT;
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 1;
-    ctx.textAlign = 'center';
-    ctx.fillStyle = wheelColors.DARK;
-    const textWidth = ctx.measureText(title);
+    context.save();
+    context.translate(centerX, centerY);
+    context.rotate(startRadians + angle / 2);
+    context.font = '25px Arial';
+    context.shadowColor = wheelColors.LIGHT;
+    context.shadowOffsetX = 1;
+    context.shadowOffsetY = 1;
+    context.textAlign = 'center';
+    context.fillStyle = wheelColors.DARK;
+    const textWidth = context.measureText(title);
     if (
         textWidth.width < WHEEL_TITLE_LIMIT_WIDTH &&
         startRadians + angle > WHEEL_TITLE_SECTOR_LIMIT
     ) {
-        ctx.fillText(title, WHEEL_TITLE_OFFSET, 0);
+        context.fillText(title, WHEEL_TITLE_OFFSET, 0);
     } else if (
         textWidth.width > WHEEL_TITLE_LIMIT_WIDTH &&
         startRadians + angle > WHEEL_TITLE_SECTOR_LIMIT
     ) {
         const clippedTitle = title.slice(0, 13) + '...';
 
-        ctx.fillText(clippedTitle, WHEEL_TITLE_OFFSET, 0);
+        context.fillText(clippedTitle, WHEEL_TITLE_OFFSET, 0);
     }
 
-    ctx.restore();
+    context.restore();
 }
 
 function fillInResultField(
@@ -343,11 +344,12 @@ function fillInResultField(
     ) {
         if (result.element instanceof HTMLInputElement)
             result.element.value = text;
+        else return;
     }
 }
 
 function drawSector(
-    ctx: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D,
     centerX: number,
     centerY: number,
     radius: number,
@@ -355,13 +357,13 @@ function drawSector(
     endRadians: number,
     color: string
 ): void {
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, startRadians, endRadians);
-    ctx.lineTo(centerX, centerY);
-    ctx.closePath();
-    ctx.strokeStyle = wheelColors.COLOR_STROKE;
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.fillStyle = color;
-    ctx.fill();
+    context.beginPath();
+    context.arc(centerX, centerY, radius, startRadians, endRadians);
+    context.lineTo(centerX, centerY);
+    context.closePath();
+    context.strokeStyle = wheelColors.COLOR_STROKE;
+    context.lineWidth = 3;
+    context.stroke();
+    context.fillStyle = color;
+    context.fill();
 }

@@ -5,7 +5,7 @@ import { Wheel } from '../components/canvas';
 import type { Router } from '../components/router';
 import imageSoundOff from '../../assets/sound-off-filled-svgrepo-com.svg';
 import imageSoundOn from '../../assets/sound-loud-filled-svgrepo-com.svg';
-import { LocalStorage } from '../components/localStorage';
+import { LocalStorage } from '../components/local-storage';
 import type { Sound } from '../interfaces';
 import { Modal } from '../components/modal';
 import { buttonName } from '../enums';
@@ -98,19 +98,19 @@ export class Picker {
     }
     public pickHandler(main: Main): void {
         if (this.time.element instanceof HTMLInputElement) {
-            if (parseInt(this.time.element.value) < 5) {
+            if (Number.parseInt(this.time.element.value) < 5) {
                 showErrorMessage(
                     main,
                     'Please, provide value greater than or equal to 5'
                 );
             } else
                 this.wheel.startWheel(
-                    parseInt(this.time.element.value) * 1000,
+                    Number.parseInt(this.time.element.value) * 1000,
                     this.finalOption,
                     this.menuContainer
                 );
         } else
-            this.wheel.startWheel(10000, this.finalOption, this.menuContainer);
+            this.wheel.startWheel(10_000, this.finalOption, this.menuContainer);
     }
     public configureSoundControls(): void {
         const soundImage = new Image();

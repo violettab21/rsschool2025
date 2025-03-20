@@ -16,8 +16,8 @@ export class Button extends ElementBase {
             this.element.addEventListener('click', (event: Event) => {
                 handler(event);
             });
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error(error);
         }
     }
 }

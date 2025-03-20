@@ -29,7 +29,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'main.[contenthash].css',
         }),
-        new ESLintPlugin({ extensions: 'ts' })
+        new ESLintPlugin({ extensions: 'ts' }),
     ],
     module: {
         rules: [

@@ -3,7 +3,7 @@ import { OptionsPage } from '../pages/options';
 import { ErrorPage } from '../pages/error-page';
 import { Picker } from '../pages/picker';
 import type { Main } from './main';
-import type { LocalStorage } from './localStorage';
+import type { LocalStorage } from './local-storage';
 import { getValidOptions } from './canvas';
 import { removeAllChildElements } from './element';
 import { pagePath } from '../enums';
@@ -18,7 +18,7 @@ export class Router {
         if (isHistory) {
             history.pushState(null, '', path);
         }
-        const url = window.location.pathname.substring(1);
+        const url = globalThis.location.pathname.slice(1);
         const selectedRoute = this.routes.find(
             (element) => element.url === url
         );
@@ -62,10 +62,10 @@ export class Router {
         main: Main,
         localStorage: LocalStorage
     ): void {
-        if (!main.content)
-            main.content = new OptionsPage(main, this, localStorage);
-        else {
+        if (main.content) {
             removeAllChildElements(main.main.element);
+            main.content = new OptionsPage(main, this, localStorage);
+        } else {
             main.content = new OptionsPage(main, this, localStorage);
         }
     }
