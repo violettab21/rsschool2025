@@ -18,15 +18,15 @@ export class Picker {
     public soundStatus: LocalStorage;
     constructor(main: Main, router: Router, optionsStorage: LocalStorage) {
         this.soundStatus = new LocalStorage('sound');
-        this.time = new ElementBase({
-            tag: 'input',
-            className: ['input-time'],
-        });
+
         this.sound = new ElementBase({
             tag: 'span',
             className: ['sound-image'],
         });
-
+        this.time = new ElementBase({
+            tag: 'input',
+            className: ['input-time'],
+        });
         if (this.time.element instanceof HTMLInputElement) {
             this.time.element.type = 'number';
             this.time.element.min = '5';
@@ -36,6 +36,10 @@ export class Picker {
             tag: 'input',
             className: ['input-final-option'],
         });
+        if (this.finalOption.element instanceof HTMLInputElement) {
+            this.finalOption.element.disabled = true;
+            this.finalOption.element.value = 'Spin the wheel';
+        }
         this.wheel = new Wheel(this.soundStatus, optionsStorage);
         this.menuContainer = new ElementBase({
             tag: 'div',
@@ -59,32 +63,56 @@ export class Picker {
             className: ['decision-pick'],
             textContent: buttonName.PICK,
             handlerFunction: (): void => {
-                if (this.time.element instanceof HTMLInputElement) {
-                    if (parseInt(this.time.element.value) < 5) {
-                        const modal = new Modal();
-                        const modalContent = new ElementBase({
-                            tag: 'p',
-                            className: ['modal-message'],
-                            textContent:
-                                'Please, provide value greater than or equal to 5',
-                        });
-                        modal.modal.element.append(modalContent.element);
-                        main.main.element.append(modal.modalContainer.element);
-                    } else
-                        this.wheel.startWheel(
-                            parseInt(this.time.element.value) * 1000,
-                            this.finalOption,
-                            this.menuContainer
-                        );
-                } else
-                    this.wheel.startWheel(
-                        10000,
-                        this.finalOption,
-                        this.menuContainer
-                    );
+                this.pickHandler(main);
             },
         });
 
+        this.configureSoundControls();
+        const timeLabel = this.createDurationLabel();
+        container.element.append(
+            backButton.element,
+            this.sound.element,
+            timeLabel.element
+        );
+        this.menuContainer.element.append(
+            container.element,
+            pickButton.element
+        );
+
+        main.main.element.append(
+            this.menuContainer.element,
+            this.finalOption.element
+        );
+    }
+    public createDurationLabel(): ElementBase {
+        const timeLabel = new ElementBase({
+            tag: 'label',
+            className: ['time-label'],
+            textContent: 'Duration',
+        });
+        timeLabel.element.append(this.time.element);
+        if (this.time.element instanceof HTMLInputElement) {
+            this.time.element.value = '10';
+        }
+        return timeLabel;
+    }
+    public pickHandler(main: Main): void {
+        if (this.time.element instanceof HTMLInputElement) {
+            if (parseInt(this.time.element.value) < 5) {
+                showErrorMessage(
+                    main,
+                    'Please, provide value greater than or equal to 5'
+                );
+            } else
+                this.wheel.startWheel(
+                    parseInt(this.time.element.value) * 1000,
+                    this.finalOption,
+                    this.menuContainer
+                );
+        } else
+            this.wheel.startWheel(10000, this.finalOption, this.menuContainer);
+    }
+    public configureSoundControls(): void {
         const soundImage = new Image();
 
         const soundStatusData = this.soundStatus.getData();
@@ -103,32 +131,6 @@ export class Picker {
             }
         });
         this.sound.element.append(soundImage);
-        const timeLabel = new ElementBase({
-            tag: 'label',
-            className: ['time-label'],
-            textContent: 'Duration',
-        });
-        timeLabel.element.append(this.time.element);
-        if (this.time.element instanceof HTMLInputElement) {
-            this.time.element.value = '10';
-        }
-        container.element.append(
-            backButton.element,
-            this.sound.element,
-            timeLabel.element
-        );
-        this.menuContainer.element.append(
-            container.element,
-            pickButton.element
-        );
-        if (this.finalOption.element instanceof HTMLInputElement) {
-            this.finalOption.element.disabled = true;
-            this.finalOption.element.value = 'Spin the wheel';
-        }
-        main.main.element.append(
-            this.menuContainer.element,
-            this.finalOption.element
-        );
     }
     public disableAudio(): void {
         this.soundStatus.saveData({ sound: false });
@@ -144,6 +146,17 @@ function isSound(data: unknown): data is Sound {
     }
     const object: Partial<Sound> = data;
     return typeof object.sound === 'boolean';
+}
+
+function showErrorMessage(main: Main, text: string): void {
+    const modal = new Modal();
+    const modalContent = new ElementBase({
+        tag: 'p',
+        className: ['modal-message'],
+        textContent: text,
+    });
+    modal.modal.element.append(modalContent.element);
+    main.main.element.append(modal.modalContainer.element);
 }
 
 export { isSound };
