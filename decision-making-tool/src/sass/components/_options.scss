@@ -55,7 +55,7 @@
 
 .buttons > button:hover {
     color: constants.$color-title-text;
-    background-color: #4a4b79;
+    background-color: constants.$color-button-hover-options;
 }
 
 .delete {
@@ -71,5 +71,5 @@
 
 .delete:hover {
     color: constants.$color-title-text;
-    background-color: #4a4b79;
+    background-color: constants.$color-button-hover-options;
 }

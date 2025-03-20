@@ -23,7 +23,7 @@
 .input-time {
     margin-left: 6px;
     padding: 10px;
-    border-color: #6a70a4;
+    border-color: constants.$color-border-input;
     border-radius: 5px;
     font-size: 20px;
     background-color: constants.$color-option-field;
@@ -42,7 +42,7 @@
 
 .decision-back:hover {
     color: constants.$color-title-text;
-    background-color: #6a70a4;
+    background-color: constants.$color-button-hover;
 }
 
 .decision-pick {
@@ -58,7 +58,7 @@
 }
 
 .decision-pick:hover {
-    background-color: #6a70a4;
+    background-color: constants.$color-button-hover;
 }
 
 .decision-pick:disabled {
@@ -70,7 +70,7 @@
     margin-bottom: 25px;
     padding: 8px 12px;
     border: 1px solid;
-    border-color: #6a70a4;
+    border-color: constants.$color-button-hover;
     border-radius: 11px;
     font-size: 20px;
     text-align: center;
@@ -78,8 +78,8 @@
 
 .highlight {
     border: 1px solid;
-    border-color: #eade75;
-    background-color: #d8ce31d1;
+    border-color: constants.$color-highlighted-option-border;
+    background-color: constants.$color-highlighted-option-background;
 }
 
 .disabled {
