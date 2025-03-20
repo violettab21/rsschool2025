@@ -1,8 +1,3 @@
-/*const globals = require('globals');
-const pluginJs = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const prettier = require('prettier');
-const eslintPluginUnicorn = require('eslint-plugin-unicorn');*/
 import globals from 'globals';
 import prettier from 'prettier';
 import tseslint from 'typescript-eslint';
@@ -84,20 +79,3 @@ export default [
     pluginJs.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
 ];
-
-/*import { defineConfig } from 'eslint-define-config';*/
-
-/*export default ({
-    env: {
-        browser: true,
-        es2021: true,
-    },
-    extends: ['eslint:recommended', 'plugin:unicorn/recommended'],
-    parserOptions: {
-        ecmaVersion: 12,
-        sourceType: 'module',
-    },
-    rules: {
-        // Add any custom rules here
-    },
-});*/
