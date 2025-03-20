@@ -2,7 +2,7 @@ import type { ElementBase } from './element';
 import type { LocalStorage } from './localStorage';
 import type { Option } from '../interfaces';
 import type { ControlState } from '../interfaces';
-import win from './game-bonus.mp3';
+import win from '../../assets/game-bonus.mp3';
 import type { CustomElement } from '../interfaces';
 import { isOptions } from '../pages/options';
 import { isSound } from '../pages/picker';

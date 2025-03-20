@@ -1,13 +1,13 @@
 import { Button } from '../components/button';
 import { ElementBase } from '../components/element';
-import { ParseListModal } from '../components/ParseListModal';
+import { ParseListModal } from '../components/pasteListModal';
 import { Modal } from '../components/modal';
 import type { Main } from '../components/main';
 import type { Router } from '../components/router';
 import type { LocalStorage } from '../components/localStorage';
 import { getValidOptions } from '../components/canvas';
 import type { Option } from '../interfaces';
-import { buttonName, inputPlaceholders } from '../enums';
+import { buttonName, inputPlaceholders, pagePath } from '../enums';
 
 class OptionsPage {
     public buttonsContainer: ElementBase;
@@ -141,7 +141,7 @@ class OptionsPage {
                     });
                     modal.modal.element.append(modalContent.element);
                     main.main.element.append(modal.modalContainer.element);
-                } else router.openPage('decision-picker');
+                } else router.openPage(pagePath.PICKER);
             },
         });
         this.buttonsContainer.element.append(start.element);

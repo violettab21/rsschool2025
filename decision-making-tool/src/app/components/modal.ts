@@ -1,5 +1,5 @@
 import { ElementBase } from './element';
-import image from './close.svg';
+import image from '../../assets/close.svg';
 class Modal {
     public modalContainer: ElementBase;
     public modal: ElementBase;
