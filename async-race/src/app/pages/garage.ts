@@ -1,37 +1,133 @@
-import type { CustomElement } from '../interfaces';
+import type { CustomElement, NewCar } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
+import { GarageAPI } from '../api/garage-api';
 
 export class GaragePage {
     public content: CustomElement;
+    public createRowContainer: CustomElement;
+    public updateRowContainer: CustomElement;
+    public api: GarageAPI;
     constructor() {
+        this.api = new GarageAPI();
         this.content = new ElementBase({
             tag: 'main',
             className: ['main'],
         }).element;
+
+        this.createRowContainer = new ElementBase({
+            tag: 'div',
+            className: ['create-car-row'],
+        }).element;
+        this.createCarForm();
+        this.updateRowContainer = new ElementBase({
+            tag: 'div',
+            className: ['update-car-row'],
+        }).element;
+        this.updateCarForm();
         document.body.append(this.content);
+
         this.configurePage();
     }
 
     public configurePage(): void {
-        const garagePageMenu = createGaragePageMenu();
+        const garagePageMenu = this.createGaragePageMenu();
         this.content.append(garagePageMenu);
     }
-}
 
-function createGaragePageMenu(): CustomElement {
-    const pageMenuContainer = new ElementBase({
-        tag: 'div',
-        className: ['garage-page-menu'],
-    }).element;
+    public async createCarHandler(): Promise<void> {
+        const car: NewCar = { name: '', color: '' };
 
-    pageMenuContainer.append(
-        createTopLevelButtons(),
-        createForm(),
-        createBottomLevelButtons()
-    );
+        const listOfElements = [...this.createRowContainer.children];
+        if (
+            listOfElements[0] instanceof HTMLInputElement &&
+            listOfElements[1] instanceof HTMLInputElement
+        ) {
+            const carName = listOfElements[0].value;
+            const carColor = listOfElements[1].value;
+            car.name = carName;
+            car.color = carColor;
 
-    return pageMenuContainer;
+            const createdCar = await this.api.createCar(car);
+            console.log(createdCar);
+        }
+    }
+
+    public createCarForm(): void {
+        const newCarInput = new ElementBase({
+            tag: 'input',
+            className: ['create-car-input'],
+        }).element;
+
+        const newCarColor = new ElementBase({
+            tag: 'input',
+            className: ['create-car-color'],
+        }).element;
+        if (newCarColor instanceof HTMLInputElement) {
+            newCarColor.type = 'color';
+        }
+        const newCarButton = new Button({
+            className: ['create-car'],
+            textContent: 'Create',
+            handlerFunction: (): void => {
+                this.createCarHandler().then(
+                    (result) => result,
+                    (error) => console.log(error)
+                );
+            },
+        }).element;
+
+        this.createRowContainer.append(newCarInput, newCarColor, newCarButton);
+    }
+
+    public createForm(): CustomElement {
+        const formContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage-form'],
+        }).element;
+        formContainer.append(this.createRowContainer, this.updateRowContainer);
+        return formContainer;
+    }
+
+    public updateCarForm(): void {
+        const updateCarInput = new ElementBase({
+            tag: 'input',
+            className: ['update-car-input'],
+        }).element;
+
+        const updatedCarColor = new ElementBase({
+            tag: 'input',
+            className: ['update-car-color'],
+        }).element;
+        if (updatedCarColor instanceof HTMLInputElement) {
+            updatedCarColor.type = 'color';
+        }
+        const updateCarButton = new ElementBase({
+            tag: 'button',
+            className: ['update-car'],
+            textContent: 'Update',
+        }).element;
+
+        this.updateRowContainer.append(
+            updateCarInput,
+            updatedCarColor,
+            updateCarButton
+        );
+    }
+    public createGaragePageMenu(): CustomElement {
+        const pageMenuContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage-page-menu'],
+        }).element;
+
+        pageMenuContainer.append(
+            createTopLevelButtons(),
+            this.createForm(),
+            createBottomLevelButtons()
+        );
+
+        return pageMenuContainer;
+    }
 }
 
 function createTopLevelButtons(): CustomElement {
@@ -83,66 +179,4 @@ function createBottomLevelButtons(): CustomElement {
     buttonsContainer.append(raceButton, resetButton, generateCarsButton);
 
     return buttonsContainer;
-}
-
-function createForm(): CustomElement {
-    const formContainer = new ElementBase({
-        tag: 'div',
-        className: ['garage-form'],
-    }).element;
-    formContainer.append(createCarForm(), updateCarForm());
-    return formContainer;
-}
-
-function createCarForm(): CustomElement {
-    const createRowContainer = new ElementBase({
-        tag: 'div',
-        className: ['create-car-row'],
-    }).element;
-
-    const newCarInput = new ElementBase({
-        tag: 'input',
-        className: ['create-car-input'],
-    }).element;
-
-    const NewCarColor = new ElementBase({
-        tag: 'input',
-        className: ['create-car-color'],
-    }).element;
-
-    const NewCarButton = new ElementBase({
-        tag: 'button',
-        className: ['create-car'],
-        textContent: 'Create',
-    }).element;
-
-    createRowContainer.append(newCarInput, NewCarColor, NewCarButton);
-    return createRowContainer;
-}
-
-function updateCarForm(): CustomElement {
-    const updateRowContainer = new ElementBase({
-        tag: 'div',
-        className: ['update-car-row'],
-    }).element;
-
-    const updateCarInput = new ElementBase({
-        tag: 'input',
-        className: ['update-car-input'],
-    }).element;
-
-    const updatedCarColor = new ElementBase({
-        tag: 'input',
-        className: ['update-car-color'],
-    }).element;
-
-    const updateCarButton = new ElementBase({
-        tag: 'button',
-        className: ['update-car'],
-        textContent: 'Update',
-    }).element;
-
-    updateRowContainer.append(updateCarInput, updatedCarColor, updateCarButton);
-
-    return updateRowContainer;
 }

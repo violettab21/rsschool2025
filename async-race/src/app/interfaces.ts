@@ -10,6 +10,14 @@ interface ButtonProperties {
     handlerFunction: () => void;
 }
 
+interface Car {
+    name: string;
+    color: string;
+    id: number;
+}
+
+type NewCar = Omit<Car, 'id'>;
+
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
 
-export { Properties, CustomElement, ButtonProperties };
+export { Properties, CustomElement, ButtonProperties, Car, NewCar };
