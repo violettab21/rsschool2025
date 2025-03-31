@@ -1,1 +1,3 @@
-console.log('async race');
+import { GaragePage } from './app/pages/garage';
+
+new GaragePage();
