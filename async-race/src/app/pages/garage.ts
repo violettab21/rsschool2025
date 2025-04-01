@@ -8,9 +8,12 @@ export class GaragePage {
     public content: CustomElement;
     public createRowContainer: CustomElement;
     public updateRowContainer: CustomElement;
+    public carsContainer: CustomElement;
     public garageContainer: CustomElement;
+    public pageNumber: number;
     public api: GarageAPI;
     constructor() {
+        this.pageNumber = 1;
         this.api = new GarageAPI();
         this.content = new ElementBase({
             tag: 'main',
@@ -31,8 +34,12 @@ export class GaragePage {
 
         this.updateCarForm();
 
-        this.garageContainer = createGarageContainer();
-
+        this.carsContainer = createCarsContainer();
+        this.garageContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage'],
+        }).element;
+        this.createGarageContainer(this.pageNumber);
         document.body.append(this.content);
 
         this.configurePage();
@@ -40,8 +47,9 @@ export class GaragePage {
 
     public configurePage(): void {
         const garagePageMenu = this.createGaragePageMenu();
+
         this.content.append(garagePageMenu, this.garageContainer);
-        void this.populateGarage(1);
+        void this.populateGarage(this.pageNumber);
     }
 
     public async createCarHandler(): Promise<void> {
@@ -148,7 +156,7 @@ export class GaragePage {
         const carMain = createCarMainContent(car.color);
         carRow.append(carMenu, carMain);
 
-        this.garageContainer.append(carRow);
+        this.carsContainer.append(carRow);
     }
 
     public async populateGarage(page: number): Promise<void> {
@@ -156,7 +164,65 @@ export class GaragePage {
         if (isCars(cars)) cars.forEach((car) => this.createCarRecord(car));
     }
     public getCarsCountOnPage(): number {
-        return this.garageContainer.children.length;
+        return this.carsContainer.children.length;
+    }
+
+    public createGarageContainer(pageNumber: number): void {
+        const pageTitle = new ElementBase({
+            tag: 'p',
+            className: ['garage-title'],
+            textContent: 'Garage',
+        }).element;
+
+        const page = new ElementBase({
+            tag: 'p',
+            className: ['garage-page-number'],
+            textContent: `Page #${pageNumber}`,
+        }).element;
+
+        this.garageContainer.append(
+            pageTitle,
+            page,
+            this.carsContainer,
+            this.createPaginationButtons()
+        );
+    }
+    public clearGarage(): void {
+        [...this.garageContainer.children].forEach((element) =>
+            element.remove()
+        );
+    }
+    public createPaginationButtons(): CustomElement {
+        const paginationButtons = new ElementBase({
+            tag: 'div',
+            className: ['pagination-buttons'],
+        }).element;
+
+        const previousButton = new Button({
+            className: ['garage-button'],
+            textContent: 'Prev',
+            handlerFunction: (): void => {
+                this.clearGarage();
+                this.carsContainer = createCarsContainer();
+                this.pageNumber -= 1;
+                this.createGarageContainer(this.pageNumber);
+                void this.populateGarage(this.pageNumber);
+            },
+        }).element;
+
+        const nextButton = new Button({
+            className: ['winners-button'],
+            textContent: 'Next',
+            handlerFunction: (): void => {
+                this.clearGarage();
+                this.carsContainer = createCarsContainer();
+                this.pageNumber += 1;
+                this.createGarageContainer(this.pageNumber);
+                void this.populateGarage(this.pageNumber);
+            },
+        }).element;
+        paginationButtons.append(previousButton, nextButton);
+        return paginationButtons;
     }
 }
 
@@ -211,10 +277,10 @@ function createBottomLevelButtons(): CustomElement {
     return buttonsContainer;
 }
 
-function createGarageContainer(): CustomElement {
+function createCarsContainer(): CustomElement {
     const garageContainer = new ElementBase({
         tag: 'div',
-        className: ['garage'],
+        className: ['cars'],
     }).element;
 
     return garageContainer;
