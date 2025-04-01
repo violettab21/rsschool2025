@@ -41,7 +41,7 @@ export class GaragePage {
     public configurePage(): void {
         const garagePageMenu = this.createGaragePageMenu();
         this.content.append(garagePageMenu, this.garageContainer);
-        void this.populateGarage();
+        void this.populateGarage(1);
     }
 
     public async createCarHandler(): Promise<void> {
@@ -151,8 +151,8 @@ export class GaragePage {
         this.garageContainer.append(carRow);
     }
 
-    public async populateGarage(): Promise<void> {
-        const cars = await this.api.getCars();
+    public async populateGarage(page: number): Promise<void> {
+        const cars = await this.api.getCars(page);
         if (isCars(cars)) cars.forEach((car) => this.createCarRecord(car));
     }
     public getCarsCountOnPage(): number {
