@@ -2,7 +2,7 @@ import type { CustomElement, NewCar, Car } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
-import { isCars } from '../utilities';
+import { isCar, isCars } from '../utilities';
 
 export class GaragePage {
     public content: CustomElement;
@@ -58,7 +58,8 @@ export class GaragePage {
             car.color = carColor;
 
             const createdCar = await this.api.createCar(car);
-            console.log(createdCar);
+            if (this.getCarsCountOnPage() < 7 && isCar(createdCar))
+                this.createCarRecord(createdCar);
         }
     }
 
@@ -153,6 +154,9 @@ export class GaragePage {
     public async populateGarage(): Promise<void> {
         const cars = await this.api.getCars();
         if (isCars(cars)) cars.forEach((car) => this.createCarRecord(car));
+    }
+    public getCarsCountOnPage(): number {
+        return this.garageContainer.children.length;
     }
 }
 
