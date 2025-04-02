@@ -3,6 +3,7 @@ import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
 import { isCar, isCars } from '../utilities';
+import { cars, models } from '../constants';
 
 export class GaragePage {
     public content: CustomElement;
@@ -145,7 +146,7 @@ export class GaragePage {
         pageMenuContainer.append(
             createTopLevelButtons(),
             this.createForm(),
-            createBottomLevelButtons()
+            this.createBottomLevelButtons()
         );
 
         return pageMenuContainer;
@@ -331,6 +332,47 @@ export class GaragePage {
             await this.populateGarage(this.pageNumber);
         }
     }
+    public async generateRandomCars(): Promise<void> {
+        for (let i = 0; i < 100; i += 1) {
+            const car = {
+                name: generateRandomCarName(),
+                color: generateRandomColor(),
+            };
+            const createdCar = await this.api.createCar(car);
+            if (this.getCarsCountOnPage() < 7 && isCar(createdCar))
+                this.createCarRecord(createdCar);
+        }
+    }
+    public createBottomLevelButtons(): CustomElement {
+        const buttonsContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage-page-bottom-buttons'],
+        }).element;
+
+        const raceButton = new Button({
+            className: ['race-button', 'button'],
+            textContent: 'Race',
+            handlerFunction: (): void => {},
+        }).element;
+
+        const resetButton = new Button({
+            className: ['reset-button', 'button'],
+            textContent: 'Reset',
+            handlerFunction: (): void => {},
+        }).element;
+
+        const generateCarsButton = new Button({
+            className: ['generate-cars-button', 'button'],
+            textContent: 'Generate Cars',
+            handlerFunction: (): void => {
+                void this.generateRandomCars();
+            },
+        }).element;
+
+        buttonsContainer.append(raceButton, resetButton, generateCarsButton);
+
+        return buttonsContainer;
+    }
 }
 
 function createTopLevelButtons(): CustomElement {
@@ -351,35 +393,6 @@ function createTopLevelButtons(): CustomElement {
         handlerFunction: (): void => {},
     }).element;
     buttonsContainer.append(toGarageButton, toWinnersButton);
-
-    return buttonsContainer;
-}
-
-function createBottomLevelButtons(): CustomElement {
-    const buttonsContainer = new ElementBase({
-        tag: 'div',
-        className: ['garage-page-bottom-buttons'],
-    }).element;
-
-    const raceButton = new Button({
-        className: ['race-button', 'button'],
-        textContent: 'Race',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const resetButton = new Button({
-        className: ['reset-button', 'button'],
-        textContent: 'Reset',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const generateCarsButton = new Button({
-        className: ['generate-cars-button', 'button'],
-        textContent: 'Generate Cars',
-        handlerFunction: (): void => {},
-    }).element;
-
-    buttonsContainer.append(raceButton, resetButton, generateCarsButton);
 
     return buttonsContainer;
 }
@@ -432,4 +445,22 @@ function createCarMainContent(color: string): CustomElement {
     carContainer.append(startButton, stopButton, carImage);
 
     return carContainer;
+}
+
+function generateRandomColor(): string {
+    const HEX = ['A', 'B', 'C', 'D', 'E', 'F', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let color: string = '';
+    for (let i = 0; i < 6; i += 1) {
+        color += HEX[Math.floor(Math.random() * 16)];
+    }
+    return `#${color}`;
+}
+
+function generateRandomCarName(): string {
+    const carName =
+        cars[Math.floor(Math.random() * cars.length)] +
+        ' ' +
+        models[Math.floor(Math.random() * models.length)];
+
+    return carName;
 }
