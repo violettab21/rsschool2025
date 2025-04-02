@@ -1,0 +1,51 @@
+.garage-page-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 350px;
+}
+
+.garage-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-car-row,
+.update-car-row {
+    display: flex;
+    gap: 5px;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+.garage-page-top-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.garage-page-bottom-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.garage-page-top-buttons button {
+    width: 100px;
+    padding: 6px 12px;
+}
+
+.garage-page-bottom-buttons button {
+    padding: 6px 12px;
+}
+
+.create-car,
+.update-car {
+    width: 65px;
+}
+
+.create-car-input,
+.update-car-input {
+    width: 60%;
+}

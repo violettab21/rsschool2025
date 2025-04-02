@@ -1,3 +1,6 @@
 @use './base/normalize';
 @use './abstracts/constants';
 @use './components/car-row';
+@use './components/garage-form';
+@use './layout/main';
+@use './components/garage-component';

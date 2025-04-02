@@ -199,7 +199,7 @@ export class GaragePage {
         }).element;
 
         const previousButton = new Button({
-            className: ['garage-button'],
+            className: ['prev-button', 'button'],
             textContent: 'Prev',
             handlerFunction: (): void => {
                 this.clearGarage();
@@ -211,7 +211,7 @@ export class GaragePage {
         }).element;
 
         const nextButton = new Button({
-            className: ['winners-button'],
+            className: ['next-button', 'button'],
             textContent: 'Next',
             handlerFunction: (): void => {
                 this.clearGarage();
@@ -233,13 +233,13 @@ function createTopLevelButtons(): CustomElement {
     }).element;
 
     const toGarageButton = new Button({
-        className: ['garage-button'],
+        className: ['garage-button', 'button'],
         textContent: 'To Garage',
         handlerFunction: (): void => {},
     }).element;
 
     const toWinnersButton = new Button({
-        className: ['winners-button'],
+        className: ['winners-button', 'button'],
         textContent: 'To Winners',
         handlerFunction: (): void => {},
     }).element;
@@ -255,19 +255,19 @@ function createBottomLevelButtons(): CustomElement {
     }).element;
 
     const raceButton = new Button({
-        className: ['garage-button'],
+        className: ['race-button', 'button'],
         textContent: 'Race',
         handlerFunction: (): void => {},
     }).element;
 
     const resetButton = new Button({
-        className: ['winners-button'],
+        className: ['reset-button', 'button'],
         textContent: 'Reset',
         handlerFunction: (): void => {},
     }).element;
 
     const generateCarsButton = new Button({
-        className: ['winners-button'],
+        className: ['generate-cars-button', 'button'],
         textContent: 'Generate Cars',
         handlerFunction: (): void => {},
     }).element;
