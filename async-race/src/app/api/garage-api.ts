@@ -26,9 +26,27 @@ export class GarageAPI {
         return json;
     }
 
+    public async getCar(id: number): Promise<unknown> {
+        const response = await fetch(this.url + `/${id}`, {
+            method: 'GET',
+        });
+        const json: unknown = await response.json();
+        return json;
+    }
+
     public async removeCar(id: number): Promise<void> {
         await fetch(this.url + `/${id}`, {
             method: 'DELETE',
+        });
+    }
+
+    public async updateCar(id: number, car: NewCar): Promise<void> {
+        await fetch(this.url + `/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(car),
         });
     }
 }

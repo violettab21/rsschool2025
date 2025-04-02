@@ -122,10 +122,12 @@ export class GaragePage {
         if (updatedCarColor instanceof HTMLInputElement) {
             updatedCarColor.type = 'color';
         }
-        const updateCarButton = new ElementBase({
-            tag: 'button',
+        const updateCarButton = new Button({
             className: ['update-car'],
             textContent: 'Update',
+            handlerFunction: (): void => {
+                void this.updateCarRecordHandler();
+            },
         }).element;
 
         this.updateRowContainer.append(
@@ -153,6 +155,7 @@ export class GaragePage {
             tag: 'div',
             className: ['car-row'],
         }).element;
+        carRow.dataset.id = car.id.toString();
 
         const carMenu = this.createCarRecordTopMenu(car.name);
         const carMain = createCarMainContent(car.color);
@@ -263,39 +266,35 @@ export class GaragePage {
         return menuContainer;
     }
     public async removeCarRecordHandler(event?: Event): Promise<void> {
-        const carsElements = [...this.carsContainer.children];
-        let indexOfClickedItem: number;
         let idOfClickedItem: number;
         if (event) {
             const clickedItem = event.target;
             if (clickedItem instanceof Node) {
                 const optionToDelete = clickedItem.parentElement?.parentElement;
-                if (optionToDelete instanceof Element) {
-                    indexOfClickedItem = carsElements.indexOf(optionToDelete);
-                    const cars = await this.api.getCars(this.pageNumber);
-                    if (isCars(cars)) {
-                        idOfClickedItem = cars[indexOfClickedItem].id;
-                        await this.api.removeCar(idOfClickedItem);
-                        this.clearCars();
-                        void this.populateGarage(this.pageNumber);
-                    }
+                if (
+                    optionToDelete instanceof Element &&
+                    optionToDelete.dataset
+                ) {
+                    idOfClickedItem = Number(optionToDelete.dataset.id);
+                    await this.api.removeCar(idOfClickedItem);
+                    this.clearCars();
+                    await this.populateGarage(this.pageNumber);
                 }
             }
         }
     }
     public async selectCarRecordHandler(event?: Event): Promise<void> {
-        const carsElements = [...this.carsContainer.children];
-        let indexOfClickedItem: number;
-
         if (event) {
             const clickedItem = event.target;
             if (clickedItem instanceof Node) {
                 const optionToSelect = clickedItem.parentElement?.parentElement;
-                if (optionToSelect instanceof Element) {
-                    indexOfClickedItem = carsElements.indexOf(optionToSelect);
-                    const cars = await this.api.getCars(this.pageNumber);
-                    if (isCars(cars)) {
-                        this.selectedCarId = cars[indexOfClickedItem].id;
+                if (
+                    optionToSelect instanceof Element &&
+                    optionToSelect.dataset
+                ) {
+                    this.selectedCarId = Number(optionToSelect.dataset.id);
+                    const car = await this.api.getCar(this.selectedCarId);
+                    if (isCar(car)) {
                         const updateRowContainerFields = [
                             ...this.updateRowContainer.children,
                         ];
@@ -305,14 +304,31 @@ export class GaragePage {
                             updateRowContainerFields[1] instanceof
                                 HTMLInputElement
                         ) {
-                            updateRowContainerFields[0].value =
-                                cars[indexOfClickedItem].name;
-                            updateRowContainerFields[1].value =
-                                cars[indexOfClickedItem].color;
+                            updateRowContainerFields[0].value = car.name;
+                            updateRowContainerFields[1].value = car.color;
                         }
                     }
                 }
             }
+        }
+    }
+
+    public async updateCarRecordHandler(): Promise<void> {
+        const updateRowContainerFields = [...this.updateRowContainer.children];
+        let name: string;
+        let color: string;
+        if (
+            updateRowContainerFields[0] instanceof HTMLInputElement &&
+            updateRowContainerFields[1] instanceof HTMLInputElement
+        ) {
+            name = updateRowContainerFields[0].value;
+            color = updateRowContainerFields[1].value;
+            await this.api.updateCar(this.selectedCarId, {
+                name: name,
+                color: color,
+            });
+            this.clearCars();
+            await this.populateGarage(this.pageNumber);
         }
     }
 }
