@@ -152,7 +152,7 @@ export class GaragePage {
             className: ['car-row'],
         }).element;
 
-        const carMenu = createCarRecordTopMenu(car.name);
+        const carMenu = this.createCarRecordTopMenu(car.name);
         const carMain = createCarMainContent(car.color);
         carRow.append(carMenu, carMain);
 
@@ -192,6 +192,9 @@ export class GaragePage {
             element.remove()
         );
     }
+    public clearCars(): void {
+        [...this.carsContainer.children].forEach((element) => element.remove());
+    }
     public createPaginationButtons(): CustomElement {
         const paginationButtons = new ElementBase({
             tag: 'div',
@@ -223,6 +226,58 @@ export class GaragePage {
         }).element;
         paginationButtons.append(previousButton, nextButton);
         return paginationButtons;
+    }
+
+    public createCarRecordTopMenu(name: string): CustomElement {
+        const menuContainer = new ElementBase({
+            tag: 'div',
+            className: ['car-menu'],
+        }).element;
+
+        const selectButton = new Button({
+            className: ['select-button'],
+            textContent: 'Select',
+            handlerFunction: (): void => {},
+        }).element;
+
+        const removeButton = new Button({
+            className: ['remove-button'],
+            textContent: 'Remove',
+            handlerFunction: (event?: Event): void => {
+                void this.removeCarRecordHandler(event);
+            },
+        }).element;
+
+        const carName = new ElementBase({
+            tag: 'p',
+            className: ['car-name'],
+            textContent: name,
+        }).element;
+
+        menuContainer.append(selectButton, removeButton, carName);
+
+        return menuContainer;
+    }
+    public async removeCarRecordHandler(event?: Event): Promise<void> {
+        const carsElements = [...this.carsContainer.children];
+        let indexOfClickedItem: number;
+        let idOfClickedItem: number;
+        if (event) {
+            const clickedItem = event.target;
+            if (clickedItem instanceof Node) {
+                const optionToDelete = clickedItem.parentElement?.parentElement;
+                if (optionToDelete instanceof Element) {
+                    indexOfClickedItem = carsElements.indexOf(optionToDelete);
+                    const cars = await this.api.getCars(this.pageNumber);
+                    if (isCars(cars)) {
+                        idOfClickedItem = cars[indexOfClickedItem].id;
+                        await this.api.removeCar(idOfClickedItem);
+                        this.clearCars();
+                        void this.populateGarage(this.pageNumber);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -286,34 +341,6 @@ function createCarsContainer(): CustomElement {
     return garageContainer;
 }
 
-function createCarRecordTopMenu(name: string): CustomElement {
-    const menuContainer = new ElementBase({
-        tag: 'div',
-        className: ['car-menu'],
-    }).element;
-
-    const selectButton = new Button({
-        className: ['select-button'],
-        textContent: 'Select',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const removeButton = new Button({
-        className: ['remove-button'],
-        textContent: 'Remove',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const carName = new ElementBase({
-        tag: 'p',
-        className: ['car-name'],
-        textContent: name,
-    }).element;
-
-    menuContainer.append(selectButton, removeButton, carName);
-
-    return menuContainer;
-}
 function createCarMainContent(color: string): CustomElement {
     const carContainer = new ElementBase({
         tag: 'div',

@@ -25,4 +25,10 @@ export class GarageAPI {
         const json: unknown = await response.json();
         return json;
     }
+
+    public async removeCar(id: number): Promise<void> {
+        await fetch(this.url + `/${id}`, {
+            method: 'DELETE',
+        });
+    }
 }

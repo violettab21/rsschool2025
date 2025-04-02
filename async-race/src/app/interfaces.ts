@@ -7,7 +7,7 @@ interface Properties {
 interface ButtonProperties {
     className: string[];
     textContent: string;
-    handlerFunction: () => void;
+    handlerFunction: (event?: Event) => void;
 }
 
 interface Car {
