@@ -12,7 +12,9 @@ export class GaragePage {
     public garageContainer: CustomElement;
     public pageNumber: number;
     public api: GarageAPI;
+    public selectedCarId: number;
     constructor() {
+        this.selectedCarId = 0;
         this.pageNumber = 1;
         this.api = new GarageAPI();
         this.content = new ElementBase({
@@ -237,7 +239,9 @@ export class GaragePage {
         const selectButton = new Button({
             className: ['select-button'],
             textContent: 'Select',
-            handlerFunction: (): void => {},
+            handlerFunction: (event?: Event): void => {
+                void this.selectCarRecordHandler(event);
+            },
         }).element;
 
         const removeButton = new Button({
@@ -274,6 +278,38 @@ export class GaragePage {
                         await this.api.removeCar(idOfClickedItem);
                         this.clearCars();
                         void this.populateGarage(this.pageNumber);
+                    }
+                }
+            }
+        }
+    }
+    public async selectCarRecordHandler(event?: Event): Promise<void> {
+        const carsElements = [...this.carsContainer.children];
+        let indexOfClickedItem: number;
+
+        if (event) {
+            const clickedItem = event.target;
+            if (clickedItem instanceof Node) {
+                const optionToSelect = clickedItem.parentElement?.parentElement;
+                if (optionToSelect instanceof Element) {
+                    indexOfClickedItem = carsElements.indexOf(optionToSelect);
+                    const cars = await this.api.getCars(this.pageNumber);
+                    if (isCars(cars)) {
+                        this.selectedCarId = cars[indexOfClickedItem].id;
+                        const updateRowContainerFields = [
+                            ...this.updateRowContainer.children,
+                        ];
+                        if (
+                            updateRowContainerFields[0] instanceof
+                                HTMLInputElement &&
+                            updateRowContainerFields[1] instanceof
+                                HTMLInputElement
+                        ) {
+                            updateRowContainerFields[0].value =
+                                cars[indexOfClickedItem].name;
+                            updateRowContainerFields[1].value =
+                                cars[indexOfClickedItem].color;
+                        }
                     }
                 }
             }
