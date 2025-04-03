@@ -14,10 +14,13 @@ export class GaragePage {
     public pageNumber: number;
     public api: GarageAPI;
     public selectedCarId: number;
+    public carsNumber: number;
     constructor() {
+        this.carsNumber = 0;
+        this.api = new GarageAPI();
+
         this.selectedCarId = 0;
         this.pageNumber = 1;
-        this.api = new GarageAPI();
         this.content = new ElementBase({
             tag: 'main',
             className: ['main'],
@@ -42,15 +45,18 @@ export class GaragePage {
             tag: 'div',
             className: ['garage'],
         }).element;
-        this.createGarageContainer(this.pageNumber);
-        document.body.append(this.content);
+        this.getCarsNumber()
+            .then(() => {
+                this.createGarageContainer(this.pageNumber);
+                document.body.append(this.content);
 
-        this.configurePage();
+                this.configurePage();
+            })
+            .catch((error: Error) => console.log(error));
     }
 
     public configurePage(): void {
         const garagePageMenu = this.createGaragePageMenu();
-
         this.content.append(garagePageMenu, this.garageContainer);
         void this.populateGarage(this.pageNumber);
     }
@@ -69,6 +75,8 @@ export class GaragePage {
             car.color = carColor;
 
             const createdCar = await this.api.createCar(car);
+            this.carsNumber += 1;
+            this.setCarsNumber(this.carsNumber);
             if (this.getCarsCountOnPage() < 7 && isCar(createdCar))
                 this.createCarRecord(createdCar);
         }
@@ -177,7 +185,7 @@ export class GaragePage {
         const pageTitle = new ElementBase({
             tag: 'p',
             className: ['garage-title'],
-            textContent: 'Garage',
+            textContent: `Garage (${this.carsNumber})`,
         }).element;
 
         const page = new ElementBase({
@@ -278,6 +286,8 @@ export class GaragePage {
                 ) {
                     idOfClickedItem = Number(optionToDelete.dataset.id);
                     await this.api.removeCar(idOfClickedItem);
+                    this.carsNumber -= 1;
+                    this.setCarsNumber(this.carsNumber);
                     this.clearCars();
                     await this.populateGarage(this.pageNumber);
                 }
@@ -339,9 +349,12 @@ export class GaragePage {
                 color: generateRandomColor(),
             };
             const createdCar = await this.api.createCar(car);
+
             if (this.getCarsCountOnPage() < 7 && isCar(createdCar))
                 this.createCarRecord(createdCar);
         }
+        await this.getCarsNumber();
+        this.setCarsNumber(this.carsNumber);
     }
     public createBottomLevelButtons(): CustomElement {
         const buttonsContainer = new ElementBase({
@@ -372,6 +385,25 @@ export class GaragePage {
         buttonsContainer.append(raceButton, resetButton, generateCarsButton);
 
         return buttonsContainer;
+    }
+
+    public async getAllCarsCount(): Promise<number> {
+        let count: number;
+        const cars = await this.api.getAllCars();
+        if (isCars(cars)) {
+            count = cars.length;
+            return count;
+        } else return 0;
+    }
+
+    public setCarsNumber(count: number): void {
+        const garage = [...this.garageContainer.children];
+        const title = garage[0];
+        title.textContent = `Garage (${count})`;
+    }
+
+    public async getCarsNumber(): Promise<void> {
+        this.carsNumber = await this.getAllCarsCount();
     }
 }
 

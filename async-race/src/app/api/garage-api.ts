@@ -25,6 +25,13 @@ export class GarageAPI {
         const json: unknown = await response.json();
         return json;
     }
+    public async getAllCars(): Promise<unknown> {
+        const response = await fetch(this.url, {
+            method: 'GET',
+        });
+        const json: unknown = await response.json();
+        return json;
+    }
 
     public async getCar(id: number): Promise<unknown> {
         const response = await fetch(this.url + `/${id}`, {
