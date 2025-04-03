@@ -2,8 +2,10 @@ import type { NewCar } from '../interfaces';
 
 export class GarageAPI {
     protected url: string;
+    protected urlEngine: string;
     constructor() {
         this.url = 'http://127.0.0.1:3000/garage';
+        this.urlEngine = 'http://127.0.0.1:3000/engine';
     }
 
     public async createCar(car: NewCar): Promise<unknown> {
@@ -55,5 +57,26 @@ export class GarageAPI {
             },
             body: JSON.stringify(car),
         });
+    }
+
+    public async startEngine(id: number): Promise<unknown> {
+        const response = await fetch(
+            this.urlEngine + `/?id=${id}&status=started`,
+            {
+                method: 'PATCH',
+            }
+        );
+        const json: unknown = await response.json();
+        return json;
+    }
+
+    public async draveEngine(id: number): Promise<Response> {
+        const response = await fetch(
+            this.urlEngine + `/?id=${id}&status=drive`,
+            {
+                method: 'PATCH',
+            }
+        );
+        return response;
     }
 }

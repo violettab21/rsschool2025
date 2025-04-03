@@ -2,7 +2,7 @@ import type { CustomElement, NewCar, Car } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
-import { isCar, isCars } from '../utilities';
+import { isCar, isCars, isEngine } from '../utilities';
 import { cars, models } from '../constants';
 
 export class GaragePage {
@@ -167,7 +167,7 @@ export class GaragePage {
         carRow.dataset.id = car.id.toString();
 
         const carMenu = this.createCarRecordTopMenu(car.name);
-        const carMain = createCarMainContent(car.color);
+        const carMain = this.createCarMainContent(car.color);
         carRow.append(carMenu, carMain);
 
         this.carsContainer.append(carRow);
@@ -405,6 +405,84 @@ export class GaragePage {
     public async getCarsNumber(): Promise<void> {
         this.carsNumber = await this.getAllCarsCount();
     }
+
+    public startCarHandler(event?: Event): void {
+        if (event) {
+            const clickedItem = event.target;
+            if (clickedItem instanceof Node) {
+                const carToStart = clickedItem.parentElement?.parentElement;
+                if (carToStart instanceof Element && carToStart.dataset) {
+                    const carId = Number(carToStart.dataset.id);
+                    this.api
+                        .startEngine(carId)
+                        .then((result) => {
+                            if (isEngine(result)) {
+                                const time = result.distance / result.velocity;
+                                console.log(time);
+                                const animationId = startCar(time, carToStart);
+                                console.log('id of animation' + animationId);
+                                this.api
+                                    .draveEngine(carId)
+                                    .then((response) => {
+                                        if (!response.ok) {
+                                            console.log(response.status);
+                                            globalThis.cancelAnimationFrame(
+                                                animationId
+                                            );
+                                            carToStart.dataset.state =
+                                                'stopped';
+                                        } else if (response.ok)
+                                            console.log('finish animation');
+                                    })
+                                    .catch((error: Error) =>
+                                        console.log(error)
+                                    );
+                            }
+                        })
+                        .catch((error: Error) => console.log(error));
+                }
+            }
+        }
+    }
+    public createCarMainContent(color: string): CustomElement {
+        const carContainer = new ElementBase({
+            tag: 'div',
+            className: ['car-main'],
+        }).element;
+
+        const startButton = new Button({
+            className: ['start-button'],
+            textContent: 'A',
+            handlerFunction: (event?: Event): void => {
+                this.startCarHandler(event);
+            },
+        }).element;
+
+        const stopButton = new Button({
+            className: ['stop-button'],
+            textContent: 'B',
+            handlerFunction: (): void => {},
+        }).element;
+        const carImage = new ElementBase({
+            tag: 'span',
+            className: ['car-image'],
+        }).element;
+        carImage.innerHTML = `<svg height="100px" width="100px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 viewBox="0 0 17.485 17.485" xml:space="preserve">
+<g>
+	<g>
+		<path style="fill:${color};" d="M17.477,8.149c-0.079-0.739-3.976-0.581-3.976-0.581L11.853,5.23H4.275L3.168,7.567H0v2.404
+			l2.029,0.682c0.123-0.836,0.843-1.48,1.711-1.48c0.939,0,1.704,0.751,1.73,1.685l6.62,0.041c0.004-0.951,0.779-1.726,1.733-1.726
+			c0.854,0,1.563,0.623,1.704,1.439l1.479-0.17C17.006,10.442,17.556,8.887,17.477,8.149z M4.007,7.568l0.746-1.771h2.864
+			l0.471,1.771H4.007z M8.484,7.568L8.01,5.797h3.67l1.137,1.771H8.484z"/>
+		<circle style="fill:#030104;" cx="3.759" cy="10.966" r="1.289"/>
+		<circle style="fill:#030104;" cx="13.827" cy="10.9" r="1.29"/>
+	</g>
+</g>
+</svg>`;
+        carContainer.append(startButton, stopButton, carImage);
+        return carContainer;
+    }
 }
 
 function createTopLevelButtons(): CustomElement {
@@ -438,47 +516,6 @@ function createCarsContainer(): CustomElement {
     return garageContainer;
 }
 
-function createCarMainContent(color: string): CustomElement {
-    const carContainer = new ElementBase({
-        tag: 'div',
-        className: ['car-main'],
-    }).element;
-
-    const startButton = new Button({
-        className: ['start-button'],
-        textContent: 'A',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const stopButton = new Button({
-        className: ['stop-button'],
-        textContent: 'B',
-        handlerFunction: (): void => {},
-    }).element;
-
-    const carImage = new ElementBase({
-        tag: 'span',
-        className: ['car-image'],
-    }).element;
-    carImage.innerHTML = `<svg height="100px" width="100px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 viewBox="0 0 17.485 17.485" xml:space="preserve">
-<g>
-	<g>
-		<path style="fill:${color};" d="M17.477,8.149c-0.079-0.739-3.976-0.581-3.976-0.581L11.853,5.23H4.275L3.168,7.567H0v2.404
-			l2.029,0.682c0.123-0.836,0.843-1.48,1.711-1.48c0.939,0,1.704,0.751,1.73,1.685l6.62,0.041c0.004-0.951,0.779-1.726,1.733-1.726
-			c0.854,0,1.563,0.623,1.704,1.439l1.479-0.17C17.006,10.442,17.556,8.887,17.477,8.149z M4.007,7.568l0.746-1.771h2.864
-			l0.471,1.771H4.007z M8.484,7.568L8.01,5.797h3.67l1.137,1.771H8.484z"/>
-		<circle style="fill:#030104;" cx="3.759" cy="10.966" r="1.289"/>
-		<circle style="fill:#030104;" cx="13.827" cy="10.9" r="1.29"/>
-	</g>
-</g>
-</svg>`;
-
-    carContainer.append(startButton, stopButton, carImage);
-
-    return carContainer;
-}
-
 function generateRandomColor(): string {
     const HEX = ['A', 'B', 'C', 'D', 'E', 'F', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let color: string = '';
@@ -495,4 +532,37 @@ function generateRandomCarName(): string {
         models[Math.floor(Math.random() * models.length)];
 
     return carName;
+}
+
+function startCar(time: number, carRow: Element): number {
+    const startTime = performance.now();
+    let animationId: number;
+    function animateCar(
+        timestamp: number,
+        startTime: number,
+        time: number,
+        carRow: Element
+    ): void {
+        const progress = (timestamp - startTime) / time;
+
+        const offset = progress * (carRow.clientWidth - 130);
+        if (progress < 1 && carRow instanceof HTMLElement) {
+            if (carRow.dataset.state !== 'stopped') {
+                changeCarPosition(offset, carRow);
+                animationId = requestAnimationFrame((timestamp) =>
+                    animateCar(timestamp, startTime, time, carRow)
+                );
+            }
+        } else console.log('finish');
+    }
+    animationId = requestAnimationFrame((timestamp) =>
+        animateCar(timestamp, startTime, time, carRow)
+    );
+    return animationId;
+}
+
+function changeCarPosition(offset: number, carRow: Element): void {
+    const carElement = carRow.querySelector('.car-image');
+    if (carElement instanceof HTMLElement)
+        carElement.style.transform = `translate(${offset}px)`;
 }

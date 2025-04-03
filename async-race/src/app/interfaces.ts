@@ -16,8 +16,13 @@ interface Car {
     id: number;
 }
 
+interface Engine {
+    velocity: number;
+    distance: number;
+}
+
 type NewCar = Omit<Car, 'id'>;
 
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
 
-export { Properties, CustomElement, ButtonProperties, Car, NewCar };
+export { Properties, CustomElement, ButtonProperties, Car, NewCar, Engine };
