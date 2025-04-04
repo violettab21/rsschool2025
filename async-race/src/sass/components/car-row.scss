@@ -5,6 +5,7 @@
 }
 
 .car-main {
+    position: relative;
     display: flex;
     align-items: flex-start;
     border-bottom: 1px solid;
@@ -12,4 +13,16 @@
 
 .car-image {
     height: 71px;
+}
+
+.flag-image {
+    position: absolute;
+    top: 20px;
+    right: 120px;
+    display: block;
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
