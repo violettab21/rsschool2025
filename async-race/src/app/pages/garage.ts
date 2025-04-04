@@ -365,7 +365,9 @@ export class GaragePage {
         const raceButton = new Button({
             className: ['race-button', 'button'],
             textContent: 'Race',
-            handlerFunction: (): void => {},
+            handlerFunction: (): void => {
+                this.startRaceHandler();
+            },
         }).element;
 
         const resetButton = new Button({
@@ -502,6 +504,45 @@ export class GaragePage {
 </svg>`;
         carContainer.append(startButton, stopButton, carImage);
         return carContainer;
+    }
+
+    public startRaceHandler(): void {
+        const count = this.carsContainer.children.length;
+        const arrayCarsElements = [...this.carsContainer.children];
+        const arrayOfRequests: Promise<unknown>[] = [];
+        for (let i = 0; i < count; i += 1) {
+            const carElement = arrayCarsElements[i];
+            if (carElement instanceof HTMLElement) {
+                const id = Number(carElement.dataset.id);
+                arrayOfRequests.push(this.api.startEngine(id));
+            }
+        }
+        Promise.all(arrayOfRequests)
+            .then((values) => {
+                arrayCarsElements.forEach((car, i) => {
+                    if (car instanceof HTMLElement) {
+                        car.dataset.state = 'started';
+                    }
+                    if (isEngine(values[i])) {
+                        const time = values[i].distance / values[i].velocity;
+                        startCar(time, car);
+                        if (car instanceof HTMLElement) {
+                            const id = Number(car.dataset.id);
+                            this.api
+                                .draveEngine(id)
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        console.log(response.status);
+                                        car.dataset.state = 'stopped';
+                                    } else if (response.ok)
+                                        console.log('finish animation');
+                                })
+                                .catch((error: Error) => console.log(error));
+                        }
+                    }
+                });
+            })
+            .catch((error: Error) => console.log(error));
     }
 }
 
