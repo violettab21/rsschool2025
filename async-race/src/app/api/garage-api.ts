@@ -70,6 +70,17 @@ export class GarageAPI {
         return json;
     }
 
+    public async stopEngine(id: number): Promise<unknown> {
+        const response = await fetch(
+            this.urlEngine + `/?id=${id}&status=stopped`,
+            {
+                method: 'PATCH',
+            }
+        );
+        const json: unknown = await response.json();
+        return json;
+    }
+
     public async draveEngine(id: number): Promise<Response> {
         const response = await fetch(
             this.urlEngine + `/?id=${id}&status=drive`,

@@ -444,12 +444,31 @@ export class GaragePage {
             }
         }
     }
+    public stopCarHandler(event?: Event): void {
+        if (event) {
+            const clickedItem = event.target;
+            if (clickedItem instanceof Node) {
+                const carToStop = clickedItem.parentElement?.parentElement;
+                if (carToStop instanceof Element && carToStop.dataset) {
+                    const carId = Number(carToStop.dataset.id);
+                    this.api
+                        .stopEngine(carId)
+                        .then((result) => {
+                            if (isEngine(result)) {
+                                carToStop.dataset.state = 'stopped';
+                                changeCarPosition(0, carToStop);
+                            }
+                        })
+                        .catch((error: Error) => console.log(error));
+                }
+            }
+        }
+    }
     public createCarMainContent(color: string): CustomElement {
         const carContainer = new ElementBase({
             tag: 'div',
             className: ['car-main'],
         }).element;
-
         const startButton = new Button({
             className: ['start-button'],
             textContent: 'A',
@@ -457,11 +476,12 @@ export class GaragePage {
                 this.startCarHandler(event);
             },
         }).element;
-
         const stopButton = new Button({
             className: ['stop-button'],
             textContent: 'B',
-            handlerFunction: (): void => {},
+            handlerFunction: (event?: Event): void => {
+                this.stopCarHandler(event);
+            },
         }).element;
         const carImage = new ElementBase({
             tag: 'span',
