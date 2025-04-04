@@ -4,7 +4,7 @@ import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
 import { isCar, isCars, isEngine } from '../utilities';
 import { cars, models } from '../constants';
-import image from '../../assets/racing-flag.png';
+import image from '../../assets/racing-finish-svgrepo-com.svg';
 
 export class GaragePage {
     public content: CustomElement;
@@ -16,17 +16,19 @@ export class GaragePage {
     public api: GarageAPI;
     public selectedCarId: number;
     public carsNumber: number;
+    public isRace: boolean;
+    public winner: CustomElement | null;
     constructor() {
+        this.winner = null;
+        this.isRace = false;
         this.carsNumber = 0;
         this.api = new GarageAPI();
-
         this.selectedCarId = 0;
         this.pageNumber = 1;
         this.content = new ElementBase({
             tag: 'main',
             className: ['main'],
         }).element;
-
         this.createRowContainer = new ElementBase({
             tag: 'div',
             className: ['create-car-row'],
@@ -424,16 +426,14 @@ export class GaragePage {
                             if (isEngine(result)) {
                                 const time = result.distance / result.velocity;
                                 console.log(time);
-                                const animationId = startCar(time, carToStart);
-                                console.log('id of animation' + animationId);
+                                this.startCar(time, carToStart);
+
                                 this.api
                                     .draveEngine(carId)
                                     .then((response) => {
                                         if (!response.ok) {
                                             console.log(response.status);
-                                            globalThis.cancelAnimationFrame(
-                                                animationId
-                                            );
+
                                             carToStart.dataset.state =
                                                 'stopped';
                                         } else if (response.ok)
@@ -514,10 +514,11 @@ export class GaragePage {
                 arrayCarsElements.forEach((car, i) => {
                     if (car instanceof HTMLElement) {
                         car.dataset.state = 'started';
+                        this.isRace = true;
                     }
                     if (isEngine(values[i])) {
                         const time = values[i].distance / values[i].velocity;
-                        startCar(time, car);
+                        this.startCar(time, car);
                         if (car instanceof HTMLElement) {
                             const id = Number(car.dataset.id);
                             this.api
@@ -558,6 +559,37 @@ export class GaragePage {
                 });
             })
             .catch((error: Error) => console.log(error));
+    }
+    public animateCar(
+        timestamp: number,
+        startTime: number,
+        time: number,
+        carRow: Element
+    ): void {
+        const progress = (timestamp - startTime) / time;
+
+        const offset = progress * (carRow.clientWidth - 130);
+        if (progress < 1 && carRow instanceof HTMLElement) {
+            if (carRow.dataset.state !== 'stopped') {
+                changeCarPosition(offset, carRow);
+                requestAnimationFrame((timestamp) =>
+                    this.animateCar(timestamp, startTime, time, carRow)
+                );
+            }
+        } else {
+            if (this.isRace && this.winner === null) {
+                console.log('winner is');
+                if (carRow instanceof HTMLElement) this.winner = carRow;
+                console.log(carRow);
+            }
+        }
+    }
+    public startCar(time: number, carRow: Element): void {
+        const startTime = performance.now();
+
+        requestAnimationFrame((timestamp) =>
+            this.animateCar(timestamp, startTime, time, carRow)
+        );
     }
 }
 
@@ -608,33 +640,6 @@ function generateRandomCarName(): string {
         models[Math.floor(Math.random() * models.length)];
 
     return carName;
-}
-
-function startCar(time: number, carRow: Element): number {
-    const startTime = performance.now();
-    let animationId: number;
-    function animateCar(
-        timestamp: number,
-        startTime: number,
-        time: number,
-        carRow: Element
-    ): void {
-        const progress = (timestamp - startTime) / time;
-
-        const offset = progress * (carRow.clientWidth - 130);
-        if (progress < 1 && carRow instanceof HTMLElement) {
-            if (carRow.dataset.state !== 'stopped') {
-                changeCarPosition(offset, carRow);
-                animationId = requestAnimationFrame((timestamp) =>
-                    animateCar(timestamp, startTime, time, carRow)
-                );
-            }
-        } else console.log('finish');
-    }
-    animationId = requestAnimationFrame((timestamp) =>
-        animateCar(timestamp, startTime, time, carRow)
-    );
-    return animationId;
 }
 
 function changeCarPosition(offset: number, carRow: Element): void {
