@@ -415,6 +415,7 @@ export class GaragePage {
 
     public startCarHandler(event?: Event): void {
         if (event) {
+            this.isRace = false;
             const clickedItem = event.target;
             if (clickedItem instanceof Node) {
                 const carToStart = clickedItem.parentElement?.parentElement;
@@ -499,6 +500,7 @@ export class GaragePage {
     }
 
     public startRaceHandler(): void {
+        this.winner = null;
         const count = this.carsContainer.children.length;
         const arrayCarsElements = [...this.carsContainer.children];
         const arrayOfRequests: Promise<unknown>[] = [];
@@ -581,6 +583,7 @@ export class GaragePage {
                 console.log('winner is');
                 if (carRow instanceof HTMLElement) this.winner = carRow;
                 console.log(carRow);
+                this.showWinMessage(time, carRow);
             }
         }
     }
@@ -591,8 +594,30 @@ export class GaragePage {
             this.animateCar(timestamp, startTime, time, carRow)
         );
     }
+    public showWinMessage(time: number, carRow: Element): void {
+        let winnerCar: Car;
+        if (carRow instanceof HTMLElement) {
+            const id = Number(carRow.dataset.id);
+            this.api
+                .getCar(id)
+                .then((car) => {
+                    if (isCar(car)) winnerCar = car;
+                    const text = `${winnerCar.name} went first (${(time / 1000).toFixed(2)}s)!`;
+                    const messageComponent = createWinMessage(
+                        text,
+                        winnerCar.color
+                    );
+                    setTimeout(() => {
+                        removeWinMessage(messageComponent);
+                    }, 3000);
+                })
+                .catch((error: Error) => console.log(error));
+        }
+    }
 }
-
+function removeWinMessage(messageComponent: CustomElement): void {
+    messageComponent.remove();
+}
 function createTopLevelButtons(): CustomElement {
     const buttonsContainer = new ElementBase({
         tag: 'div',
@@ -667,4 +692,27 @@ function createCarImage(color: string): CustomElement {
 </g>
 </svg>`;
     return carImage;
+}
+
+function createWinMessage(text: string, color: string): CustomElement {
+    const modalContainer = new ElementBase({
+        tag: 'div',
+        className: ['dark-view'],
+    }).element;
+    const modal = new ElementBase({
+        tag: 'div',
+        className: ['message-container'],
+    }).element;
+    const modalContent = new ElementBase({
+        tag: 'p',
+        className: ['message'],
+        textContent: text,
+    }).element;
+    if (modalContent instanceof HTMLElement) {
+        modalContent.style.textShadow = `${color} 3px 2px 15px`;
+    }
+    modal.append(modalContent);
+    modalContainer.append(modal);
+    document.body.append(modalContainer);
+    return modalContainer;
 }
