@@ -373,7 +373,9 @@ export class GaragePage {
         const resetButton = new Button({
             className: ['reset-button', 'button'],
             textContent: 'Reset',
-            handlerFunction: (): void => {},
+            handlerFunction: (): void => {
+                this.stopAllCarsHandler();
+            },
         }).element;
 
         const generateCarsButton = new Button({
@@ -539,6 +541,29 @@ export class GaragePage {
                                 })
                                 .catch((error: Error) => console.log(error));
                         }
+                    }
+                });
+            })
+            .catch((error: Error) => console.log(error));
+    }
+
+    public stopAllCarsHandler(): void {
+        const arrayCarsElements = [...this.carsContainer.children];
+        const count = this.carsContainer.children.length;
+        const arrayOfRequests = [];
+        for (let i = 0; i < count; i += 1) {
+            const carElement = arrayCarsElements[i];
+            if (carElement instanceof HTMLElement) {
+                const id = Number(carElement.dataset.id);
+                arrayOfRequests.push(this.api.stopEngine(id));
+            }
+        }
+        Promise.all(arrayOfRequests)
+            .then(() => {
+                arrayCarsElements.forEach((car) => {
+                    if (car instanceof HTMLElement) {
+                        car.dataset.state = 'stopped';
+                        changeCarPosition(0, car);
                     }
                 });
             })
