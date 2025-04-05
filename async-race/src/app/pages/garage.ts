@@ -2,7 +2,7 @@ import type { CustomElement, NewCar, Car } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
-import { isCar, isCars, isEngine } from '../utilities';
+import { isCar, isCars, isEngine, isWinner } from '../utilities';
 import { cars, models } from '../constants';
 import image from '../../assets/racing-finish-svgrepo-com.svg';
 import { removeChildren } from '../components/elements';
@@ -586,6 +586,9 @@ export class GaragePage {
                 if (carRow instanceof HTMLElement) this.winner = carRow;
                 console.log(carRow);
                 this.showWinMessage(time, carRow);
+                this.saveWinner(time, carRow)
+                    .then((result) => console.log(result))
+                    .catch((error: Error) => console.log(error));
             }
         }
     }
@@ -614,6 +617,24 @@ export class GaragePage {
                     }, 3000);
                 })
                 .catch((error: Error) => console.log(error));
+        }
+    }
+    public async saveWinner(time: number, carRow: Element): Promise<void> {
+        if (carRow instanceof HTMLElement) {
+            const id = Number(carRow.dataset.id);
+            const winRecord = await this.apiWinners.getWinner(id);
+            if (isWinner(winRecord)) {
+                console.log('record exists');
+                console.log(winRecord);
+                winRecord.wins += 1;
+                if (winRecord.time < time) winRecord.time = time;
+                await this.apiWinners.updateWinner(id, winRecord);
+            } else
+                await this.apiWinners.addWinner({
+                    id: id,
+                    wins: 1,
+                    time: time,
+                });
         }
     }
 }

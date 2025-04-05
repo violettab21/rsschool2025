@@ -26,6 +26,7 @@ interface Winner {
     wins: number;
     time: number;
 }
+type NewWinner = Omit<Winner, 'id'>;
 
 type NewCar = Omit<Car, 'id'>;
 
@@ -39,4 +40,5 @@ export {
     NewCar,
     Engine,
     Winner,
+    NewWinner,
 };
