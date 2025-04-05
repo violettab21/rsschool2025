@@ -1,4 +1,4 @@
-import type { Car, Engine } from './interfaces';
+import type { Car, Engine, Winner } from './interfaces';
 
 function isCar(data: unknown): data is Car {
     if (typeof data !== 'object' || data === null) {
@@ -18,6 +18,15 @@ function isEngine(data: unknown): data is Engine {
     return typeof object.velocity === 'number';
 }
 
+function isWinner(data: unknown): data is Winner {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    const object: Partial<Winner> = data;
+    return typeof object.wins === 'number';
+}
+
 function isCars(data: unknown): data is Car[] {
     if (!Array.isArray(data) || data === null) {
         return false;
@@ -26,4 +35,4 @@ function isCars(data: unknown): data is Car[] {
     return typeof data[0]?.name === 'string' || data.length === 0;
 }
 
-export { isCar, isCars, isEngine };
+export { isCar, isCars, isEngine, isWinner };
