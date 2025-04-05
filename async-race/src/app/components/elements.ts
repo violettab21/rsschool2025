@@ -29,3 +29,11 @@ export class ElementBase {
             : '';
     }
 }
+function removeChildren(element: Element): void {
+    const arrayOfChildren = [...element.children];
+    arrayOfChildren.forEach((child) => {
+        if (child instanceof HTMLElement) child.remove();
+    });
+}
+
+export { removeChildren };

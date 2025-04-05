@@ -5,9 +5,10 @@ import { GarageAPI } from '../api/garage-api';
 import { isCar, isCars, isEngine } from '../utilities';
 import { cars, models } from '../constants';
 import image from '../../assets/racing-finish-svgrepo-com.svg';
-
+import { removeChildren } from '../components/elements';
+import type { Main } from '../components/main';
+import { Winners } from './winners';
 export class GaragePage {
-    public content: CustomElement;
     public createRowContainer: CustomElement;
     public updateRowContainer: CustomElement;
     public carsContainer: CustomElement;
@@ -18,17 +19,13 @@ export class GaragePage {
     public carsNumber: number;
     public isRace: boolean;
     public winner: CustomElement | null;
-    constructor() {
+    constructor(main: Main) {
         this.winner = null;
         this.isRace = false;
         this.carsNumber = 0;
         this.api = new GarageAPI();
         this.selectedCarId = 0;
         this.pageNumber = 1;
-        this.content = new ElementBase({
-            tag: 'main',
-            className: ['main'],
-        }).element;
         this.createRowContainer = new ElementBase({
             tag: 'div',
             className: ['create-car-row'],
@@ -51,16 +48,16 @@ export class GaragePage {
         this.getCarsNumber()
             .then(() => {
                 this.createGarageContainer(this.pageNumber);
-                document.body.append(this.content);
 
-                this.configurePage();
+                this.configurePage(main);
             })
             .catch((error: Error) => console.log(error));
     }
 
-    public configurePage(): void {
-        const garagePageMenu = this.createGaragePageMenu();
-        this.content.append(garagePageMenu, this.garageContainer);
+    public configurePage(main: Main): void {
+        const garagePageMenu = this.createGaragePageMenu(main);
+        if (main.main instanceof Element)
+            main.main.append(garagePageMenu, this.garageContainer);
         void this.populateGarage(this.pageNumber);
     }
 
@@ -148,14 +145,14 @@ export class GaragePage {
             updateCarButton
         );
     }
-    public createGaragePageMenu(): CustomElement {
+    public createGaragePageMenu(main: Main): CustomElement {
         const pageMenuContainer = new ElementBase({
             tag: 'div',
             className: ['garage-page-menu'],
         }).element;
 
         pageMenuContainer.append(
-            createTopLevelButtons(),
+            createTopLevelButtons(main),
             this.createForm(),
             this.createBottomLevelButtons()
         );
@@ -615,10 +612,14 @@ export class GaragePage {
         }
     }
 }
+function openWinnersHandler(main: Main): void {
+    removeChildren(main.main);
+    main.content = new Winners(main);
+}
 function removeWinMessage(messageComponent: CustomElement): void {
     messageComponent.remove();
 }
-function createTopLevelButtons(): CustomElement {
+function createTopLevelButtons(main: Main): CustomElement {
     const buttonsContainer = new ElementBase({
         tag: 'div',
         className: ['garage-page-top-buttons'],
@@ -633,7 +634,9 @@ function createTopLevelButtons(): CustomElement {
     const toWinnersButton = new Button({
         className: ['winners-button', 'button'],
         textContent: 'To Winners',
-        handlerFunction: (): void => {},
+        handlerFunction: (): void => {
+            openWinnersHandler(main);
+        },
     }).element;
     buttonsContainer.append(toGarageButton, toWinnersButton);
 
