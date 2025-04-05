@@ -7,16 +7,18 @@ import { WinnersAPI } from '../api/winners-api';
 import { GarageAPI } from '../api/garage-api';
 import { isWinners, isCar } from '../utilities';
 export class Winners {
+    public winnersCount: number;
     public winnersContainer: CustomElement;
-    public winnersNumber: number;
+
     public pageNumber: number;
     public winners: CustomElement;
     public api: WinnersAPI;
     public apiCars: GarageAPI;
     constructor(main: Main) {
+        this.winnersCount = 0;
         this.api = new WinnersAPI();
         this.apiCars = new GarageAPI();
-        this.winnersNumber = 0;
+
         this.pageNumber = 1;
         this.winnersContainer = new ElementBase({
             tag: 'div',
@@ -32,15 +34,16 @@ export class Winners {
         const winnersPageMenu = createWinnersPageMenu();
         if (main.main instanceof Element) {
             main.main.append(winnersPageMenu, this.winnersContainer);
-            this.createWinnersContainer(this.pageNumber);
-            this.createWinnersComponents();
+            this.createWinnersComponents()
+                .then(() => this.createWinnersContainer(this.pageNumber))
+                .catch((error: Error) => console.log(error));
         }
     }
     public createWinnersContainer(pageNumber: number): void {
         const pageTitle = new ElementBase({
             tag: 'p',
             className: ['winners-title'],
-            textContent: `Winners (${this.winnersNumber})`,
+            textContent: `Winners (${this.winnersCount})`,
         }).element;
 
         const page = new ElementBase({
@@ -66,7 +69,12 @@ export class Winners {
             className: ['prev-button', 'button'],
             textContent: 'Prev',
             handlerFunction: (): void => {
+                this.clearWinnersContainer();
+                this.clearWinners();
                 this.pageNumber -= 1;
+                this.createWinnersComponents()
+                    .then(() => this.createWinnersContainer(this.pageNumber))
+                    .catch((error: Error) => console.log(error));
             },
         }).element;
 
@@ -74,16 +82,21 @@ export class Winners {
             className: ['next-button', 'button'],
             textContent: 'Next',
             handlerFunction: (): void => {
+                this.clearWinnersContainer();
+                this.clearWinners();
                 this.pageNumber += 1;
+                this.createWinnersComponents()
+                    .then(() => this.createWinnersContainer(this.pageNumber))
+                    .catch((error: Error) => console.log(error));
             },
         }).element;
         paginationButtons.append(previousButton, nextButton);
         return paginationButtons;
     }
 
-    public createWinnersComponents(): void {
+    public async createWinnersComponents(): Promise<void> {
         this.createTableHeader();
-        void this.populateWinnersTable();
+        await this.populateWinnersTable();
     }
     public createTableHeader(): void {
         const number = new ElementBase({
@@ -143,7 +156,13 @@ export class Winners {
     }
 
     public async populateWinnersTable(): Promise<void> {
-        const winners = await this.api.getWinners(this.pageNumber);
+        const responseData = await this.api.getWinners(this.pageNumber);
+        const winners = responseData[0];
+        const headers = responseData[1];
+        if (headers instanceof Headers) {
+            this.winnersCount = Number(headers.get('X-Total-Count'));
+            console.log(this.winnersCount);
+        }
         const carsData: Promise<unknown>[] = [];
         if (isWinners(winners)) {
             winners.forEach((winner) => {
@@ -159,6 +178,14 @@ export class Winners {
                 )
                 .catch((error: Error) => console.log(error));
         }
+    }
+    public clearWinnersContainer(): void {
+        [...this.winnersContainer.children].forEach((element) =>
+            element.remove()
+        );
+    }
+    public clearWinners(): void {
+        [...this.winners.children].forEach((element) => element.remove());
     }
 }
 function createWinnersPageMenu(): CustomElement {
