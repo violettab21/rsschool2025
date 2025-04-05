@@ -16,4 +16,10 @@ export class WinnersAPI {
         const result = [json, headers];
         return result;
     }
+
+    public async removeWinner(id: number): Promise<void> {
+        await fetch(this.url + `/${id}`, {
+            method: 'DELETE',
+        });
+    }
 }

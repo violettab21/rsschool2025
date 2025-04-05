@@ -8,6 +8,8 @@ import image from '../../assets/racing-finish-svgrepo-com.svg';
 import { removeChildren } from '../components/elements';
 import type { Main } from '../components/main';
 import { Winners } from './winners';
+import { WinnersAPI } from '../api/winners-api';
+
 export class GaragePage {
     public createRowContainer: CustomElement;
     public updateRowContainer: CustomElement;
@@ -15,6 +17,7 @@ export class GaragePage {
     public garageContainer: CustomElement;
     public pageNumber: number;
     public api: GarageAPI;
+    public apiWinners: WinnersAPI;
     public selectedCarId: number;
     public carsNumber: number;
     public isRace: boolean;
@@ -24,6 +27,7 @@ export class GaragePage {
         this.isRace = false;
         this.carsNumber = 0;
         this.api = new GarageAPI();
+        this.apiWinners = new WinnersAPI();
         this.selectedCarId = 0;
         this.pageNumber = 1;
         this.createRowContainer = new ElementBase({
@@ -286,6 +290,7 @@ export class GaragePage {
                 ) {
                     idOfClickedItem = Number(optionToDelete.dataset.id);
                     await this.api.removeCar(idOfClickedItem);
+                    await this.apiWinners.removeWinner(idOfClickedItem);
                     this.carsNumber -= 1;
                     this.setCarsNumber(this.carsNumber);
                     this.clearCars();
@@ -681,7 +686,7 @@ function createCarImage(color: string): CustomElement {
         tag: 'span',
         className: ['car-image'],
     }).element;
-    carImage.innerHTML = `<svg height="100px" width="100px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    carImage.innerHTML = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 	 viewBox="0 0 17.485 17.485" xml:space="preserve">
 <g>
 	<g>

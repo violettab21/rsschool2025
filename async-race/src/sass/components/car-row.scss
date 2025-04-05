@@ -11,13 +11,25 @@
     border-bottom: 1px solid;
 }
 
+.car-menu {
+    margin-top: 8px;
+}
+
 .car-image {
-    height: 71px;
+    position: relative;
+    height: 63px;
+}
+
+.car-image svg {
+    position: absolute;
+    top: 6px;
+    overflow: hidden;
+    height: 80px;
 }
 
 .flag-image {
     position: absolute;
-    top: 20px;
+    top: 12px;
     right: 120px;
     display: block;
     width: 50px;
@@ -25,4 +37,13 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+}
+
+.remove-button {
+    z-index: 2;
+}
+
+.button {
+    position: relative;
+    z-index: 2;
 }
