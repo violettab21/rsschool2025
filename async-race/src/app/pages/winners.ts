@@ -3,12 +3,19 @@ import type { CustomElement } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import type { Car, Winner } from '../interfaces';
+import { WinnersAPI } from '../api/winners-api';
+import { GarageAPI } from '../api/garage-api';
+import { isWinners, isCar } from '../utilities';
 export class Winners {
     public winnersContainer: CustomElement;
     public winnersNumber: number;
     public pageNumber: number;
     public winners: CustomElement;
+    public api: WinnersAPI;
+    public apiCars: GarageAPI;
     constructor(main: Main) {
+        this.api = new WinnersAPI();
+        this.apiCars = new GarageAPI();
         this.winnersNumber = 0;
         this.pageNumber = 1;
         this.winnersContainer = new ElementBase({
@@ -76,11 +83,7 @@ export class Winners {
 
     public createWinnersComponents(): void {
         this.createTableHeader();
-        this.createWinnerRow(
-            1,
-            { id: 1, name: 'test', color: '#ffffff' },
-            { id: 1, wins: 2, time: 2.5 }
-        );
+        void this.populateWinnersTable();
     }
     public createTableHeader(): void {
         const number = new ElementBase({
@@ -137,6 +140,25 @@ export class Winners {
             textContent: `${winner.time}`,
         }).element;
         this.winners.append(number, name, carImage, winsCount, time);
+    }
+
+    public async populateWinnersTable(): Promise<void> {
+        const winners = await this.api.getWinners(this.pageNumber);
+        const carsData: Promise<unknown>[] = [];
+        if (isWinners(winners)) {
+            winners.forEach((winner) => {
+                carsData.push(this.apiCars.getCar(winner.id));
+            });
+            Promise.all(carsData)
+                .then((data) =>
+                    data.forEach((car, i) => {
+                        if (isCar(car)) {
+                            this.createWinnerRow(i + 1, car, winners[i]);
+                        }
+                    })
+                )
+                .catch((error: Error) => console.log(error));
+        }
     }
 }
 function createWinnersPageMenu(): CustomElement {

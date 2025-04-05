@@ -26,6 +26,16 @@ function isWinner(data: unknown): data is Winner {
     const object: Partial<Winner> = data;
     return typeof object.wins === 'number';
 }
+function isWinners(data: unknown): data is Winner[] {
+    if (!Array.isArray(data) || data === null) {
+        return false;
+    } else if (
+        Array.isArray(data) &&
+        !data.every((element) => isWinner(element))
+    )
+        return false;
+    return typeof data[0]?.wins === 'number' || data.length === 0;
+}
 
 function isCars(data: unknown): data is Car[] {
     if (!Array.isArray(data) || data === null) {
@@ -35,4 +45,4 @@ function isCars(data: unknown): data is Car[] {
     return typeof data[0]?.name === 'string' || data.length === 0;
 }
 
-export { isCar, isCars, isEngine, isWinner };
+export { isCar, isCars, isEngine, isWinner, isWinners };
