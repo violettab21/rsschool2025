@@ -627,13 +627,14 @@ export class GaragePage {
                 console.log('record exists');
                 console.log(winRecord);
                 winRecord.wins += 1;
-                if (winRecord.time < time) winRecord.time = time;
+                if (winRecord.time > Number((time / 1000).toFixed(2)))
+                    winRecord.time = Number((time / 1000).toFixed(2));
                 await this.apiWinners.updateWinner(id, winRecord);
             } else
                 await this.apiWinners.addWinner({
                     id: id,
                     wins: 1,
-                    time: time,
+                    time: Number((time / 1000).toFixed(2)),
                 });
         }
     }
