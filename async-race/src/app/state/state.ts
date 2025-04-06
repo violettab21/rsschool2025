@@ -1,6 +1,6 @@
 import type { GarageState, WinnersState } from '../interfaces';
 import { LocalStorage } from './local-storage';
-import { isGarageState } from '../utilities';
+import { isGarageState, isWinnersState } from '../utilities';
 export class State {
     public garageState: LocalStorage;
     public winnersState: LocalStorage;
@@ -17,6 +17,13 @@ export class State {
     public getGarageState(): GarageState | null {
         const result = this.garageState.getData();
         if (isGarageState(result)) {
+            return result;
+        }
+        return null;
+    }
+    public getWinnersState(): WinnersState | null {
+        const result = this.winnersState.getData();
+        if (isWinnersState(result)) {
             return result;
         }
         return null;

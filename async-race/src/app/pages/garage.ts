@@ -257,8 +257,9 @@ export class GaragePage {
                 this.carsContainer = createCarsContainer();
                 this.pageNumber -= 1;
                 this.createGarageContainer(this.pageNumber);
-                void this.populateGarage(this.pageNumber);
-                this.saveGarageState();
+                this.populateGarage(this.pageNumber)
+                    .then(() => this.saveGarageState())
+                    .catch((error: Error) => console.log(error));
             },
         }).element;
 
@@ -270,8 +271,9 @@ export class GaragePage {
                 this.carsContainer = createCarsContainer();
                 this.pageNumber += 1;
                 this.createGarageContainer(this.pageNumber);
-                void this.populateGarage(this.pageNumber);
-                this.saveGarageState();
+                this.populateGarage(this.pageNumber)
+                    .then(() => this.saveGarageState())
+                    .catch((error: Error) => console.log(error));
             },
         }).element;
         paginationButtons.append(previousButton, nextButton);

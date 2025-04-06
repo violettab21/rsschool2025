@@ -23,7 +23,7 @@ export class WinnersAPI {
         pageNumber: number,
         sortColumn: string,
         sortType: string
-    ): Promise<unknown> {
+    ): Promise<unknown[]> {
         const response = await fetch(
             this.url +
                 `?_page=${pageNumber}&_limit=10&_sort=${sortColumn}&_order=${sortType}`,
@@ -32,8 +32,9 @@ export class WinnersAPI {
             }
         );
         const json: unknown = await response.json();
-
-        return json;
+        const headers = response.headers;
+        const result = [json, headers];
+        return result;
     }
 
     public async getWinner(id: number): Promise<unknown> {

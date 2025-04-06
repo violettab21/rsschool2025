@@ -24,8 +24,9 @@ export class Winners {
         this.winnersCount = 0;
         this.api = new WinnersAPI();
         this.apiCars = new GarageAPI();
+        const winnersData = this.state.getWinnersState();
+        this.pageNumber = winnersData ? winnersData.pageNumber : 1;
 
-        this.pageNumber = 1;
         this.winnersContainer = new ElementBase({
             tag: 'div',
             className: ['winners-container'],
@@ -79,7 +80,10 @@ export class Winners {
                 this.clearWinners();
                 this.pageNumber -= 1;
                 this.createWinnersComponents()
-                    .then(() => this.createWinnersContainer(this.pageNumber))
+                    .then(() => {
+                        this.createWinnersContainer(this.pageNumber);
+                        this.saveWinnersState();
+                    })
                     .catch((error: Error) => console.log(error));
             },
         }).element;
@@ -92,7 +96,10 @@ export class Winners {
                 this.clearWinners();
                 this.pageNumber += 1;
                 this.createWinnersComponents()
-                    .then(() => this.createWinnersContainer(this.pageNumber))
+                    .then(() => {
+                        this.createWinnersContainer(this.pageNumber);
+                        this.saveWinnersState();
+                    })
                     .catch((error: Error) => console.log(error));
             },
         }).element;
@@ -125,21 +132,27 @@ export class Winners {
             className: ['header-time'],
             textContent: 'Wins',
         }).element;
-        wins.addEventListener('click', () => {
-            this.showSortedWinners(wins, 'wins');
-        });
         const time = new ElementBase({
             tag: 'p',
             className: ['header-time'],
-            textContent: 'Time',
+            textContent: 'Best Time',
         }).element;
-        time.addEventListener('click', () => {
-            this.showSortedWinners(time, 'time');
+        wins.addEventListener('click', () => {
+            if (time) removeSortIcon(time);
+
+            this.showSortedWinners(wins, 'wins');
+            this.saveWinnersState();
         });
+        time.addEventListener('click', () => {
+            if (wins) removeSortIcon(wins);
+            this.showSortedWinners(time, 'time');
+            this.saveWinnersState();
+        });
+        this.setSortingFromState(wins, time);
         this.winners.append(number, name, car, wins, time);
     }
     public showSortedWinners(column: CustomElement, name: string): void {
-        this.clearWinners();
+        this.clearWinnersWithoutHeader();
 
         let sortParameter = '';
         if (!column.dataset.sort || column.dataset.sort === 'DESC') {
@@ -165,12 +178,12 @@ export class Winners {
         column: string,
         sortParameter: string
     ): Promise<void> {
-        const winners = await this.api.sortWinners(
+        const responseData = await this.api.sortWinners(
             this.pageNumber,
             column,
             sortParameter
         );
-
+        const winners = responseData[0];
         const carsData: Promise<unknown>[] = [];
         if (isWinners(winners)) {
             winners.forEach((winner) => {
@@ -213,7 +226,23 @@ export class Winners {
     }
 
     public async populateWinnersTable(): Promise<void> {
-        const responseData = await this.api.getWinners(this.pageNumber);
+        const winnersData = this.state.getWinnersState();
+        let responseData: unknown[];
+        if (winnersData) {
+            const sortColumn = getSortValues(winnersData)[0],
+                sortType = getSortValues(winnersData)[1];
+            responseData =
+                sortColumn && sortType
+                    ? await this.api.sortWinners(
+                          this.pageNumber,
+                          sortColumn,
+                          sortType
+                      )
+                    : await this.api.getWinners(this.pageNumber);
+        } else {
+            responseData = await this.api.getWinners(this.pageNumber);
+        }
+
         const winners = responseData[0];
         const headers = responseData[1];
         if (headers instanceof Headers) {
@@ -242,6 +271,9 @@ export class Winners {
         );
     }
     public clearWinners(): void {
+        [...this.winners.children].forEach((element) => element.remove());
+    }
+    public clearWinnersWithoutHeader(): void {
         [...this.winners.children]
             .slice(5)
             .forEach((element) => element.remove());
@@ -290,6 +322,43 @@ export class Winners {
         pageMenuContainer.append(this.createTopLevelButtons(router));
 
         return pageMenuContainer;
+    }
+    public setSortingFromState(wins: CustomElement, time: CustomElement): void {
+        const winnersData = this.state.getWinnersState();
+        if (winnersData) {
+            wins.dataset.sort = winnersData.winsSort;
+            time.dataset.sort = winnersData.timeSort;
+            showIconSortIconBasedOnSortType(wins);
+            showIconSortIconBasedOnSortType(time);
+        }
+    }
+}
+function removeSortIcon(column: CustomElement): void {
+    if (column instanceof HTMLElement) {
+        column.dataset.sort = '';
+        [...column.children].forEach((child) => child.remove());
+    }
+}
+function getSortValues(winnersData: WinnersState): string[] {
+    let sortColumn = '',
+        sortType = '';
+    if (winnersData.timeSort) {
+        sortColumn = 'time';
+        sortType = winnersData.timeSort;
+    } else if (winnersData.winsSort) {
+        sortColumn = 'wins';
+        sortType = winnersData.winsSort;
+    }
+    return [sortColumn, sortType];
+}
+function showIconSortIconBasedOnSortType(column: CustomElement): void {
+    const sortType = column.dataset.sort;
+    if (sortType === 'ASC' && column instanceof HTMLElement) {
+        [...column.children].forEach((child) => child.remove());
+        column.append(createSortingIconUp());
+    } else if (sortType === 'DESC' && column instanceof HTMLElement) {
+        [...column.children].forEach((child) => child.remove());
+        column.append(createSortingIconDown());
     }
 }
 
