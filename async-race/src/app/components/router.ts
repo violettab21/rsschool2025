@@ -55,6 +55,6 @@ export class Router {
         if (this.main.content) {
             removeChildren(this.main.main);
         }
-        this.main.content = new Winners(this.main, this);
+        this.main.content = new Winners(this.main, this, this.state);
     }
 }

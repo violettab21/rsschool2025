@@ -1,5 +1,5 @@
 import type { Main } from '../components/main';
-import type { CustomElement } from '../interfaces';
+import type { CustomElement, WinnersState } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import type { Car, Winner } from '../interfaces';
@@ -10,15 +10,17 @@ import { createCarImage } from './garage';
 import imageUp from '../../assets/up.svg';
 import imageDown from '../../assets/down.svg';
 import type { Router } from '../components/router';
+import type { State } from '../state/state';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
-
+    public state: State;
     public pageNumber: number;
     public winners: CustomElement;
     public api: WinnersAPI;
     public apiCars: GarageAPI;
-    constructor(main: Main, router: Router) {
+    constructor(main: Main, router: Router, state: State) {
+        this.state = state;
         this.winnersCount = 0;
         this.api = new WinnersAPI();
         this.apiCars = new GarageAPI();
@@ -35,7 +37,7 @@ export class Winners {
         this.configurePage(main, router);
     }
     public configurePage(main: Main, router: Router): void {
-        const winnersPageMenu = createWinnersPageMenu(router);
+        const winnersPageMenu = this.createWinnersPageMenu(router);
         if (main.main instanceof Element) {
             main.main.append(winnersPageMenu, this.winnersContainer);
             this.createWinnersComponents()
@@ -244,27 +246,51 @@ export class Winners {
             .slice(5)
             .forEach((element) => element.remove());
     }
-}
-function createWinnersPageMenu(router: Router): CustomElement {
-    const pageMenuContainer = new ElementBase({
-        tag: 'div',
-        className: ['winners-page-menu'],
-    }).element;
+    public saveWinnersState(): void {
+        const pageNumber = this.pageNumber;
+        let winsSort = '';
+        let timeSort = '';
 
-    pageMenuContainer.append(createTopLevelButtons(router));
+        const listOfWinnersElements = [...this.winners.children];
+        if (listOfWinnersElements[3] instanceof HTMLElement) {
+            winsSort = listOfWinnersElements[3].dataset.sort
+                ? listOfWinnersElements[3].dataset.sort
+                : '';
+        }
+        if (listOfWinnersElements[4] instanceof HTMLElement) {
+            timeSort = listOfWinnersElements[4].dataset.sort
+                ? listOfWinnersElements[4].dataset.sort
+                : '';
+        }
+        const objectToSave: WinnersState = {
+            pageNumber: pageNumber,
+            winsSort: winsSort,
+            timeSort: timeSort,
+        };
+        this.state.saveWinnersState(objectToSave);
+    }
+    public createTopLevelButtons(router: Router): CustomElement {
+        const toGarageButton = new Button({
+            className: ['garage-button', 'button'],
+            textContent: 'To Garage',
+            handlerFunction: (): void => {
+                this.saveWinnersState();
+                router.openPage('/');
+            },
+        }).element;
 
-    return pageMenuContainer;
-}
-function createTopLevelButtons(router: Router): CustomElement {
-    const toGarageButton = new Button({
-        className: ['garage-button', 'button'],
-        textContent: 'To Garage',
-        handlerFunction: (): void => {
-            router.openPage('/');
-        },
-    }).element;
+        return toGarageButton;
+    }
+    public createWinnersPageMenu(router: Router): CustomElement {
+        const pageMenuContainer = new ElementBase({
+            tag: 'div',
+            className: ['winners-page-menu'],
+        }).element;
 
-    return toGarageButton;
+        pageMenuContainer.append(this.createTopLevelButtons(router));
+
+        return pageMenuContainer;
+    }
 }
 
 function createSortingIconUp(): CustomElement {
