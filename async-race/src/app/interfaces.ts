@@ -26,6 +26,22 @@ interface Winner {
     wins: number;
     time: number;
 }
+
+interface GarageState {
+    pageNumber: number;
+    selectedCarId: number;
+    createCarName: string;
+    createCarColor: string;
+    updateCarName: string;
+    updateCarColor: string;
+}
+
+interface WinnersState {
+    pageNumber: number;
+    winsSort: string;
+    timeSort: string;
+}
+
 type NewWinner = Omit<Winner, 'id'>;
 
 type NewCar = Omit<Car, 'id'>;
@@ -47,4 +63,6 @@ export {
     Winner,
     NewWinner,
     Route,
+    GarageState,
+    WinnersState,
 };

@@ -1,4 +1,4 @@
-import type { CustomElement, NewCar, Car } from '../interfaces';
+import type { CustomElement, NewCar, Car, GarageState } from '../interfaces';
 import { ElementBase } from '../components/elements';
 import { Button } from '../components/buttons';
 import { GarageAPI } from '../api/garage-api';
@@ -8,7 +8,7 @@ import image from '../../assets/racing-finish-svgrepo-com.svg';
 import type { Main } from '../components/main';
 import { WinnersAPI } from '../api/winners-api';
 import type { Router } from '../components/router';
-
+import type { State } from '../state/state';
 export class GaragePage {
     public createRowContainer: CustomElement;
     public updateRowContainer: CustomElement;
@@ -21,7 +21,9 @@ export class GaragePage {
     public carsNumber: number;
     public isRace: boolean;
     public winner: CustomElement | null;
-    constructor(main: Main, router: Router) {
+    public state: State;
+    constructor(main: Main, router: Router, state: State) {
+        this.state = state;
         this.winner = null;
         this.isRace = false;
         this.carsNumber = 0;
@@ -155,7 +157,7 @@ export class GaragePage {
         }).element;
 
         pageMenuContainer.append(
-            createTopLevelButtons(router),
+            this.createTopLevelButtons(router),
             this.createForm(),
             this.createBottomLevelButtons()
         );
@@ -637,29 +639,66 @@ export class GaragePage {
                 });
         }
     }
+
+    public saveGarageState(): void {
+        const pageNumber = this.pageNumber;
+        const selectedCarId = this.selectedCarId;
+        let carName = '';
+        let carColor = '';
+        let updatedName = '';
+        let updatedColor = '';
+        const listOfNewCarElements = [...this.createRowContainer.children];
+        if (
+            listOfNewCarElements[0] instanceof HTMLInputElement &&
+            listOfNewCarElements[1] instanceof HTMLInputElement
+        ) {
+            carName = listOfNewCarElements[0].value;
+            carColor = listOfNewCarElements[1].value;
+        }
+        const listOfUpdatedCarElements = [...this.updateRowContainer.children];
+        if (
+            listOfUpdatedCarElements[0] instanceof HTMLInputElement &&
+            listOfUpdatedCarElements[1] instanceof HTMLInputElement
+        ) {
+            updatedName = listOfUpdatedCarElements[0].value;
+            updatedColor = listOfUpdatedCarElements[1].value;
+        }
+
+        const objectToSave: GarageState = {
+            pageNumber: pageNumber,
+            selectedCarId: selectedCarId,
+            createCarName: carName,
+            createCarColor: carColor,
+            updateCarName: updatedName,
+            updateCarColor: updatedColor,
+        };
+        this.state.saveGarageState(objectToSave);
+    }
+    public openWinnersHandler(router: Router): void {
+        this.saveGarageState();
+        router.openPage('winners');
+    }
+    public createTopLevelButtons(router: Router): CustomElement {
+        const buttonsContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage-page-top-buttons'],
+        }).element;
+
+        const toWinnersButton = new Button({
+            className: ['winners-button', 'button'],
+            textContent: 'To Winners',
+            handlerFunction: (): void => {
+                this.openWinnersHandler(router);
+            },
+        }).element;
+        buttonsContainer.append(toWinnersButton);
+
+        return buttonsContainer;
+    }
 }
-function openWinnersHandler(router: Router): void {
-    router.openPage('winners');
-}
+
 function removeWinMessage(messageComponent: CustomElement): void {
     messageComponent.remove();
-}
-function createTopLevelButtons(router: Router): CustomElement {
-    const buttonsContainer = new ElementBase({
-        tag: 'div',
-        className: ['garage-page-top-buttons'],
-    }).element;
-
-    const toWinnersButton = new Button({
-        className: ['winners-button', 'button'],
-        textContent: 'To Winners',
-        handlerFunction: (): void => {
-            openWinnersHandler(router);
-        },
-    }).element;
-    buttonsContainer.append(toWinnersButton);
-
-    return buttonsContainer;
 }
 
 function createCarsContainer(): CustomElement {

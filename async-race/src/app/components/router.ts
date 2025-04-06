@@ -3,12 +3,15 @@ import type { Main } from './main';
 import { removeChildren } from './elements';
 import { Winners } from '../pages/winners';
 import { GaragePage } from '../pages/garage';
+import type { State } from '../state/state';
 export class Router {
     public routes: Route[];
     public main: Main;
-    constructor(main: Main) {
+    public state: State;
+    constructor(main: Main, state: State) {
         this.routes = this.setRoutes();
         this.main = main;
+        this.state = state;
     }
     public openPage(path?: string): void {
         const isHistory: boolean = path !== undefined;
@@ -45,7 +48,7 @@ export class Router {
         if (this.main.content) {
             removeChildren(this.main.main);
         }
-        this.main.content = new GaragePage(this.main, this);
+        this.main.content = new GaragePage(this.main, this, this.state);
     }
 
     protected configureWinnersPage(): void {
