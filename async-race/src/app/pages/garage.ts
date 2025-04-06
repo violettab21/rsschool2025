@@ -703,7 +703,7 @@ function changeCarPosition(offset: number, carRow: Element): void {
         carElement.style.transform = `translate(${offset}px)`;
 }
 
-function createCarImage(color: string): CustomElement {
+export function createCarImage(color: string): CustomElement {
     const carImage = new ElementBase({
         tag: 'span',
         className: ['car-image'],

@@ -2,4 +2,9 @@
     display: grid;
     grid-auto-rows: 30px;
     grid-template-columns: repeat(5, 80px);
+    place-items: center center;
+}
+
+.winners p {
+    text-align: center;
 }

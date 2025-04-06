@@ -6,6 +6,7 @@ import type { Car, Winner } from '../interfaces';
 import { WinnersAPI } from '../api/winners-api';
 import { GarageAPI } from '../api/garage-api';
 import { isWinners, isCar } from '../utilities';
+import { createCarImage } from './garage';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
@@ -137,11 +138,7 @@ export class Winners {
             className: ['data-name'],
             textContent: `${car.name}`,
         }).element;
-        const carImage = new ElementBase({
-            tag: 'p',
-            className: ['data-car'],
-            textContent: `${car.color}`,
-        }).element;
+        const carImage = createCarImage(car.color);
         const winsCount = new ElementBase({
             tag: 'p',
             className: ['data-wins'],
