@@ -120,12 +120,53 @@ export class Winners {
             className: ['header-time'],
             textContent: 'Wins',
         }).element;
+        wins.addEventListener('click', () => {
+            this.showSortedWinners(wins);
+        });
         const time = new ElementBase({
             tag: 'p',
             className: ['header-time'],
             textContent: 'Time',
         }).element;
         this.winners.append(number, name, car, wins, time);
+    }
+    public showSortedWinners(wins: CustomElement): void {
+        this.clearWinners();
+
+        let sortParameter = '';
+        if (!wins.dataset.sort || wins.dataset.sort === 'DESC') {
+            sortParameter = 'ASC';
+            wins.dataset.sort = 'ASC';
+        } else {
+            sortParameter = 'DESC';
+            wins.dataset.sort = 'DESC';
+        }
+        this.sortByWinsHandler(sortParameter)
+            .then((result) => console.log(result))
+            .catch((error) => console.log(error));
+    }
+    public async sortByWinsHandler(sortParameter: string): Promise<void> {
+        const winners = await this.api.sortWinners(
+            this.pageNumber,
+            'wins',
+            sortParameter
+        );
+
+        const carsData: Promise<unknown>[] = [];
+        if (isWinners(winners)) {
+            winners.forEach((winner) => {
+                carsData.push(this.apiCars.getCar(winner.id));
+            });
+            Promise.all(carsData)
+                .then((data) =>
+                    data.forEach((car, i) => {
+                        if (isCar(car)) {
+                            this.createWinnerRow(i + 1, car, winners[i]);
+                        }
+                    })
+                )
+                .catch((error: Error) => console.log(error));
+        }
     }
     public createWinnerRow(id: number, car: Car, winner: Winner): void {
         const number = new ElementBase({
@@ -182,7 +223,9 @@ export class Winners {
         );
     }
     public clearWinners(): void {
-        [...this.winners.children].forEach((element) => element.remove());
+        [...this.winners.children]
+            .slice(5)
+            .forEach((element) => element.remove());
     }
 }
 function createWinnersPageMenu(): CustomElement {

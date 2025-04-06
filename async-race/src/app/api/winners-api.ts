@@ -19,6 +19,23 @@ export class WinnersAPI {
         return result;
     }
 
+    public async sortWinners(
+        pageNumber: number,
+        sortColumn: string,
+        sortType: string
+    ): Promise<unknown> {
+        const response = await fetch(
+            this.url +
+                `?_page=${pageNumber}&_limit=10&_sort=${sortColumn}&_order=${sortType}`,
+            {
+                method: 'GET',
+            }
+        );
+        const json: unknown = await response.json();
+
+        return json;
+    }
+
     public async getWinner(id: number): Promise<unknown> {
         const response = await fetch(this.url + `/${id}`, {
             method: 'GET',
