@@ -7,6 +7,8 @@ import { WinnersAPI } from '../api/winners-api';
 import { GarageAPI } from '../api/garage-api';
 import { isWinners, isCar } from '../utilities';
 import { createCarImage } from './garage';
+import imageUp from '../../assets/up.svg';
+import imageDown from '../../assets/down.svg';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
@@ -121,34 +123,48 @@ export class Winners {
             textContent: 'Wins',
         }).element;
         wins.addEventListener('click', () => {
-            this.showSortedWinners(wins);
+            this.showSortedWinners(wins, 'wins');
         });
         const time = new ElementBase({
             tag: 'p',
             className: ['header-time'],
             textContent: 'Time',
         }).element;
+        time.addEventListener('click', () => {
+            this.showSortedWinners(time, 'time');
+        });
         this.winners.append(number, name, car, wins, time);
     }
-    public showSortedWinners(wins: CustomElement): void {
+    public showSortedWinners(column: CustomElement, name: string): void {
         this.clearWinners();
 
         let sortParameter = '';
-        if (!wins.dataset.sort || wins.dataset.sort === 'DESC') {
+        if (!column.dataset.sort || column.dataset.sort === 'DESC') {
             sortParameter = 'ASC';
-            wins.dataset.sort = 'ASC';
+            column.dataset.sort = 'ASC';
+            if (column instanceof HTMLElement) {
+                [...column.children].forEach((child) => child.remove());
+                column.append(createSortingIconUp());
+            }
         } else {
             sortParameter = 'DESC';
-            wins.dataset.sort = 'DESC';
+            column.dataset.sort = 'DESC';
+            if (column instanceof HTMLElement) {
+                [...column.children].forEach((child) => child.remove());
+                column.append(createSortingIconDown());
+            }
         }
-        this.sortByWinsHandler(sortParameter)
+        this.sortByColumnHandler(name, sortParameter)
             .then((result) => console.log(result))
             .catch((error) => console.log(error));
     }
-    public async sortByWinsHandler(sortParameter: string): Promise<void> {
+    public async sortByColumnHandler(
+        column: string,
+        sortParameter: string
+    ): Promise<void> {
         const winners = await this.api.sortWinners(
             this.pageNumber,
-            'wins',
+            column,
             sortParameter
         );
 
@@ -246,4 +262,24 @@ function createTopLevelButtons(): CustomElement {
     }).element;
 
     return toGarageButton;
+}
+
+function createSortingIconUp(): CustomElement {
+    const sortImage = new ElementBase({
+        tag: 'span',
+        className: ['sort-icon-up'],
+    }).element;
+    if (sortImage instanceof HTMLElement)
+        sortImage.style.backgroundImage = `url(${imageUp})`;
+    return sortImage;
+}
+
+function createSortingIconDown(): CustomElement {
+    const sortImage = new ElementBase({
+        tag: 'span',
+        className: ['sort-icon-down'],
+    }).element;
+    if (sortImage instanceof HTMLElement)
+        sortImage.style.backgroundImage = `url(${imageDown})`;
+    return sortImage;
 }
