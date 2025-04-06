@@ -32,6 +32,11 @@ type NewCar = Omit<Car, 'id'>;
 
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
 
+interface Route {
+    url: string;
+    handler: () => void;
+}
+
 export {
     Properties,
     CustomElement,
@@ -41,4 +46,5 @@ export {
     Engine,
     Winner,
     NewWinner,
+    Route,
 };

@@ -9,6 +9,7 @@ import { isWinners, isCar } from '../utilities';
 import { createCarImage } from './garage';
 import imageUp from '../../assets/up.svg';
 import imageDown from '../../assets/down.svg';
+import type { Router } from '../components/router';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
@@ -17,7 +18,7 @@ export class Winners {
     public winners: CustomElement;
     public api: WinnersAPI;
     public apiCars: GarageAPI;
-    constructor(main: Main) {
+    constructor(main: Main, router: Router) {
         this.winnersCount = 0;
         this.api = new WinnersAPI();
         this.apiCars = new GarageAPI();
@@ -31,10 +32,10 @@ export class Winners {
             tag: 'div',
             className: ['winners'],
         }).element;
-        this.configurePage(main);
+        this.configurePage(main, router);
     }
-    public configurePage(main: Main): void {
-        const winnersPageMenu = createWinnersPageMenu();
+    public configurePage(main: Main, router: Router): void {
+        const winnersPageMenu = createWinnersPageMenu(router);
         if (main.main instanceof Element) {
             main.main.append(winnersPageMenu, this.winnersContainer);
             this.createWinnersComponents()
@@ -244,21 +245,23 @@ export class Winners {
             .forEach((element) => element.remove());
     }
 }
-function createWinnersPageMenu(): CustomElement {
+function createWinnersPageMenu(router: Router): CustomElement {
     const pageMenuContainer = new ElementBase({
         tag: 'div',
         className: ['winners-page-menu'],
     }).element;
 
-    pageMenuContainer.append(createTopLevelButtons());
+    pageMenuContainer.append(createTopLevelButtons(router));
 
     return pageMenuContainer;
 }
-function createTopLevelButtons(): CustomElement {
+function createTopLevelButtons(router: Router): CustomElement {
     const toGarageButton = new Button({
         className: ['garage-button', 'button'],
         textContent: 'To Garage',
-        handlerFunction: (): void => {},
+        handlerFunction: (): void => {
+            router.openPage('/');
+        },
     }).element;
 
     return toGarageButton;
