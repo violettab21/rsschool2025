@@ -29,22 +29,25 @@ export class GaragePage {
         this.carsNumber = 0;
         this.api = new GarageAPI();
         this.apiWinners = new WinnersAPI();
-        this.selectedCarId = 0;
-        this.pageNumber = 1;
+        const garageData = this.state.getGarageState();
+        if (garageData) {
+            this.selectedCarId = garageData.selectedCarId;
+            this.pageNumber = garageData.pageNumber;
+        } else {
+            this.selectedCarId = 0;
+            this.pageNumber = 1;
+        }
         this.createRowContainer = new ElementBase({
             tag: 'div',
             className: ['create-car-row'],
         }).element;
 
         this.createCarForm();
-
         this.updateRowContainer = new ElementBase({
             tag: 'div',
             className: ['update-car-row'],
         }).element;
-
         this.updateCarForm();
-
         this.carsContainer = createCarsContainer();
         this.garageContainer = new ElementBase({
             tag: 'div',
@@ -92,7 +95,6 @@ export class GaragePage {
             tag: 'input',
             className: ['create-car-input'],
         }).element;
-
         const newCarColor = new ElementBase({
             tag: 'input',
             className: ['create-car-color'],
@@ -110,7 +112,22 @@ export class GaragePage {
                 );
             },
         }).element;
-
+        if (
+            newCarInput instanceof HTMLInputElement &&
+            newCarColor instanceof HTMLInputElement
+        ) {
+            const garageData = this.state.getGarageState();
+            if (garageData) {
+                newCarInput.value = garageData.createCarName;
+                newCarColor.value = garageData.createCarColor;
+            }
+            newCarInput.addEventListener('change', () =>
+                this.saveGarageState()
+            );
+            newCarColor.addEventListener('change', () =>
+                this.saveGarageState()
+            );
+        }
         this.createRowContainer.append(newCarInput, newCarColor, newCarButton);
     }
 
@@ -128,14 +145,10 @@ export class GaragePage {
             tag: 'input',
             className: ['update-car-input'],
         }).element;
-
         const updatedCarColor = new ElementBase({
             tag: 'input',
             className: ['update-car-color'],
         }).element;
-        if (updatedCarColor instanceof HTMLInputElement) {
-            updatedCarColor.type = 'color';
-        }
         const updateCarButton = new Button({
             className: ['update-car'],
             textContent: 'Update',
@@ -143,7 +156,23 @@ export class GaragePage {
                 void this.updateCarRecordHandler();
             },
         }).element;
-
+        if (
+            updateCarInput instanceof HTMLInputElement &&
+            updatedCarColor instanceof HTMLInputElement
+        ) {
+            const garageData = this.state.getGarageState();
+            if (garageData) {
+                updateCarInput.value = garageData.updateCarName;
+                updatedCarColor.value = garageData.updateCarColor;
+            }
+            updatedCarColor.type = 'color';
+            updateCarInput.addEventListener('change', () =>
+                this.saveGarageState()
+            );
+            updatedCarColor.addEventListener('change', () =>
+                this.saveGarageState()
+            );
+        }
         this.updateRowContainer.append(
             updateCarInput,
             updatedCarColor,
@@ -229,6 +258,7 @@ export class GaragePage {
                 this.pageNumber -= 1;
                 this.createGarageContainer(this.pageNumber);
                 void this.populateGarage(this.pageNumber);
+                this.saveGarageState();
             },
         }).element;
 
@@ -241,6 +271,7 @@ export class GaragePage {
                 this.pageNumber += 1;
                 this.createGarageContainer(this.pageNumber);
                 void this.populateGarage(this.pageNumber);
+                this.saveGarageState();
             },
         }).element;
         paginationButtons.append(previousButton, nextButton);
@@ -257,7 +288,9 @@ export class GaragePage {
             className: ['select-button'],
             textContent: 'Select',
             handlerFunction: (event?: Event): void => {
-                void this.selectCarRecordHandler(event);
+                this.selectCarRecordHandler(event)
+                    .then(() => this.saveGarageState())
+                    .catch((error: Error) => console.log(error));
             },
         }).element;
 
@@ -310,6 +343,7 @@ export class GaragePage {
                     optionToSelect.dataset
                 ) {
                     this.selectedCarId = Number(optionToSelect.dataset.id);
+
                     const car = await this.api.getCar(this.selectedCarId);
                     if (isCar(car)) {
                         const updateRowContainerFields = [

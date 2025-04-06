@@ -1,4 +1,4 @@
-import type { Car, Engine, Winner } from './interfaces';
+import type { Car, Engine, Winner, GarageState } from './interfaces';
 
 function isCar(data: unknown): data is Car {
     if (typeof data !== 'object' || data === null) {
@@ -45,4 +45,13 @@ function isCars(data: unknown): data is Car[] {
     return typeof data[0]?.name === 'string' || data.length === 0;
 }
 
-export { isCar, isCars, isEngine, isWinner, isWinners };
+function isGarageState(data: unknown): data is GarageState {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    const object: Partial<GarageState> = data;
+    return typeof object.createCarName === 'string';
+}
+
+export { isCar, isCars, isEngine, isWinner, isWinners, isGarageState };
