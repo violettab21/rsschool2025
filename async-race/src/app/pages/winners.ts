@@ -11,11 +11,12 @@ import imageUp from '../../assets/up.svg';
 import imageDown from '../../assets/down.svg';
 import type { Router } from '../components/router';
 import type { State } from '../state/state';
+import { Pagination } from '../components/pagination';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
     public state: State;
-    public pageNumber: number;
+    public pagination: Pagination;
     public winners: CustomElement;
     public api: WinnersAPI;
     public apiCars: GarageAPI;
@@ -25,8 +26,8 @@ export class Winners {
         this.api = new WinnersAPI();
         this.apiCars = new GarageAPI();
         const winnersData = this.state.getWinnersState();
-        this.pageNumber = winnersData ? winnersData.pageNumber : 1;
-
+        const pageNumber = winnersData ? winnersData.pageNumber : 1;
+        this.pagination = new Pagination(10, pageNumber);
         this.winnersContainer = new ElementBase({
             tag: 'div',
             className: ['winners-container'],
@@ -42,7 +43,9 @@ export class Winners {
         if (main.main instanceof Element) {
             main.main.append(winnersPageMenu, this.winnersContainer);
             this.createWinnersComponents()
-                .then(() => this.createWinnersContainer(this.pageNumber))
+                .then(() =>
+                    this.createWinnersContainer(this.pagination.pageNumber)
+                )
                 .catch((error: Error) => console.log(error));
         }
     }
@@ -71,42 +74,52 @@ export class Winners {
             tag: 'div',
             className: ['pagination-buttons'],
         }).element;
-
         const previousButton = new Button({
             className: ['prev-button', 'button'],
             textContent: 'Prev',
             handlerFunction: (): void => {
-                this.clearWinnersContainer();
-                this.clearWinners();
-                this.pageNumber -= 1;
-                this.createWinnersComponents()
-                    .then(() => {
-                        this.createWinnersContainer(this.pageNumber);
-                        this.saveWinnersState();
-                    })
-                    .catch((error: Error) => console.log(error));
+                this.prevButtonHandler();
             },
         }).element;
-
         const nextButton = new Button({
             className: ['next-button', 'button'],
             textContent: 'Next',
             handlerFunction: (): void => {
-                this.clearWinnersContainer();
-                this.clearWinners();
-                this.pageNumber += 1;
-                this.createWinnersComponents()
-                    .then(() => {
-                        this.createWinnersContainer(this.pageNumber);
-                        this.saveWinnersState();
-                    })
-                    .catch((error: Error) => console.log(error));
+                this.nextButtonHandler();
             },
         }).element;
+        if (
+            previousButton instanceof HTMLButtonElement &&
+            nextButton instanceof HTMLButtonElement
+        ) {
+            this.pagination.setPrevButtonState(previousButton);
+            this.pagination.setNextButtonState(nextButton, this.winnersCount);
+        }
         paginationButtons.append(previousButton, nextButton);
         return paginationButtons;
     }
-
+    public nextButtonHandler(): void {
+        this.clearWinnersContainer();
+        this.clearWinners();
+        this.pagination.pageNumber += 1;
+        this.createWinnersComponents()
+            .then(() => {
+                this.createWinnersContainer(this.pagination.pageNumber);
+                this.saveWinnersState();
+            })
+            .catch((error: Error) => console.log(error));
+    }
+    public prevButtonHandler(): void {
+        this.clearWinnersContainer();
+        this.clearWinners();
+        this.pagination.pageNumber -= 1;
+        this.createWinnersComponents()
+            .then(() => {
+                this.createWinnersContainer(this.pagination.pageNumber);
+                this.saveWinnersState();
+            })
+            .catch((error: Error) => console.log(error));
+    }
     public async createWinnersComponents(): Promise<void> {
         this.createTableHeader();
         await this.populateWinnersTable();
@@ -179,7 +192,7 @@ export class Winners {
         sortParameter: string
     ): Promise<void> {
         const responseData = await this.api.sortWinners(
-            this.pageNumber,
+            this.pagination.pageNumber,
             column,
             sortParameter
         );
@@ -234,20 +247,20 @@ export class Winners {
             responseData =
                 sortColumn && sortType
                     ? await this.api.sortWinners(
-                          this.pageNumber,
+                          this.pagination.pageNumber,
                           sortColumn,
                           sortType
                       )
-                    : await this.api.getWinners(this.pageNumber);
+                    : await this.api.getWinners(this.pagination.pageNumber);
         } else {
-            responseData = await this.api.getWinners(this.pageNumber);
+            responseData = await this.api.getWinners(
+                this.pagination.pageNumber
+            );
         }
-
         const winners = responseData[0];
         const headers = responseData[1];
         if (headers instanceof Headers) {
             this.winnersCount = Number(headers.get('X-Total-Count'));
-            console.log(this.winnersCount);
         }
         const carsData: Promise<unknown>[] = [];
         if (isWinners(winners)) {
@@ -279,7 +292,7 @@ export class Winners {
             .forEach((element) => element.remove());
     }
     public saveWinnersState(): void {
-        const pageNumber = this.pageNumber;
+        const pageNumber = this.pagination.pageNumber;
         let winsSort = '';
         let timeSort = '';
 

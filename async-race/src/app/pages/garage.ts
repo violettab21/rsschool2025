@@ -9,12 +9,14 @@ import type { Main } from '../components/main';
 import { WinnersAPI } from '../api/winners-api';
 import type { Router } from '../components/router';
 import type { State } from '../state/state';
+import { Pagination } from '../components/pagination';
+
 export class GaragePage {
+    public pagination: Pagination;
     public createRowContainer: CustomElement;
     public updateRowContainer: CustomElement;
     public carsContainer: CustomElement;
     public garageContainer: CustomElement;
-    public pageNumber: number;
     public api: GarageAPI;
     public apiWinners: WinnersAPI;
     public selectedCarId: number;
@@ -22,6 +24,7 @@ export class GaragePage {
     public isRace: boolean;
     public winner: CustomElement | null;
     public state: State;
+
     constructor(main: Main, router: Router, state: State) {
         this.state = state;
         this.winner = null;
@@ -32,10 +35,11 @@ export class GaragePage {
         const garageData = this.state.getGarageState();
         if (garageData) {
             this.selectedCarId = garageData.selectedCarId;
-            this.pageNumber = garageData.pageNumber;
+            const pageNumber = garageData.pageNumber;
+            this.pagination = new Pagination(7, pageNumber);
         } else {
+            this.pagination = new Pagination(7, 1);
             this.selectedCarId = 0;
-            this.pageNumber = 1;
         }
         this.createRowContainer = new ElementBase({
             tag: 'div',
@@ -55,7 +59,7 @@ export class GaragePage {
         }).element;
         this.getCarsNumber()
             .then(() => {
-                this.createGarageContainer(this.pageNumber);
+                this.createGarageContainer(this.pagination.pageNumber);
 
                 this.configurePage(main, router);
             })
@@ -66,7 +70,7 @@ export class GaragePage {
         const garagePageMenu = this.createGaragePageMenu(router);
         if (main.main instanceof Element)
             main.main.append(garagePageMenu, this.garageContainer);
-        void this.populateGarage(this.pageNumber);
+        void this.populateGarage(this.pagination.pageNumber);
     }
 
     public async createCarHandler(): Promise<void> {
@@ -255,13 +259,15 @@ export class GaragePage {
             handlerFunction: (): void => {
                 this.clearGarage();
                 this.carsContainer = createCarsContainer();
-                this.pageNumber -= 1;
-                this.createGarageContainer(this.pageNumber);
-                this.populateGarage(this.pageNumber)
+                this.pagination.pageNumber -= 1;
+                this.createGarageContainer(this.pagination.pageNumber);
+                this.populateGarage(this.pagination.pageNumber)
                     .then(() => this.saveGarageState())
                     .catch((error: Error) => console.log(error));
             },
         }).element;
+        if (previousButton instanceof HTMLButtonElement)
+            this.pagination.setPrevButtonState(previousButton);
 
         const nextButton = new Button({
             className: ['next-button', 'button'],
@@ -269,13 +275,15 @@ export class GaragePage {
             handlerFunction: (): void => {
                 this.clearGarage();
                 this.carsContainer = createCarsContainer();
-                this.pageNumber += 1;
-                this.createGarageContainer(this.pageNumber);
-                this.populateGarage(this.pageNumber)
+                this.pagination.pageNumber += 1;
+                this.createGarageContainer(this.pagination.pageNumber);
+                this.populateGarage(this.pagination.pageNumber)
                     .then(() => this.saveGarageState())
                     .catch((error: Error) => console.log(error));
             },
         }).element;
+        if (nextButton instanceof HTMLButtonElement)
+            this.pagination.setNextButtonState(nextButton, this.carsNumber);
         paginationButtons.append(previousButton, nextButton);
         return paginationButtons;
     }
@@ -330,7 +338,14 @@ export class GaragePage {
                     this.carsNumber -= 1;
                     this.setCarsNumber(this.carsNumber);
                     this.clearCars();
-                    await this.populateGarage(this.pageNumber);
+                    await this.populateGarage(this.pagination.pageNumber);
+                    const next =
+                        this.garageContainer.querySelector('.next-button');
+                    if (next instanceof HTMLButtonElement)
+                        this.pagination.setNextButtonState(
+                            next,
+                            this.carsNumber
+                        );
                 }
             }
         }
@@ -381,7 +396,7 @@ export class GaragePage {
                 color: color,
             });
             this.clearCars();
-            await this.populateGarage(this.pageNumber);
+            await this.populateGarage(this.pagination.pageNumber);
         }
     }
     public async generateRandomCars(): Promise<void> {
@@ -656,6 +671,7 @@ export class GaragePage {
                 .catch((error: Error) => console.log(error));
         }
     }
+
     public async saveWinner(time: number, carRow: Element): Promise<void> {
         if (carRow instanceof HTMLElement) {
             const id = Number(carRow.dataset.id);
@@ -677,7 +693,7 @@ export class GaragePage {
     }
 
     public saveGarageState(): void {
-        const pageNumber = this.pageNumber;
+        const pageNumber = this.pagination.pageNumber;
         const selectedCarId = this.selectedCarId;
         let carName = '';
         let carColor = '';
