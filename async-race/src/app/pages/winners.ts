@@ -127,27 +127,27 @@ export class Winners {
     public createTableHeader(): void {
         const number = new ElementBase({
             tag: 'p',
-            className: ['header-number'],
+            className: ['header-number', 'winners-header'],
             textContent: 'Number',
         }).element;
         const name = new ElementBase({
             tag: 'p',
-            className: ['header-name'],
+            className: ['header-name', 'winners-header'],
             textContent: 'Name',
         }).element;
         const car = new ElementBase({
             tag: 'p',
-            className: ['header-car'],
+            className: ['header-car', 'winners-header'],
             textContent: 'Car',
         }).element;
         const wins = new ElementBase({
             tag: 'p',
-            className: ['header-time'],
+            className: ['header-time', 'winners-header'],
             textContent: 'Wins',
         }).element;
         const time = new ElementBase({
             tag: 'p',
-            className: ['header-time'],
+            className: ['header-time', 'winners-header'],
             textContent: 'Best Time',
         }).element;
         wins.addEventListener('click', () => {
@@ -216,23 +216,23 @@ export class Winners {
     public createWinnerRow(id: number, car: Car, winner: Winner): void {
         const number = new ElementBase({
             tag: 'p',
-            className: ['data-number'],
+            className: ['data-number', 'data'],
             textContent: `${id}`,
         }).element;
         const name = new ElementBase({
             tag: 'p',
-            className: ['data-name'],
+            className: ['data-name', 'data'],
             textContent: `${car.name}`,
         }).element;
         const carImage = createCarImage(car.color);
         const winsCount = new ElementBase({
             tag: 'p',
-            className: ['data-wins'],
+            className: ['data-wins', 'data'],
             textContent: `${winner.wins}`,
         }).element;
         const time = new ElementBase({
             tag: 'p',
-            className: ['data-time'],
+            className: ['data-time', 'data'],
             textContent: `${winner.time}`,
         }).element;
         this.winners.append(number, name, carImage, winsCount, time);

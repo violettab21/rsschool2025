@@ -1,5 +1,13 @@
+@use '../abstracts/constants';
+
+body {
+    font-family: Roboto, sans-serif;
+    background-color: constants.$color-background;
+}
+
 .main {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 10px;
 }

@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .car-row {
     display: flex;
     flex-direction: column;
@@ -7,8 +9,16 @@
 .car-main {
     position: relative;
     display: flex;
+    gap: 3px;
     align-items: flex-start;
     border-bottom: 1px solid;
+}
+
+.car-main button {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: constants.$color-garage-car-menu-start-stop-background;
 }
 
 .car-menu {
@@ -39,8 +49,13 @@
     background-size: cover;
 }
 
-.remove-button {
+.remove-button,
+.select-button {
     z-index: 2;
+    padding: 4px;
+    border: none;
+    border-radius: 5px;
+    background-color: constants.$color-garage-car-menu-buttons-background;
 }
 
 .button {

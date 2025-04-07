@@ -1,3 +1,13 @@
+@use '../abstracts/constants';
+
+.garage-title {
+    font-size: 24px;
+}
+
+.garage-page-number {
+    font-size: 20px;
+}
+
 .cars {
     display: flex;
     flex-direction: column;
@@ -10,4 +20,16 @@
 
 .pagination-buttons {
     margin-top: 5px;
+}
+
+.pagination-buttons button {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 5px;
+    font-family: Roboto, sans-serif;
+    background-color: constants.$color-garage-car-menu-start-stop-background;
+}
+
+.prev-button {
+    margin-right: 6px;
 }

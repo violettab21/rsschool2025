@@ -1,10 +1,23 @@
+@use '../abstracts/constants';
+
 .winners {
     display: grid;
-    grid-auto-rows: 30px;
-    grid-template-columns: repeat(5, 80px);
+    grid-auto-rows: 40px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
     place-items: center center;
+    width: 50%;
 }
 
 .winners p {
+    width: 100%;
+    font-size: 18px;
     text-align: center;
+}
+
+.winners-header {
+    width: 100%;
+    padding: 6px;
+    font-size: 20px;
+    background-color: constants.$color-winners-table-header;
 }
