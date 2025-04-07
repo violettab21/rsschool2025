@@ -407,7 +407,10 @@ export class GaragePage {
             };
             const createdCar = await this.api.createCar(car);
 
-            if (this.getCarsCountOnPage() < 7 && isCar(createdCar))
+            if (
+                this.getCarsCountOnPage() < this.pagination.limit &&
+                isCar(createdCar)
+            )
                 this.createCarRecord(createdCar);
         }
         await this.getCarsNumber();
@@ -473,6 +476,7 @@ export class GaragePage {
             const clickedItem = event.target;
             if (clickedItem instanceof Node) {
                 const carToStart = clickedItem.parentElement?.parentElement;
+
                 if (carToStart instanceof Element && carToStart.dataset) {
                     const carId = Number(carToStart.dataset.id);
                     this.api
@@ -480,15 +484,12 @@ export class GaragePage {
                         .then((result) => {
                             if (isEngine(result)) {
                                 const time = result.distance / result.velocity;
-                                console.log(time);
+                                carToStart.dataset.state = '';
                                 this.startCar(time, carToStart);
-
                                 this.api
-                                    .draveEngine(carId)
+                                    .driveEngine(carId)
                                     .then((response) => {
                                         if (!response.ok) {
-                                            console.log(response.status);
-
                                             carToStart.dataset.state =
                                                 'stopped';
                                         } else if (response.ok)
@@ -509,6 +510,7 @@ export class GaragePage {
             const clickedItem = event.target;
             if (clickedItem instanceof Node) {
                 const carToStop = clickedItem.parentElement?.parentElement;
+
                 if (carToStop instanceof Element && carToStop.dataset) {
                     const carId = Number(carToStop.dataset.id);
                     this.api
@@ -517,6 +519,8 @@ export class GaragePage {
                             if (isEngine(result)) {
                                 carToStop.dataset.state = 'stopped';
                                 changeCarPosition(0, carToStop);
+                                const carMain = [...carToStop.children][1];
+                                changeButtonsStateOnStop(carMain);
                             }
                         })
                         .catch((error: Error) => console.log(error));
@@ -550,15 +554,15 @@ export class GaragePage {
         }).element;
         flag.style.backgroundImage = `url(${image})`;
         carContainer.append(startButton, stopButton, carImage, flag);
+        disableStop(carContainer.children);
         return carContainer;
     }
 
     public startRaceHandler(): void {
         this.winner = null;
-        const count = this.carsContainer.children.length;
         const arrayCarsElements = [...this.carsContainer.children];
         const arrayOfRequests: Promise<unknown>[] = [];
-        for (let i = 0; i < count; i += 1) {
+        for (let i = 0; i < this.carsContainer.children.length; i += 1) {
             const carElement = arrayCarsElements[i];
             if (carElement instanceof HTMLElement) {
                 const id = Number(carElement.dataset.id);
@@ -578,13 +582,11 @@ export class GaragePage {
                         if (car instanceof HTMLElement) {
                             const id = Number(car.dataset.id);
                             this.api
-                                .draveEngine(id)
+                                .driveEngine(id)
                                 .then((response) => {
                                     if (!response.ok) {
-                                        console.log(response.status);
                                         car.dataset.state = 'stopped';
-                                    } else if (response.ok)
-                                        console.log('finish animation');
+                                    }
                                 })
                                 .catch((error: Error) => console.log(error));
                         }
@@ -611,6 +613,8 @@ export class GaragePage {
                     if (car instanceof HTMLElement) {
                         car.dataset.state = 'stopped';
                         changeCarPosition(0, car);
+                        const carMain = [...car.children][1];
+                        changeButtonsStateOnStop(carMain);
                     }
                 });
             })
@@ -646,7 +650,8 @@ export class GaragePage {
     }
     public startCar(time: number, carRow: Element): void {
         const startTime = performance.now();
-
+        const carMain = [...carRow.children][1];
+        changeButtonsStateOnStart(carMain);
         requestAnimationFrame((timestamp) =>
             this.animateCar(timestamp, startTime, time, carRow)
         );
@@ -747,6 +752,34 @@ export class GaragePage {
 
         return buttonsContainer;
     }
+}
+
+function changeButtonsStateOnStart(elements: Element): void {
+    const carButtons = [...elements.children];
+    disableStart(carButtons);
+    enableStop(carButtons);
+}
+
+function changeButtonsStateOnStop(elements: Element): void {
+    const carButtons = [...elements.children];
+    disableStop(carButtons);
+    enableStart(carButtons);
+}
+function disableStart(buttons: HTMLCollection | Element[]): void {
+    const startButton = buttons[0];
+    if (startButton instanceof HTMLButtonElement) startButton.disabled = true;
+}
+function disableStop(buttons: HTMLCollection | Element[]): void {
+    const stopButton = buttons[1];
+    if (stopButton instanceof HTMLButtonElement) stopButton.disabled = true;
+}
+function enableStart(buttons: HTMLCollection | Element[]): void {
+    const startButton = buttons[0];
+    if (startButton instanceof HTMLButtonElement) startButton.disabled = false;
+}
+function enableStop(buttons: HTMLCollection | Element[]): void {
+    const stopButton = buttons[1];
+    if (stopButton instanceof HTMLButtonElement) stopButton.disabled = false;
 }
 
 function removeWinMessage(messageComponent: CustomElement): void {

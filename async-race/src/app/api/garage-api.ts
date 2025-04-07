@@ -82,7 +82,7 @@ export class GarageAPI {
         return json;
     }
 
-    public async draveEngine(id: number): Promise<Response> {
+    public async driveEngine(id: number): Promise<Response> {
         const response = await fetch(
             this.urlEngine + `/?id=${id}&status=drive`,
             {
