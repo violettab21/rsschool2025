@@ -52,7 +52,7 @@ export class GaragePage {
             className: ['update-car-row'],
         }).element;
         this.updateCarForm();
-        this.garage = new Garage(this.pagination, this);
+        this.garage = new Garage(this);
         this.garageContainer = new ElementBase({
             tag: 'div',
             className: ['garage'],
@@ -192,10 +192,6 @@ export class GaragePage {
         }
     }
 
-    public getCarsCountOnPage(): number {
-        return this.garage.carsContainer.children.length;
-    }
-
     public createGarageContainer(pageNumber: number): void {
         const pageTitle = new ElementBase({
             tag: 'p',
@@ -266,7 +262,23 @@ export class GaragePage {
         paginationButtons.append(previousButton, nextButton);
         return paginationButtons;
     }
+    public createTopLevelButtons(router: Router): CustomElement {
+        const buttonsContainer = new ElementBase({
+            tag: 'div',
+            className: ['garage-page-top-buttons'],
+        }).element;
 
+        const toWinnersButton = new Button({
+            className: ['winners-button', 'button'],
+            textContent: 'To Winners',
+            handlerFunction: (): void => {
+                this.openWinnersHandler(router);
+            },
+        }).element;
+        buttonsContainer.append(toWinnersButton);
+
+        return buttonsContainer;
+    }
     public createBottomLevelButtons(): CustomElement {
         const buttonsContainer = new ElementBase({
             tag: 'div',
@@ -301,7 +313,9 @@ export class GaragePage {
 
         return buttonsContainer;
     }
-
+    public getCarsCountOnPage(): number {
+        return this.garage.carsContainer.children.length;
+    }
     public async getAllCarsCount(): Promise<number> {
         let count: number;
         const cars = await this.apiGarage.getAllCars();
@@ -315,47 +329,6 @@ export class GaragePage {
         const garage = [...this.garageContainer.children];
         const title = garage[0];
         title.textContent = `Garage (${count})`;
-    }
-
-    public showWinMessage(time: number, carRow: Element): void {
-        let winnerCar: Car;
-        if (carRow instanceof HTMLElement) {
-            const id = Number(carRow.dataset.id);
-            this.apiGarage
-                .getCar(id)
-                .then((car) => {
-                    if (isCar(car)) winnerCar = car;
-                    const text = `${winnerCar.name} went first (${(time / 1000).toFixed(2)}s)!`;
-                    const messageComponent = createWinMessage(
-                        text,
-                        winnerCar.color
-                    );
-                    setTimeout(() => {
-                        removeWinMessage(messageComponent);
-                    }, 3000);
-                })
-                .catch((error: Error) => console.log(error));
-        }
-    }
-
-    public async saveWinner(time: number, carRow: Element): Promise<void> {
-        if (carRow instanceof HTMLElement) {
-            const id = Number(carRow.dataset.id);
-            const winRecord = await this.apiWinners.getWinner(id);
-            if (isWinner(winRecord)) {
-                console.log('record exists');
-                console.log(winRecord);
-                winRecord.wins += 1;
-                if (winRecord.time > Number((time / 1000).toFixed(2)))
-                    winRecord.time = Number((time / 1000).toFixed(2));
-                await this.apiWinners.updateWinner(id, winRecord);
-            } else
-                await this.apiWinners.addWinner({
-                    id: id,
-                    wins: 1,
-                    time: Number((time / 1000).toFixed(2)),
-                });
-        }
     }
 
     public saveGarageState(): void {
@@ -392,26 +365,47 @@ export class GaragePage {
         };
         this.state.saveGarageState(objectToSave);
     }
+    public showWinMessage(time: number, carRow: Element): void {
+        let winnerCar: Car;
+        if (carRow instanceof HTMLElement) {
+            const id = Number(carRow.dataset.id);
+            this.apiGarage
+                .getCar(id)
+                .then((car) => {
+                    if (isCar(car)) winnerCar = car;
+                    const text = `${winnerCar.name} went first (${(time / 1000).toFixed(2)}s)!`;
+                    const messageComponent = createWinMessage(
+                        text,
+                        winnerCar.color
+                    );
+                    setTimeout(() => {
+                        removeWinMessage(messageComponent);
+                    }, 3000);
+                })
+                .catch((error: Error) => console.log(error));
+        }
+    }
     public openWinnersHandler(router: Router): void {
         this.saveGarageState();
         router.openPage('winners');
     }
-    public createTopLevelButtons(router: Router): CustomElement {
-        const buttonsContainer = new ElementBase({
-            tag: 'div',
-            className: ['garage-page-top-buttons'],
-        }).element;
 
-        const toWinnersButton = new Button({
-            className: ['winners-button', 'button'],
-            textContent: 'To Winners',
-            handlerFunction: (): void => {
-                this.openWinnersHandler(router);
-            },
-        }).element;
-        buttonsContainer.append(toWinnersButton);
-
-        return buttonsContainer;
+    public async saveWinner(time: number, carRow: Element): Promise<void> {
+        if (carRow instanceof HTMLElement) {
+            const id = Number(carRow.dataset.id);
+            const winRecord = await this.apiWinners.getWinner(id);
+            if (isWinner(winRecord)) {
+                winRecord.wins += 1;
+                if (winRecord.time > Number((time / 1000).toFixed(2)))
+                    winRecord.time = Number((time / 1000).toFixed(2));
+                await this.apiWinners.updateWinner(id, winRecord);
+            } else
+                await this.apiWinners.addWinner({
+                    id: id,
+                    wins: 1,
+                    time: Number((time / 1000).toFixed(2)),
+                });
+        }
     }
 }
 

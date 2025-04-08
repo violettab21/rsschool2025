@@ -2,7 +2,6 @@ import { GarageAPI } from '../../api/garage-api';
 import { isCars, isCar, isEngine } from '../../utilities';
 import type { CustomElement } from '../../interfaces';
 import { ElementBase } from '../../components/elements';
-import type { Pagination } from '../../components/pagination';
 import type { Car, NewCar } from '../../interfaces';
 import { Button } from '../../components/buttons';
 import image from '../../../assets/racing-finish-svgrepo-com.svg';
@@ -13,10 +12,8 @@ export class Garage {
     public apiGarage: GarageAPI;
     public apiWinners: WinnersAPI;
     public carsContainer: CustomElement;
-    public pagination: Pagination;
     public garagePage: GaragePage;
-    constructor(pagination: Pagination, garagePage: GaragePage) {
-        this.pagination = pagination;
+    constructor(garagePage: GaragePage) {
         this.garagePage = garagePage;
         this.apiGarage = new GarageAPI();
         this.apiWinners = new WinnersAPI();
@@ -32,7 +29,10 @@ export class Garage {
         } else return 0;
     }
     public async populateGarage(page: number): Promise<void> {
-        const cars = await this.apiGarage.getCars(page, this.pagination.limit);
+        const cars = await this.apiGarage.getCars(
+            page,
+            this.garagePage.pagination.limit
+        );
         if (isCars(cars)) cars.forEach((car) => this.renderCarRecord(car));
     }
     public renderCarRecord(car: Car): void {
@@ -162,7 +162,7 @@ export class Garage {
             this.garagePage.carsNumber += 1;
             this.garagePage.setCarsNumber(this.garagePage.carsNumber);
             if (
-                this.getCarsCountOnPage() < this.pagination.limit &&
+                this.getCarsCountOnPage() < this.garagePage.pagination.limit &&
                 isCar(createdCar)
             ) {
                 this.renderCarRecord(createdCar);
@@ -186,7 +186,9 @@ export class Garage {
                     this.garagePage.carsNumber -= 1;
                     this.garagePage.setCarsNumber(this.garagePage.carsNumber);
                     this.garagePage.clearCars();
-                    await this.populateGarage(this.pagination.pageNumber);
+                    await this.populateGarage(
+                        this.garagePage.pagination.pageNumber
+                    );
                     this.updateNextPageButtonState();
                 }
             }
@@ -196,7 +198,7 @@ export class Garage {
         const next =
             this.garagePage.garageContainer.querySelector('.next-button');
         if (next instanceof HTMLButtonElement)
-            this.pagination.setNextButtonState(
+            this.garagePage.pagination.setNextButtonState(
                 next,
                 this.garagePage.carsNumber
             );
@@ -218,7 +220,7 @@ export class Garage {
                 color: color,
             });
             this.garagePage.clearCars();
-            await this.populateGarage(this.pagination.pageNumber);
+            await this.populateGarage(this.garagePage.pagination.pageNumber);
         }
     }
     public startCarHandler(event?: Event): void {
@@ -243,8 +245,7 @@ export class Garage {
                                         if (!response.ok) {
                                             carToStart.dataset.state =
                                                 'stopped';
-                                        } else if (response.ok)
-                                            console.log('finish animation');
+                                        }
                                     })
                                     .catch((error: Error) =>
                                         console.log(error)
@@ -305,10 +306,8 @@ export class Garage {
             }
         } else {
             if (this.garagePage.isRace && this.garagePage.winner === null) {
-                console.log('winner is');
                 if (carRow instanceof HTMLElement)
                     this.garagePage.winner = carRow;
-                console.log(carRow);
                 this.garagePage.showWinMessage(time, carRow);
                 this.garagePage
                     .saveWinner(time, carRow)
@@ -391,7 +390,7 @@ export class Garage {
             const createdCar = await this.apiGarage.createCar(car);
 
             if (
-                this.getCarsCountOnPage() < this.pagination.limit &&
+                this.getCarsCountOnPage() < this.garagePage.pagination.limit &&
                 isCar(createdCar)
             )
                 this.renderCarRecord(createdCar);

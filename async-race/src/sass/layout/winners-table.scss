@@ -2,11 +2,12 @@
 
 .winners {
     display: grid;
-    grid-auto-rows: 40px;
-    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 45px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 2fr;
     gap: 1px;
     place-items: center center;
-    width: 50%;
+    width: 60%;
+    min-width: 490px;
 }
 
 .winners p {
@@ -20,4 +21,10 @@
     padding: 6px;
     font-size: 20px;
     background-color: constants.$color-winners-table-header;
+}
+
+@media screen and (width <= 900px) {
+    .winners {
+        width: 100%;
+    }
 }
