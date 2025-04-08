@@ -2,7 +2,7 @@ import type { Route } from '../interfaces';
 import type { Main } from './main';
 import { removeChildren } from './elements';
 import { Winners } from '../pages/winners';
-import { GaragePage } from '../pages/garage';
+import { GaragePage } from '../pages/garage/garage-page';
 import type { State } from '../state/state';
 export class Router {
     public routes: Route[];

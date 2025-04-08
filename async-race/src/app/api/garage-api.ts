@@ -1,15 +1,15 @@
 import type { NewCar } from '../interfaces';
 
 export class GarageAPI {
-    protected url: string;
+    protected urlGarage: string;
     protected urlEngine: string;
     constructor() {
-        this.url = 'http://127.0.0.1:3000/garage';
+        this.urlGarage = 'http://127.0.0.1:3000/garage';
         this.urlEngine = 'http://127.0.0.1:3000/engine';
     }
 
     public async createCar(car: NewCar): Promise<unknown> {
-        const response = await fetch(this.url, {
+        const response = await fetch(this.urlGarage, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,16 +20,19 @@ export class GarageAPI {
         return json;
     }
 
-    public async getCars(page: number): Promise<unknown> {
-        const response = await fetch(this.url + `?_page=${page}&_limit=7`, {
-            method: 'GET',
-        });
+    public async getCars(page: number, limit: number): Promise<unknown> {
+        const response = await fetch(
+            this.urlGarage + `?_page=${page}&_limit=${limit}`,
+            {
+                method: 'GET',
+            }
+        );
         const json: unknown = await response.json();
         return json;
     }
 
     public async getAllCars(): Promise<unknown> {
-        const response = await fetch(this.url, {
+        const response = await fetch(this.urlGarage, {
             method: 'GET',
         });
         const json: unknown = await response.json();
@@ -37,7 +40,7 @@ export class GarageAPI {
     }
 
     public async getCar(id: number): Promise<unknown> {
-        const response = await fetch(this.url + `/${id}`, {
+        const response = await fetch(this.urlGarage + `/${id}`, {
             method: 'GET',
         });
         const json: unknown = await response.json();
@@ -45,13 +48,13 @@ export class GarageAPI {
     }
 
     public async removeCar(id: number): Promise<void> {
-        await fetch(this.url + `/${id}`, {
+        await fetch(this.urlGarage + `/${id}`, {
             method: 'DELETE',
         });
     }
 
     public async updateCar(id: number, car: NewCar): Promise<void> {
-        await fetch(this.url + `/${id}`, {
+        await fetch(this.urlGarage + `/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

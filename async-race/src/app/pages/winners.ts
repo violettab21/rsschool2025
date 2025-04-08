@@ -6,12 +6,13 @@ import type { Car, Winner } from '../interfaces';
 import { WinnersAPI } from '../api/winners-api';
 import { GarageAPI } from '../api/garage-api';
 import { isWinners, isCar } from '../utilities';
-import { createCarImage } from './garage';
+import { createCarImage } from './garage/garage';
 import imageUp from '../../assets/up.svg';
 import imageDown from '../../assets/down.svg';
 import type { Router } from '../components/router';
 import type { State } from '../state/state';
 import { Pagination } from '../components/pagination';
+import { ItemsPerPageWinners } from '../constants';
 export class Winners {
     public winnersCount: number;
     public winnersContainer: CustomElement;
@@ -27,7 +28,7 @@ export class Winners {
         this.apiCars = new GarageAPI();
         const winnersData = this.state.getWinnersState();
         const pageNumber = winnersData ? winnersData.pageNumber : 1;
-        this.pagination = new Pagination(10, pageNumber);
+        this.pagination = new Pagination(ItemsPerPageWinners, pageNumber);
         this.winnersContainer = new ElementBase({
             tag: 'div',
             className: ['winners-container'],
@@ -194,7 +195,8 @@ export class Winners {
         const responseData = await this.api.sortWinners(
             this.pagination.pageNumber,
             column,
-            sortParameter
+            sortParameter,
+            this.pagination.limit
         );
         const winners = responseData[0];
         const carsData: Promise<unknown>[] = [];
@@ -239,24 +241,7 @@ export class Winners {
     }
 
     public async populateWinnersTable(): Promise<void> {
-        const winnersData = this.state.getWinnersState();
-        let responseData: unknown[];
-        if (winnersData) {
-            const sortColumn = getSortValues(winnersData)[0],
-                sortType = getSortValues(winnersData)[1];
-            responseData =
-                sortColumn && sortType
-                    ? await this.api.sortWinners(
-                          this.pagination.pageNumber,
-                          sortColumn,
-                          sortType
-                      )
-                    : await this.api.getWinners(this.pagination.pageNumber);
-        } else {
-            responseData = await this.api.getWinners(
-                this.pagination.pageNumber
-            );
-        }
+        const responseData = await this.getWinnersDataBasedOnState();
         const winners = responseData[0];
         const headers = responseData[1];
         if (headers instanceof Headers) {
@@ -277,6 +262,32 @@ export class Winners {
                 )
                 .catch((error: Error) => console.log(error));
         }
+    }
+    public async getWinnersDataBasedOnState(): Promise<unknown[]> {
+        let responseData: unknown[];
+        const winnersData = this.state.getWinnersState();
+        if (winnersData) {
+            const sortColumn = getSortValues(winnersData)[0],
+                sortType = getSortValues(winnersData)[1];
+            responseData =
+                sortColumn && sortType
+                    ? await this.api.sortWinners(
+                          this.pagination.pageNumber,
+                          sortColumn,
+                          sortType,
+                          this.pagination.limit
+                      )
+                    : await this.api.getWinners(
+                          this.pagination.pageNumber,
+                          this.pagination.limit
+                      );
+        } else {
+            responseData = await this.api.getWinners(
+                this.pagination.pageNumber,
+                this.pagination.limit
+            );
+        }
+        return responseData;
     }
     public clearWinnersContainer(): void {
         [...this.winnersContainer.children].forEach((element) =>

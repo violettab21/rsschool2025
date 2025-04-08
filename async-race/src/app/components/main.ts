@@ -1,5 +1,5 @@
 import { ElementBase } from './elements';
-import type { GaragePage } from '../pages/garage';
+import type { GaragePage } from '../pages/garage/garage-page';
 import type { Winners } from '../pages/winners';
 export class Main {
     public main: Element;

@@ -6,9 +6,12 @@ export class WinnersAPI {
         this.url = 'http://127.0.0.1:3000/winners';
     }
 
-    public async getWinners(pageNumber: number): Promise<unknown[]> {
+    public async getWinners(
+        pageNumber: number,
+        limit: number
+    ): Promise<unknown[]> {
         const response = await fetch(
-            this.url + `?_page=${pageNumber}&_limit=10`,
+            this.url + `?_page=${pageNumber}&_limit=${limit}`,
             {
                 method: 'GET',
             }
@@ -22,11 +25,12 @@ export class WinnersAPI {
     public async sortWinners(
         pageNumber: number,
         sortColumn: string,
-        sortType: string
+        sortType: string,
+        limit: number
     ): Promise<unknown[]> {
         const response = await fetch(
             this.url +
-                `?_page=${pageNumber}&_limit=10&_sort=${sortColumn}&_order=${sortType}`,
+                `?_page=${pageNumber}&_limit=${limit}&_sort=${sortColumn}&_order=${sortType}`,
             {
                 method: 'GET',
             }

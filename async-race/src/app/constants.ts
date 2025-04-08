@@ -31,5 +31,7 @@ const models = [
     'Pilot',
     'N-Van',
 ];
+const ItemsPerPageGarage = 7;
+const ItemsPerPageWinners = 10;
 
-export { cars, models };
+export { cars, models, ItemsPerPageGarage, ItemsPerPageWinners };
