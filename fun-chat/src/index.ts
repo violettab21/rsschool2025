@@ -1,4 +1,6 @@
-console.log('hello web socket');
-
-const sc = new WebSocket('ws://localhost:4000');
-console.log(sc);
+import { Connection } from './app/connection/connection';
+import { Main } from './app/components/main';
+import { LoginPage } from './app/pages/login';
+const connection = new Connection();
+const main = new Main();
+main.content = new LoginPage(connection, main);
