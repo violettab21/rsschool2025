@@ -1,40 +1,65 @@
 import type { Connection } from '../connection/connection';
 import type { Main } from '../components/main';
 import { ElementBase } from '../components/elements';
-import type { CustomElement } from '../interfaces';
+import type { CustomElement, UserRequest } from '../interfaces';
 import { Button } from '../components/buttons';
+import { UserService } from './user-service';
 
 export class LoginPage {
     public connection: Connection;
+    public userAPI: UserService;
     constructor(connection: Connection, mainElement: Main) {
         this.connection = connection;
-        configurePage(mainElement);
+        this.userAPI = new UserService(this.connection);
+        this.configurePage(mainElement);
     }
-}
-function configurePage(mainElement: Main): void {
-    const form = renderLoginForm();
-    mainElement.main.append(form);
-}
-function renderLoginForm(): CustomElement {
-    const form = new ElementBase({
-        tag: 'form',
-        className: ['auth-form'],
-    }).element;
+    public renderLoginForm(): CustomElement {
+        const form = new ElementBase({
+            tag: 'form',
+            className: ['auth-form'],
+        }).element;
 
-    const userName = createUserNameField();
-    const password = createPasswordField();
-    const loginButton = new Button({
-        className: ['login-button'],
-        textContent: 'Login',
-        handlerFunction: (): void => {
-            event?.preventDefault();
-            console.log('login');
-        },
-    }).element;
+        const userName = createUserNameField();
+        const password = createPasswordField();
+        const loginButton = new Button({
+            className: ['login-button'],
+            textContent: 'Login',
+            handlerFunction: (event): void => {
+                event?.preventDefault();
+                this.userAPI.userLogin(this.prepareUserRequest());
+            },
+        }).element;
 
-    form.append(userName, password, loginButton);
+        form.append(userName, password, loginButton);
 
-    return form;
+        return form;
+    }
+    public configurePage(mainElement: Main): void {
+        const form = this.renderLoginForm();
+        mainElement.main.append(form);
+    }
+    public prepareUserRequest(): UserRequest {
+        const loginElement = document.querySelector('.user-name-input');
+        const loginValue =
+            loginElement instanceof HTMLInputElement ? loginElement.value : '';
+        const passwordElement = document.querySelector('.password-input');
+        const passwordValue =
+            passwordElement instanceof HTMLInputElement
+                ? passwordElement.value
+                : '';
+        const userRequest: UserRequest = {
+            id: '123123',
+            type: 'USER_LOGIN',
+            payload: {
+                user: {
+                    login: loginValue,
+                    password: passwordValue,
+                },
+            },
+        };
+        this.connection.userIdRequest = '123123';
+        return userRequest;
+    }
 }
 
 function createUserNameField(): CustomElement {
