@@ -1,87 +1,53 @@
 import type { Connection } from '../connection/connection';
-import type { Main } from '../components/main';
-import { ElementBase } from '../components/elements';
-import type { CustomElement, GeneralMessage } from '../interfaces';
-import { Button } from '../components/buttons';
-import { UserService } from './user-service';
+import type { UserService } from './user-service';
+import type { GeneralMessage } from '../interfaces';
 
-export class LoginPage {
-    public connection: Connection;
-    public userAPI: UserService;
-    constructor(connection: Connection, mainElement: Main) {
-        this.connection = connection;
-        this.userAPI = new UserService(this.connection);
-        this.configurePage(mainElement);
-    }
-    public renderLoginForm(): CustomElement {
-        const form = new ElementBase({
-            tag: 'form',
-            className: ['auth-form'],
-        }).element;
-
-        const userName = createUserNameField();
-        const password = createPasswordField();
-        const loginButton = new Button({
-            className: ['login-button'],
-            textContent: 'Login',
-            handlerFunction: (event): void => {
-                event?.preventDefault();
-                const request = this.prepareUserRequest();
-                this.userAPI.userLogin(request);
-            },
-        }).element;
-
-        form.append(userName, password, loginButton);
-
-        return form;
-    }
-    public configurePage(mainElement: Main): void {
-        const form = this.renderLoginForm();
-        mainElement.main.append(form);
-    }
-    public prepareUserRequest(): GeneralMessage {
-        const loginElement = document.querySelector('.user-name-input');
-        const loginValue =
-            loginElement instanceof HTMLInputElement ? loginElement.value : '';
-        const passwordElement = document.querySelector('.password-input');
-        const passwordValue =
-            passwordElement instanceof HTMLInputElement
-                ? passwordElement.value
-                : '';
-        const userRequest: GeneralMessage = {
-            id: '123123',
-            type: 'USER_LOGIN',
-            payload: {
-                user: {
-                    login: loginValue,
-                    password: passwordValue,
-                },
-            },
-        };
-        this.connection.userIdRequest = '123123';
-        return userRequest;
-    }
+function renderLoginContent(
+    Connection: Connection,
+    UserService: UserService
+): void {
+    document
+        .querySelector('.main')
+        ?.append(createLoginForm(Connection, UserService));
 }
 
-function createUserNameField(): CustomElement {
-    const userNameContainer = new ElementBase({
-        tag: 'div',
-        className: ['user-name-row'],
-    }).element;
-    const labelUserName = new ElementBase({
-        tag: 'label',
-        className: ['user-name-label'],
-        textContent: 'User Name',
-    }).element;
-    const inputUserName = new ElementBase({
-        tag: 'input',
-        className: ['user-name-input'],
-    }).element;
-    const errorMessage = new ElementBase({
-        tag: 'p',
-        className: ['user-name-error'],
-        textContent: '',
-    }).element;
+function createLoginForm(
+    Connection: Connection,
+    UserService: UserService
+): HTMLElement {
+    const form = document.createElement('form');
+    form.className = 'auth-form';
+    const userName = createUserNameField();
+    const password = createPasswordField();
+
+    const loginButton = document.createElement('button');
+    loginButton.className = 'login-button';
+    loginButton.textContent = 'Login';
+    loginButton.addEventListener('click', (event) => {
+        event?.preventDefault();
+        const request = prepareUserRequest(Connection, UserService);
+        UserService.userLogin(request);
+    });
+
+    form.append(userName, password, loginButton);
+
+    return form;
+}
+
+function createUserNameField(): HTMLElement {
+    const userNameContainer = document.createElement('div');
+    userNameContainer.className = 'user-name-row';
+
+    const labelUserName = document.createElement('label');
+    labelUserName.className = 'user-name-label';
+    labelUserName.textContent = 'User Name';
+
+    const inputUserName = document.createElement('input');
+    inputUserName.className = 'user-name-input';
+
+    const errorMessage = document.createElement('p');
+    errorMessage.className = 'user-name-error';
+
     if (inputUserName instanceof HTMLInputElement) {
         inputUserName.required = true;
         inputUserName.minLength = 2;
@@ -104,25 +70,20 @@ function createUserNameField(): CustomElement {
     return userNameContainer;
 }
 
-function createPasswordField(): CustomElement {
-    const passwordContainer = new ElementBase({
-        tag: 'div',
-        className: ['password-row'],
-    }).element;
-    const labelPassword = new ElementBase({
-        tag: 'label',
-        className: ['password-label'],
-        textContent: 'Password',
-    }).element;
-    const inputPassword = new ElementBase({
-        tag: 'input',
-        className: ['password-input'],
-    }).element;
-    const errorMessage = new ElementBase({
-        tag: 'p',
-        className: ['password-error'],
-        textContent: '',
-    }).element;
+function createPasswordField(): HTMLElement {
+    const passwordContainer = document.createElement('div');
+    passwordContainer.className = 'password-row';
+
+    const labelPassword = document.createElement('label');
+    labelPassword.className = 'password-label';
+    labelPassword.textContent = 'Password';
+
+    const inputPassword = document.createElement('input');
+    inputPassword.className = 'password-input';
+
+    const errorMessage = document.createElement('p');
+    errorMessage.className = 'password-error';
+
     if (inputPassword instanceof HTMLInputElement) {
         inputPassword.required = true;
         inputPassword.minLength = 6;
@@ -139,7 +100,7 @@ function createPasswordField(): CustomElement {
 
 function validatePassword(
     inputPassword: HTMLInputElement,
-    errorMessage: CustomElement
+    errorMessage: HTMLElement
 ): void {
     if (inputPassword.validity.valid === false) {
         if (inputPassword.validity.valueMissing)
@@ -154,3 +115,33 @@ function validatePassword(
                 'Password can contain low letters, capital Letters and numbers';
     } else errorMessage.textContent = '';
 }
+
+function prepareUserRequest(
+    connection: Connection,
+    userService: UserService
+): GeneralMessage {
+    const loginElement = document.querySelector('.user-name-input');
+    const loginValue =
+        loginElement instanceof HTMLInputElement ? loginElement.value : '';
+    const passwordElement = document.querySelector('.password-input');
+    const passwordValue =
+        passwordElement instanceof HTMLInputElement
+            ? passwordElement.value
+            : '';
+    const userRequest: GeneralMessage = {
+        id: '123123',
+        type: 'USER_LOGIN',
+        payload: {
+            user: {
+                login: loginValue,
+                password: passwordValue,
+            },
+        },
+    };
+
+    connection.userIdRequest = crypto.randomUUID();
+    userService.currentUserName = loginValue;
+    return userRequest;
+}
+
+export { renderLoginContent };
