@@ -1,5 +1,6 @@
 import type { Connection } from '../connection/connection';
 import type { GeneralMessage, UserPayloadServer } from '../interfaces';
+import { createErrorMessage } from '../components/modal';
 import {
     isErrorPayload,
     isGeneralMessage,
@@ -30,7 +31,7 @@ export class UserService {
                     isErrorPayload(data.payload)
                 ) {
                     const errorPayload = data.payload;
-                    console.log(errorPayload.error);
+                    createErrorMessage(errorPayload.error);
                 }
             }
         });

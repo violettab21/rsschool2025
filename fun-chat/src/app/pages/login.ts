@@ -16,8 +16,12 @@ function renderLoginContent(
         userName instanceof HTMLInputElement &&
         password instanceof HTMLInputElement
     ) {
-        if (userName.validity.valid === false) disableLoginButton();
-        if (password.validity.valid === false) disableLoginButton();
+        if (
+            userName.validity.valid === false ||
+            password.validity.valid === false
+        )
+            disableLoginButton();
+        else enableLoginButton();
     }
 }
 
