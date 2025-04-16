@@ -1,50 +1,37 @@
+import type { Listeners } from '../interfaces';
+
 export class Connection {
     public url: string;
-    public connection: WebSocket;
+    public connection: WebSocket | null;
     public userIdRequest: string | null;
+    public listeners: Listeners;
     constructor() {
         this.userIdRequest = null;
         this.url = 'ws://localhost:4000';
-        this.connection = new WebSocket(this.url);
-        this.configureOpenState();
-        this.configureCloseState();
-        this.configureMessageState();
+        this.connection = null;
+        this.listeners = {};
     }
-    public configureOpenState(): void {
+    public connect(): void {
+        this.connection = new WebSocket(this.url);
         this.connection.addEventListener('open', () => {
             console.log('connection is open');
         });
-    }
-    public configureCloseState(): void {
         this.connection.addEventListener('close', () => {
             console.log('connection is closed');
         });
-    }
-    public configureMessageState(): void {
-        this.connection.addEventListener('message', (event) => {
-            const receivedData: unknown = event.data;
-            let data: unknown;
-            if (typeof receivedData === 'string')
-                data = JSON.parse(receivedData);
-            if (
-                typeof data === 'object' &&
-                data !== null &&
-                'id' in data &&
-                'type' in data &&
-                'payload' in data
-            ) {
-                console.log(this.userIdRequest);
-                if (data.id === this.userIdRequest) {
-                    if (
-                        data.type === 'ERROR' &&
-                        typeof data.payload === 'object' &&
-                        data.payload !== null &&
-                        'error' in data.payload
-                    ) {
-                        console.log(data.payload.error);
-                    } else console.log('success login, we can show chat');
-                } else console.log('process other responses');
-            }
+        this.connection.addEventListener('message', (event: MessageEvent) => {
+            this.listeners.message.forEach((callback) => callback(event));
         });
+    }
+
+    public addHandlerPerEvent(
+        event: string,
+        callback: (event: MessageEvent) => void
+    ): void {
+        if (event in this.listeners) {
+            this.listeners[event].push(callback);
+        } else {
+            this.listeners[event] = [callback];
+        }
     }
 }

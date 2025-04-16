@@ -1,7 +1,7 @@
 import type { Connection } from '../connection/connection';
 import type { Main } from '../components/main';
 import { ElementBase } from '../components/elements';
-import type { CustomElement, UserRequest } from '../interfaces';
+import type { CustomElement, GeneralMessage } from '../interfaces';
 import { Button } from '../components/buttons';
 import { UserService } from './user-service';
 
@@ -26,7 +26,8 @@ export class LoginPage {
             textContent: 'Login',
             handlerFunction: (event): void => {
                 event?.preventDefault();
-                this.userAPI.userLogin(this.prepareUserRequest());
+                const request = this.prepareUserRequest();
+                this.userAPI.userLogin(request);
             },
         }).element;
 
@@ -38,7 +39,7 @@ export class LoginPage {
         const form = this.renderLoginForm();
         mainElement.main.append(form);
     }
-    public prepareUserRequest(): UserRequest {
+    public prepareUserRequest(): GeneralMessage {
         const loginElement = document.querySelector('.user-name-input');
         const loginValue =
             loginElement instanceof HTMLInputElement ? loginElement.value : '';
@@ -47,7 +48,7 @@ export class LoginPage {
             passwordElement instanceof HTMLInputElement
                 ? passwordElement.value
                 : '';
-        const userRequest: UserRequest = {
+        const userRequest: GeneralMessage = {
             id: '123123',
             type: 'USER_LOGIN',
             payload: {

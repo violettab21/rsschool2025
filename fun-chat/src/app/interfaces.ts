@@ -9,28 +9,24 @@ interface ButtonProperties {
     handlerFunction: (event?: Event) => void;
 }
 
-interface UserRequest {
-    id: string;
-    type: string;
-    payload: {
-        user: User;
-    };
+interface UserPayloadClient {
+    user: { login: string; password: string };
+}
+interface UserPayloadServer {
+    user: { login: string; isLogined: boolean };
+}
+interface ErrorTest {
+    error: string;
 }
 
-interface User {
-    login: string;
-    password: string;
-}
-
-interface UserResponse {
+interface GeneralMessage {
     id: string;
     type: string;
-    payload: {
-        user: {
-            login: string;
-            isLogined: boolean;
-        };
-    };
+    payload: UserPayloadClient | UserPayloadServer | ErrorTest;
+}
+
+interface Listeners {
+    [index: string]: ((event: MessageEvent) => void)[];
 }
 
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
@@ -39,7 +35,9 @@ export {
     Properties,
     ButtonProperties,
     CustomElement,
-    UserRequest,
-    User,
-    UserResponse,
+    GeneralMessage,
+    UserPayloadClient,
+    UserPayloadServer,
+    ErrorTest,
+    Listeners,
 };
