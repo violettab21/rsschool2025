@@ -9,6 +9,16 @@ function renderLoginContent(
     document
         .querySelector('.main')
         ?.append(createLoginForm(Connection, UserService));
+    const userName = document.querySelector('.user-name-input');
+
+    const password = document.querySelector('.password-input');
+    if (
+        userName instanceof HTMLInputElement &&
+        password instanceof HTMLInputElement
+    ) {
+        if (userName.validity.valid === false) disableLoginButton();
+        if (password.validity.valid === false) disableLoginButton();
+    }
 }
 
 function createLoginForm(
@@ -53,16 +63,7 @@ function createUserNameField(): HTMLElement {
         inputUserName.minLength = 2;
         inputUserName.maxLength = 10;
         inputUserName.addEventListener('input', () => {
-            if (inputUserName.validity.valid === false) {
-                if (inputUserName.validity.valueMissing)
-                    errorMessage.textContent = 'User Name is required';
-                else if (inputUserName.validity.tooShort)
-                    errorMessage.textContent =
-                        'User Name should have at least 2 characters';
-                else if (inputUserName.validity.tooLong)
-                    errorMessage.textContent =
-                        'User Name should have 10 characters max';
-            } else errorMessage.textContent = '';
+            validateUserName(inputUserName, errorMessage);
         });
     }
     userNameContainer.append(labelUserName, inputUserName, errorMessage);
@@ -103,17 +104,42 @@ function validatePassword(
     errorMessage: HTMLElement
 ): void {
     if (inputPassword.validity.valid === false) {
-        if (inputPassword.validity.valueMissing)
+        if (inputPassword.validity.valueMissing) {
             errorMessage.textContent = 'Password is required';
-        else if (inputPassword.validity.tooShort)
+        } else if (inputPassword.validity.tooShort) {
             errorMessage.textContent =
                 'Password should have at least 6 characters';
-        else if (inputPassword.validity.tooLong)
+        } else if (inputPassword.validity.tooLong) {
             errorMessage.textContent = 'Password should have 10 characters max';
-        else if (inputPassword.validity.patternMismatch)
+        } else if (inputPassword.validity.patternMismatch) {
             errorMessage.textContent =
                 'Password can contain low letters, capital Letters and numbers';
-    } else errorMessage.textContent = '';
+        }
+        disableLoginButton();
+    } else {
+        errorMessage.textContent = '';
+        enableLoginButton();
+    }
+}
+
+function validateUserName(
+    inputUserName: HTMLInputElement,
+    errorMessage: HTMLElement
+): void {
+    if (inputUserName.validity.valid === false) {
+        if (inputUserName.validity.valueMissing)
+            errorMessage.textContent = 'User Name is required';
+        else if (inputUserName.validity.tooShort)
+            errorMessage.textContent =
+                'User Name should have at least 2 characters';
+        else if (inputUserName.validity.tooLong)
+            errorMessage.textContent =
+                'User Name should have 10 characters max';
+        disableLoginButton();
+    } else {
+        errorMessage.textContent = '';
+        enableLoginButton();
+    }
 }
 
 function prepareUserRequest(
@@ -142,6 +168,18 @@ function prepareUserRequest(
     connection.userIdRequest = crypto.randomUUID();
     userService.currentUserName = loginValue;
     return userRequest;
+}
+
+function disableLoginButton(): void {
+    const button = document.querySelector('.login-button');
+    console.log(button);
+    if (button instanceof HTMLButtonElement) button.disabled = true;
+}
+
+function enableLoginButton(): void {
+    const button = document.querySelector('.login-button');
+    console.log(button);
+    if (button instanceof HTMLButtonElement) button.disabled = false;
 }
 
 export { renderLoginContent };
