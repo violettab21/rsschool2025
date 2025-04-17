@@ -1,3 +1,5 @@
+import image from '../../assets/rss-logo.svg';
+
 function renderChatPageContent(): void {
     const container = document.querySelector('.wrapper');
     if (container) {
@@ -82,6 +84,34 @@ function createFooter(): HTMLElement {
     const footer = document.createElement('footer');
     footer.className = 'footer';
 
+    const listFooterItems = document.createElement('ul');
+    listFooterItems.className = 'footer-content';
+
+    const schoolInfo = document.createElement('li');
+    schoolInfo.className = 'school-info';
+    schoolInfo.textContent = 'RSS School';
+    const schoolIcon = document.createElement('img');
+    schoolIcon.className = 'school-icon';
+    schoolIcon.src = image;
+    schoolInfo.append(schoolIcon);
+
+    const authorName = document.createElement('li');
+    authorName.className = 'author-name';
+    authorName.textContent = 'Violetta Batsura';
+
+    const gitHubInfo = document.createElement('li');
+    gitHubInfo.className = 'author-github';
+
+    const gitHubLink = document.createElement('a');
+    gitHubLink.className = 'author-github-link';
+    gitHubLink.href = 'https://github.com/violettab21';
+    gitHubLink.textContent = 'Github Link';
+    gitHubInfo.append(gitHubLink);
+    const copyright = document.createElement('p');
+    copyright.className = 'copyright';
+    copyright.textContent = `Copyright Fun Chat, 2025`;
+    listFooterItems.append(schoolInfo, authorName, gitHubInfo);
+    footer.append(listFooterItems, copyright);
     return footer;
 }
 

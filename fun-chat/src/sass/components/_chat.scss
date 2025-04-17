@@ -59,3 +59,23 @@
 .users {
     list-style: none;
 }
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.school-icon {
+    width: 40px;
+}
+
+.footer-content {
+    list-style-type: none;
+}
+
+.school-info {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
