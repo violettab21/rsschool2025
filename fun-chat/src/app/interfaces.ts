@@ -15,6 +15,11 @@ interface UserPayloadClient {
 interface UserPayloadServer {
     user: { login: string; isLogined: boolean };
 }
+
+interface UserPayloadServerUsers {
+    users: { login: string; isLogined: boolean }[];
+}
+
 interface ErrorTest {
     error: string;
 }
@@ -25,7 +30,12 @@ interface User {
 interface GeneralMessage {
     id: string;
     type: string;
-    payload: UserPayloadClient | UserPayloadServer | ErrorTest;
+    payload:
+        | UserPayloadClient
+        | UserPayloadServer
+        | ErrorTest
+        | null
+        | UserPayloadServerUsers;
 }
 
 interface Listeners {
@@ -49,4 +59,5 @@ export {
     Listeners,
     Route,
     User,
+    UserPayloadServerUsers,
 };

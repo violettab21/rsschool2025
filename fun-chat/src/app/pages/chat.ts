@@ -8,7 +8,7 @@ function renderChatPageContent(userService: UserService): void {
         container.innerHTML = '';
         container.append(
             createHeader(userService),
-            createMain(),
+            createMain(userService),
             createFooter()
         );
     }
@@ -44,15 +44,15 @@ function createHeader(userService: UserService): HTMLElement {
     return header;
 }
 
-function createMain(): HTMLElement {
+function createMain(userService: UserService): HTMLElement {
     const main = document.createElement('main');
 
     main.classList.add('main', 'main-chat');
-    main.append(createUsersSection(), createChatSection());
+    main.append(createUsersSection(userService), createChatSection());
     return main;
 }
 
-function createUsersSection(): HTMLElement {
+function createUsersSection(userService: UserService): HTMLElement {
     const usersSection = document.createElement('section');
     usersSection.className = 'section-users';
 
@@ -62,11 +62,12 @@ function createUsersSection(): HTMLElement {
     const usersList = document.createElement('ul');
     usersList.className = 'users';
 
-    const userPlaceholder = document.createElement('li');
+    /*const userPlaceholder = document.createElement('li');
     userPlaceholder.className = 'user-item';
-    userPlaceholder.textContent = 'SomeUser';
+    userPlaceholder.textContent = 'SomeUser';*/
+    userService.getAllActiveUsers();
 
-    usersList.append(userPlaceholder);
+    /* usersList.append(userPlaceholder);*/
     usersSection.append(search, usersList);
 
     return usersSection;

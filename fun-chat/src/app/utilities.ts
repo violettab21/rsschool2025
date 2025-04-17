@@ -3,6 +3,7 @@ import type {
     UserPayloadClient,
     UserPayloadServer,
     ErrorTest,
+    UserPayloadServerUsers,
 } from './interfaces';
 
 function isGeneralMessage(data: unknown): data is GeneralMessage {
@@ -12,8 +13,6 @@ function isGeneralMessage(data: unknown): data is GeneralMessage {
 
     if (!('id' in data) || !('type' in data) || !('payload' in data))
         return false;
-
-    if (typeof data.payload !== 'object' || data.payload === null) return false;
 
     return true;
 }
@@ -26,6 +25,32 @@ function isUserPayloadServer(data: unknown): data is UserPayloadServer {
     if (!('user' in data)) return false;
 
     const userObject = data.user;
+    if (
+        typeof userObject !== 'object' ||
+        userObject === null ||
+        !('isLogined' in userObject) ||
+        !('login' in userObject)
+    )
+        return false;
+    return typeof userObject.isLogined === 'boolean';
+}
+
+function isUsersPayloadServer(data: unknown): data is UserPayloadServerUsers {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    if (!('users' in data)) return false;
+
+    const usersObject = data.users;
+    if (
+        typeof usersObject !== 'object' ||
+        usersObject === null ||
+        !Array.isArray(usersObject)
+    )
+        return false;
+
+    const userObject: unknown = usersObject[0];
     if (
         typeof userObject !== 'object' ||
         userObject === null ||
@@ -71,4 +96,5 @@ export {
     isUserPayloadServer,
     isUserPayloadClient,
     isErrorPayload,
+    isUsersPayloadServer,
 };
