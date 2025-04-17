@@ -1,14 +1,16 @@
+@use '../abstracts/constants';
+
 body {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     font-family: Roboto, sans-serif;
-    background-color: #f0fcff;
+    background-color: constants.$color-main;
 }
 
 .main {
     display: flex;
     justify-content: center;
-    background-color: #f0fcff;
+    background-color: onstants.$color-main;
 }

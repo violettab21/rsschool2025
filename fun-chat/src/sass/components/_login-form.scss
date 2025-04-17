@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -6,7 +8,7 @@
     width: 400px;
     padding: 40px;
     border-radius: 10px;
-    background-color: #c4ecff;
+    background-color: constants.$color-login-background;
 }
 
 .user-name-row,
@@ -21,13 +23,13 @@
     border: none;
     border-radius: 6px;
     font-size: 18px;
-    background-color: #4e91c2;
+    background-color: constants.$color-login-button;
 }
 
 .user-name-input,
 .password-input {
     padding: 6px 12px;
-    border: 1px solid #95d3f5;
+    border: 1px solid constants.$color-login-input-border;
     border-radius: 6px;
-    background-color: #edfaff;
+    background-color: constants.$color-login-input-background;
 }
