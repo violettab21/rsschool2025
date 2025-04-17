@@ -6,9 +6,12 @@ function renderLoginContent(
     Connection: Connection,
     UserService: UserService
 ): void {
-    document
-        .querySelector('.wrapper')
-        ?.append(createLoginForm(Connection, UserService));
+    const container = document.querySelector('.wrapper');
+    if (container) {
+        container.innerHTML = '';
+        container.append(createLoginForm(Connection, UserService));
+    }
+
     const userName = document.querySelector('.user-name-input');
 
     const password = document.querySelector('.password-input');

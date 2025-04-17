@@ -1,16 +1,18 @@
 import type { Route } from '../interfaces';
 import { renderLoginContent } from '../pages/login';
-import type { UserService } from '../pages/user-service';
+import { UserService } from '../pages/user-service';
 import type { Connection } from '../connection/connection';
 import { renderChatPageContent } from '../pages/chat';
 export class Router {
     public routes: Route[];
     public currentUrl: string;
     public connection: Connection;
-    constructor(connection: Connection, userService: UserService) {
+    public userService: UserService;
+    constructor(connection: Connection) {
         this.connection = connection;
         this.currentUrl = '';
-        this.routes = this.setRoutes(userService);
+        this.userService = new UserService(connection, this);
+        this.routes = this.setRoutes(this.userService);
     }
 
     public openPage(path?: string): void {
@@ -34,7 +36,7 @@ export class Router {
             },
             {
                 url: 'chat',
-                handler: renderChatPageContent,
+                handler: renderChatPageContent.bind(null, userService),
             },
             {
                 url: 'info',

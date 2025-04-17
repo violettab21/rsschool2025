@@ -1,6 +1,7 @@
 import type { Connection } from '../connection/connection';
 import type { GeneralMessage, UserPayloadServer } from '../interfaces';
 import { createErrorMessage } from '../components/modal';
+import type { Router } from '../components/router';
 import {
     isErrorPayload,
     isGeneralMessage,
@@ -10,8 +11,10 @@ import {
 export class UserService {
     public connection: Connection;
     public currentUserName: string | null;
-    constructor(connection: Connection) {
+    public router: Router;
+    constructor(connection: Connection, router: Router) {
         this.connection = connection;
+        this.router = router;
         this.currentUserName = null;
         this.processUserMessages();
     }
@@ -41,7 +44,7 @@ export class UserService {
             message.user.login === this.currentUserName &&
             message.user.isLogined
         ) {
-            console.log('log in user');
+            this.router.openPage('chat');
         } else console.log('other user logged in');
     }
     public userLogin(userRequest: GeneralMessage): void {

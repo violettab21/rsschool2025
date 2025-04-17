@@ -1,14 +1,19 @@
 import image from '../../assets/rss-logo.svg';
+import type { UserService } from './user-service';
 
-function renderChatPageContent(): void {
+function renderChatPageContent(userService: UserService): void {
     const container = document.querySelector('.wrapper');
     if (container) {
         container.innerHTML = '';
-        container.append(createHeader(), createMain(), createFooter());
+        container.append(
+            createHeader(userService),
+            createMain(),
+            createFooter()
+        );
     }
 }
 
-function createHeader(): HTMLElement {
+function createHeader(userService: UserService): HTMLElement {
     const header = document.createElement('header');
     header.className = 'header';
 
@@ -21,7 +26,7 @@ function createHeader(): HTMLElement {
 
     const userName = document.createElement('li');
     userName.className = 'header-user-name';
-    userName.textContent = 'User Name Placeholder';
+    userName.textContent = userService.currentUserName;
 
     const logout = document.createElement('li');
     logout.className = 'logout-button';
