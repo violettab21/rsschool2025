@@ -1,6 +1,6 @@
-function createMainComponent(): void {
-    const main = document.createElement('main');
-    main.className = 'main';
-    document.body.append(main);
+function createBaseContainer(): void {
+    const container = document.createElement('div');
+    container.className = 'wrapper';
+    document.body.append(container);
 }
-export { createMainComponent };
+export { createBaseContainer };

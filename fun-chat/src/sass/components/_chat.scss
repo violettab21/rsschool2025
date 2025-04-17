@@ -1,0 +1,21 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 60px;
+    border-radius: 10px;
+    background-color: #c4ecff;
+}
+
+.header-menu {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    list-style-type: none;
+}
+
+.logout-button {
+    padding: 6px 12px;
+    border-radius: 10px;
+    background-color: #68b7e8;
+}

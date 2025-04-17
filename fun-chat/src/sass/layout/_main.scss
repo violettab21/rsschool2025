@@ -2,15 +2,24 @@
 
 body {
     display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
     font-family: Roboto, sans-serif;
     background-color: constants.$color-main;
 }
 
-.main {
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    background-color: constants.$color-main;
+}
+
+/* .main {
     display: flex;
     justify-content: center;
-    background-color: constants.$color-main;
+} */
+
+.main {
+    flex: 1 1 auto;
 }

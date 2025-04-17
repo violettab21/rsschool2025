@@ -2,6 +2,7 @@ import type { Route } from '../interfaces';
 import { renderLoginContent } from '../pages/login';
 import type { UserService } from '../pages/user-service';
 import type { Connection } from '../connection/connection';
+import { renderChatPageContent } from '../pages/chat';
 export class Router {
     public routes: Route[];
     public currentUrl: string;
@@ -12,9 +13,13 @@ export class Router {
         this.routes = this.setRoutes(userService);
     }
 
-    public openPage(path: string): void {
+    public openPage(path?: string): void {
+        const isHistory: boolean = path !== undefined;
+        if (isHistory) {
+            history.pushState(null, '', path);
+        }
         this.currentUrl = globalThis.location.pathname.slice(1);
-        history.pushState(null, '', path);
+        if (this.currentUrl === '') history.pushState(null, '', 'login');
         this.routes.find((route) => route.url === this.currentUrl)?.handler();
     }
     protected setRoutes(userService: UserService): Route[] {
@@ -29,7 +34,7 @@ export class Router {
             },
             {
                 url: 'chat',
-                handler: () => console.log('chat page'),
+                handler: renderChatPageContent,
             },
             {
                 url: 'info',

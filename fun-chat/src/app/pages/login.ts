@@ -7,7 +7,7 @@ function renderLoginContent(
     UserService: UserService
 ): void {
     document
-        .querySelector('.main')
+        .querySelector('.wrapper')
         ?.append(createLoginForm(Connection, UserService));
     const userName = document.querySelector('.user-name-input');
 
@@ -29,6 +29,8 @@ function createLoginForm(
     Connection: Connection,
     UserService: UserService
 ): HTMLElement {
+    const main = document.createElement('main');
+    main.className = 'main';
     const form = document.createElement('form');
     form.className = 'auth-form';
     const userName = createUserNameField();
@@ -44,8 +46,8 @@ function createLoginForm(
     });
 
     form.append(userName, password, loginButton);
-
-    return form;
+    main.append(form);
+    return main;
 }
 
 function createUserNameField(): HTMLElement {
