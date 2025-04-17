@@ -66,7 +66,7 @@ function createUsersSection(userService: UserService): HTMLElement {
     userPlaceholder.className = 'user-item';
     userPlaceholder.textContent = 'SomeUser';*/
     userService.getAllActiveUsers();
-
+    userService.getAllInactiveUsers();
     /* usersList.append(userPlaceholder);*/
     usersSection.append(search, usersList);
 

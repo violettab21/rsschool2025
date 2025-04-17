@@ -79,3 +79,20 @@
     gap: 5px;
     align-items: center;
 }
+
+.user-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border: 1px solid #000;
+    border-radius: 50%;
+}
+
+.user-status-active {
+    background-color: green;
+}
+
+.user-status-inactive {
+    background-color: orange;
+}

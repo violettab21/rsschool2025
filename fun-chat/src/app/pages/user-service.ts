@@ -45,7 +45,12 @@ export class UserService {
                     }
                     case 'USER_ACTIVE': {
                         if (isUsersPayloadServer(data.payload))
-                            this.handleActiveUsersMessage(data.payload);
+                            this.handleRegisteredUsersMessage(data.payload);
+                        break;
+                    }
+                    case 'USER_INACTIVE': {
+                        if (isUsersPayloadServer(data.payload))
+                            this.handleRegisteredUsersMessage(data.payload);
                         break;
                     }
                     case 'USER_EXTERNAL_LOGIN': {
@@ -84,14 +89,19 @@ export class UserService {
         } else console.log('other user logged in');
     }
 
-    public handleActiveUsersMessage(message: UserPayloadServerUsers): void {
-        const activeUsers = message.users;
+    public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
+        const users = message.users;
         const usersElements: HTMLElement[] = [];
-        activeUsers.forEach((user) => {
+        users.forEach((user) => {
             if (user.login === this.currentUser.login) return;
             const item = document.createElement('li');
+            item.className = 'user-chat';
             item.textContent = user.login;
-
+            const status = document.createElement('span');
+            status.className = 'user-status';
+            if (user.isLogined) status.classList.add('user-status-active');
+            else status.classList.add('user-status-inactive');
+            item.prepend(status);
             usersElements.push(item);
         });
         const usersList = document.querySelector('.users');
@@ -117,12 +127,29 @@ export class UserService {
             this.connection.connection.send(JSON.stringify(request));
         }
     }
+
+    public getAllInactiveUsers(): void {
+        const id = crypto.randomUUID();
+        const request: GeneralMessage = {
+            id: id,
+            type: 'USER_INACTIVE',
+            payload: null,
+        };
+        if (this.connection.connection) {
+            this.connection.connection.send(JSON.stringify(request));
+        }
+    }
 }
 
 function handleExternalLogin(message: UserPayloadServer): void {
     const usersList = document.querySelector('.users');
     const item = document.createElement('li');
     item.textContent = message.user.login;
+    const status = document.createElement('span');
+    status.className = 'user-status';
+    if (message.user.isLogined) status.classList.add('user-status-active');
+    else status.classList.add('user-status-inactive');
+    item.prepend(status);
     if (usersList) {
         usersList.append(item);
     }
