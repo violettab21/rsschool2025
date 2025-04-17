@@ -33,9 +33,49 @@ function createHeader(): HTMLElement {
 
 function createMain(): HTMLElement {
     const main = document.createElement('main');
-    main.className = 'main';
 
+    main.classList.add('main', 'main-chat');
+    main.append(createUsersSection(), createChatSection());
     return main;
+}
+
+function createUsersSection(): HTMLElement {
+    const usersSection = document.createElement('section');
+    usersSection.className = 'section-users';
+
+    const search = document.createElement('input');
+    search.className = 'search-input';
+
+    const usersList = document.createElement('ul');
+    usersList.className = 'users';
+
+    const userPlaceholder = document.createElement('li');
+    userPlaceholder.className = 'user-item';
+    userPlaceholder.textContent = 'SomeUser';
+
+    usersList.append(userPlaceholder);
+    usersSection.append(search, usersList);
+
+    return usersSection;
+}
+
+function createChatSection(): HTMLElement {
+    const chatSection = document.createElement('section');
+    chatSection.className = 'section-chat';
+
+    const messages = document.createElement('div');
+    messages.className = 'chat-messages';
+
+    const chatSendMessageContainer = document.createElement('div');
+    chatSendMessageContainer.className = 'chat-message-container';
+    const message = document.createElement('textarea');
+    message.className = 'chat-input';
+    const sendMessage = document.createElement('button');
+    sendMessage.className = 'chat-send-button';
+    sendMessage.textContent = 'Send';
+    chatSendMessageContainer.append(message, sendMessage);
+    chatSection.append(messages, chatSendMessageContainer);
+    return chatSection;
 }
 
 function createFooter(): HTMLElement {

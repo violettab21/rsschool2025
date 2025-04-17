@@ -23,3 +23,9 @@ body {
 .main {
     flex: 1 1 auto;
 }
+
+.main-chat {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}
