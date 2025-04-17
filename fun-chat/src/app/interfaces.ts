@@ -30,6 +30,10 @@ interface Listeners {
 }
 
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
+interface Route {
+    url: string;
+    handler: () => void;
+}
 
 export {
     Properties,
@@ -40,4 +44,5 @@ export {
     UserPayloadServer,
     ErrorTest,
     Listeners,
+    Route,
 };
