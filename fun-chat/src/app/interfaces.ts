@@ -10,7 +10,7 @@ interface ButtonProperties {
 }
 
 interface UserPayloadClient {
-    user: { login: string; password: string };
+    user: User;
 }
 interface UserPayloadServer {
     user: { login: string; isLogined: boolean };
@@ -18,7 +18,10 @@ interface UserPayloadServer {
 interface ErrorTest {
     error: string;
 }
-
+interface User {
+    login: string;
+    password: string;
+}
 interface GeneralMessage {
     id: string;
     type: string;
@@ -45,4 +48,5 @@ export {
     ErrorTest,
     Listeners,
     Route,
+    User,
 };

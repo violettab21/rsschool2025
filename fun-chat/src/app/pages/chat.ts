@@ -1,4 +1,5 @@
 import image from '../../assets/rss-logo.svg';
+import type { GeneralMessage } from '../interfaces';
 import type { UserService } from './user-service';
 
 function renderChatPageContent(userService: UserService): void {
@@ -26,11 +27,16 @@ function createHeader(userService: UserService): HTMLElement {
 
     const userName = document.createElement('li');
     userName.className = 'header-user-name';
-    userName.textContent = userService.currentUserName;
+    const currentUserName = userService.currentUser.login;
+    if (currentUserName) userName.textContent = currentUserName;
 
     const logout = document.createElement('li');
     logout.className = 'logout-button';
     logout.textContent = 'Logout';
+    logout.addEventListener('click', () => {
+        const userRequest = prepareUserLogoutRequest(userService);
+        userService.sendUserMessage(userRequest);
+    });
 
     menu.append(userName, logout);
     header.append(appName, menu);
@@ -118,6 +124,31 @@ function createFooter(): HTMLElement {
     listFooterItems.append(schoolInfo, authorName, gitHubInfo);
     footer.append(listFooterItems, copyright);
     return footer;
+}
+
+function prepareUserLogoutRequest(userService: UserService): GeneralMessage {
+    const currentUserName = userService.currentUser.login;
+    const currentUserPassword = userService.currentUser.password;
+    let loginValue = '';
+    let passwordValue = '';
+    if (currentUserName && currentUserPassword) {
+        loginValue = currentUserName;
+        passwordValue = currentUserPassword;
+    }
+
+    const id = crypto.randomUUID();
+    const userRequest: GeneralMessage = {
+        id: id,
+        type: 'USER_LOGOUT',
+        payload: {
+            user: {
+                login: loginValue,
+                password: passwordValue,
+            },
+        },
+    };
+
+    return userRequest;
 }
 
 export { renderChatPageContent };

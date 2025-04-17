@@ -45,7 +45,7 @@ function createLoginForm(
     loginButton.addEventListener('click', (event) => {
         event?.preventDefault();
         const request = prepareUserRequest(Connection, UserService);
-        UserService.userLogin(request);
+        UserService.sendUserMessage(request);
     });
 
     form.append(userName, password, loginButton);
@@ -163,8 +163,9 @@ function prepareUserRequest(
         passwordElement instanceof HTMLInputElement
             ? passwordElement.value
             : '';
+    connection.userIdRequest = crypto.randomUUID();
     const userRequest: GeneralMessage = {
-        id: '123123',
+        id: connection.userIdRequest,
         type: 'USER_LOGIN',
         payload: {
             user: {
@@ -173,9 +174,8 @@ function prepareUserRequest(
             },
         },
     };
+    userService.currentUser = { login: loginValue, password: passwordValue };
 
-    connection.userIdRequest = crypto.randomUUID();
-    userService.currentUserName = loginValue;
     return userRequest;
 }
 

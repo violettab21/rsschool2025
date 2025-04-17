@@ -1,5 +1,5 @@
 import type { Connection } from '../connection/connection';
-import type { GeneralMessage, UserPayloadServer } from '../interfaces';
+import type { GeneralMessage, UserPayloadServer, User } from '../interfaces';
 import { createErrorMessage } from '../components/modal';
 import type { Router } from '../components/router';
 import {
@@ -10,12 +10,12 @@ import {
 
 export class UserService {
     public connection: Connection;
-    public currentUserName: string | null;
+    public currentUser: Partial<User>;
     public router: Router;
     constructor(connection: Connection, router: Router) {
         this.connection = connection;
         this.router = router;
-        this.currentUserName = null;
+        this.currentUser = {};
         this.processUserMessages();
     }
 
@@ -29,6 +29,9 @@ export class UserService {
                 if (data.type === 'USER_LOGIN') {
                     if (isUserPayloadServer(data.payload))
                         this.handleUserLoginMessage(data.payload);
+                } else if (data.type === 'USER_LOGOUT') {
+                    if (isUserPayloadServer(data.payload))
+                        this.handleUserLogoutMessage(data.payload);
                 } else if (
                     data.type === 'ERROR' &&
                     isErrorPayload(data.payload)
@@ -41,13 +44,24 @@ export class UserService {
     }
     public handleUserLoginMessage(message: UserPayloadServer): void {
         if (
-            message.user.login === this.currentUserName &&
+            message.user.login === this.currentUser?.login &&
             message.user.isLogined
         ) {
             this.router.openPage('chat');
         } else console.log('other user logged in');
     }
-    public userLogin(userRequest: GeneralMessage): void {
+    public handleUserLogoutMessage(message: UserPayloadServer): void {
+        if (
+            message.user.login === this.currentUser?.login &&
+            !message.user.isLogined
+        ) {
+            this.connection.connection?.close();
+            this.connection.connect();
+            this.router.openPage('login');
+        } else console.log('other user logged in');
+    }
+
+    public sendUserMessage(userRequest: GeneralMessage): void {
         if (this.connection.connection) {
             this.connection.connection.send(JSON.stringify(userRequest));
         }
