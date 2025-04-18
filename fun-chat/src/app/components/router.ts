@@ -1,17 +1,20 @@
 import type { Route } from '../interfaces';
 import { renderLoginContent } from '../pages/login';
-import { UserService } from '../pages/user-service';
+import { UserService } from '../services/user-service';
 import type { Connection } from '../connection/connection';
 import { renderChatPageContent } from '../pages/chat';
+import { ChatService } from '../services/chat-service';
 export class Router {
     public routes: Route[];
     public currentUrl: string;
     public connection: Connection;
     public userService: UserService;
+    public chatService: ChatService;
     constructor(connection: Connection) {
         this.connection = connection;
         this.currentUrl = '';
         this.userService = new UserService(connection, this);
+        this.chatService = new ChatService(connection, this);
         this.routes = this.setRoutes(this.userService);
     }
 
@@ -36,7 +39,11 @@ export class Router {
             },
             {
                 url: 'chat',
-                handler: renderChatPageContent.bind(null, userService),
+                handler: renderChatPageContent.bind(
+                    null,
+                    userService,
+                    this.chatService
+                ),
             },
             {
                 url: 'info',

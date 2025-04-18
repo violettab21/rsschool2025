@@ -4,6 +4,7 @@ import type {
     UserPayloadServer,
     ErrorTest,
     UserPayloadServerUsers,
+    MessagePayloadServer,
 } from './interfaces';
 
 function isGeneralMessage(data: unknown): data is GeneralMessage {
@@ -91,10 +92,34 @@ function isErrorPayload(data: unknown): data is ErrorTest {
     return true;
 }
 
+function isMessagePayloadServer(data: unknown): data is MessagePayloadServer {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    if (!('message' in data)) return false;
+
+    const messageObject = data.message;
+    if (typeof messageObject !== 'object' || messageObject === null)
+        return false;
+
+    if (
+        !('id' in messageObject) ||
+        !('from' in messageObject) ||
+        !('to' in messageObject) ||
+        !('text' in messageObject) ||
+        !('datetime' in messageObject) ||
+        !('status' in messageObject)
+    )
+        return false;
+    return typeof messageObject.text === 'string';
+}
+
 export {
     isGeneralMessage,
     isUserPayloadServer,
     isUserPayloadClient,
     isErrorPayload,
     isUsersPayloadServer,
+    isMessagePayloadServer,
 };

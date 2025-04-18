@@ -35,7 +35,44 @@ interface GeneralMessage {
         | UserPayloadServer
         | ErrorTest
         | null
-        | UserPayloadServerUsers;
+        | UserPayloadServerUsers
+        | MessagePayloadClient
+        | MessagePayloadServer;
+}
+
+interface MessagePayloadClient {
+    message: {
+        to: string;
+        text: string;
+    };
+}
+
+interface MessagePayloadServer {
+    message: {
+        id: string;
+        from: string;
+        to: string;
+        text: string;
+        datetime: number;
+        status: {
+            isDelivered: boolean;
+            isReaded: boolean;
+            isEdited: boolean;
+        };
+    };
+}
+
+interface Message {
+    id: string;
+    from: string;
+    to: string;
+    text: string;
+    datetime: number;
+    status: {
+        isDelivered: boolean;
+        isReaded: boolean;
+        isEdited: boolean;
+    };
 }
 
 interface Listeners {
@@ -60,4 +97,7 @@ export {
     Route,
     User,
     UserPayloadServerUsers,
+    MessagePayloadClient,
+    MessagePayloadServer,
+    Message,
 };

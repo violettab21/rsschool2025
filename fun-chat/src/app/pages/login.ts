@@ -1,5 +1,5 @@
 import type { Connection } from '../connection/connection';
-import type { UserService } from './user-service';
+import type { UserService } from '../services/user-service';
 import type { GeneralMessage } from '../interfaces';
 
 function renderLoginContent(

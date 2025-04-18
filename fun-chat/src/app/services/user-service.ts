@@ -13,7 +13,7 @@ import {
     isUserPayloadServer,
     isUsersPayloadServer,
 } from '../utilities';
-import { drawUsers } from './chat';
+import { drawUsers } from '../pages/chat';
 
 export class UserService {
     public connection: Connection;
@@ -97,30 +97,6 @@ export class UserService {
         } else console.log('other user logged in');
     }
 
-    /*public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
-        const users = message.users;
-        const usersElements: HTMLElement[] = [];
-        users.forEach((user) => {
-            if (user.login === this.currentUser.login) return;
-            const item = document.createElement('li');
-            item.className = 'user-chat';
-            item.textContent = user.login;
-            const status = document.createElement('span');
-            status.className = 'user-status';
-            if (user.isLogined) status.classList.add('user-status-active');
-            else status.classList.add('user-status-inactive');
-            item.prepend(status);
-            usersElements.push(item);
-            if (!this.users.some((element) => element.login === user.login))
-                this.users.push(user);
-        });
-        console.log(this.users);
-        const usersList = document.querySelector('.users');
-        if (usersList) {
-            usersList.append(...usersElements);
-        }
-    }*/
-
     public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
         users.forEach((user) => {
@@ -175,7 +151,6 @@ export class UserService {
 
         if (!this.users.some((element) => element.login === message.user.login))
             this.users.push(message.user);
-        console.log(this.users);
 
         if (usersList) {
             usersList.append(item);
