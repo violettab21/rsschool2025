@@ -17,11 +17,13 @@ import {
 export class UserService {
     public connection: Connection;
     public currentUser: Partial<User>;
+    public users: { login: string; isLogined: boolean }[];
     public router: Router;
     constructor(connection: Connection, router: Router) {
         this.connection = connection;
         this.router = router;
         this.currentUser = {};
+        this.users = [];
         this.processUserMessages();
     }
 
@@ -55,7 +57,12 @@ export class UserService {
                     }
                     case 'USER_EXTERNAL_LOGIN': {
                         if (isUserPayloadServer(data.payload))
-                            handleExternalLogin(data.payload);
+                            this.handleExternalLogin(data.payload);
+                        break;
+                    }
+                    case 'USER_EXTERNAL_LOGOUT': {
+                        if (isUserPayloadServer(data.payload))
+                            this.handleExternalLogout(data.payload);
                         break;
                     }
                     case 'ERROR': {
@@ -103,7 +110,10 @@ export class UserService {
             else status.classList.add('user-status-inactive');
             item.prepend(status);
             usersElements.push(item);
+            if (!this.users.some((element) => element.login === user.login))
+                this.users.push(user);
         });
+        console.log(this.users);
         const usersList = document.querySelector('.users');
         if (usersList) {
             usersList.append(...usersElements);
@@ -139,35 +149,45 @@ export class UserService {
             this.connection.connection.send(JSON.stringify(request));
         }
     }
-}
+    public handleExternalLogin(message: UserPayloadServer): void {
+        const usersList = document.querySelector('.users');
 
-function handleExternalLogin(message: UserPayloadServer): void {
-    const usersList = document.querySelector('.users');
-    const item = document.createElement('li');
-    item.textContent = message.user.login;
-    const status = document.createElement('span');
-    status.className = 'user-status';
-    if (message.user.isLogined) status.classList.add('user-status-active');
-    else status.classList.add('user-status-inactive');
-    item.prepend(status);
-    if (usersList) {
-        usersList.append(item);
+        const item = document.createElement('li');
+        item.textContent = message.user.login;
+
+        const status = document.createElement('span');
+        status.className = 'user-status';
+        if (message.user.isLogined) status.classList.add('user-status-active');
+        else status.classList.add('user-status-inactive');
+        item.prepend(status);
+
+        if (!this.users.some((element) => element.login === message.user.login))
+            this.users.push(message.user);
+        console.log(this.users);
+
+        if (usersList) {
+            usersList.append(item);
+        }
+    }
+    public handleExternalLogout(message: UserPayloadServer): void {
+        const affectedUser = this.users.find(
+            (element) => element.login === message.user.login
+        );
+        if (affectedUser) affectedUser.isLogined = false;
+
+        const usersList = document.querySelector('.users');
+        if (usersList) {
+            const usersElements = [...usersList.children];
+            const userElement = usersElements.find(
+                (element) => element.textContent === message.user.login
+            );
+            if (userElement) {
+                const status = userElement.querySelector('.user-status');
+                if (status) {
+                    status.classList.remove('user-status-active');
+                    status.classList.add('user-status-inactive');
+                }
+            }
+        }
     }
 }
-
-/* if (data.type === 'USER_LOGIN') {
-                    if (isUserPayloadServer(data.payload))
-                        this.handleUserLoginMessage(data.payload);
-                } else if (data.type === 'USER_LOGOUT') {
-                    if (isUserPayloadServer(data.payload))
-                        this.handleUserLogoutMessage(data.payload);
-                } else if (data.type === 'USER_ACTIVE') {
-                    if (isUsersPayloadServer(data.payload))
-                        this.handleActiveUsersMessage(data.payload);
-                } else if (
-                    data.type === 'ERROR' &&
-                    isErrorPayload(data.payload)
-                ) {
-                    const errorPayload = data.payload;
-                    createErrorMessage(errorPayload.error);
-                }*/
