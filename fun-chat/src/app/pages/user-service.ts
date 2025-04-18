@@ -13,6 +13,7 @@ import {
     isUserPayloadServer,
     isUsersPayloadServer,
 } from '../utilities';
+import { drawUsers } from './chat';
 
 export class UserService {
     public connection: Connection;
@@ -96,7 +97,7 @@ export class UserService {
         } else console.log('other user logged in');
     }
 
-    public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
+    /*public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
         const usersElements: HTMLElement[] = [];
         users.forEach((user) => {
@@ -118,6 +119,17 @@ export class UserService {
         if (usersList) {
             usersList.append(...usersElements);
         }
+    }*/
+
+    public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
+        const users = message.users;
+        users.forEach((user) => {
+            if (user.login === this.currentUser.login) return;
+            if (!this.users.some((element) => element.login === user.login))
+                this.users.push(user);
+        });
+
+        drawUsers(this.users);
     }
 
     public sendUserMessage(userRequest: GeneralMessage): void {
@@ -189,5 +201,13 @@ export class UserService {
                 }
             }
         }
+    }
+
+    public searchUsers(searchValue: string): void {
+        const filteredUsers = this.users.filter((user) =>
+            user.login.includes(searchValue)
+        );
+
+        drawUsers(filteredUsers);
     }
 }

@@ -58,16 +58,16 @@ function createUsersSection(userService: UserService): HTMLElement {
 
     const search = document.createElement('input');
     search.className = 'search-input';
+    search.addEventListener('input', () => {
+        userService.searchUsers(search.value);
+    });
 
     const usersList = document.createElement('ul');
     usersList.className = 'users';
 
-    /*const userPlaceholder = document.createElement('li');
-    userPlaceholder.className = 'user-item';
-    userPlaceholder.textContent = 'SomeUser';*/
     userService.getAllActiveUsers();
     userService.getAllInactiveUsers();
-    /* usersList.append(userPlaceholder);*/
+
     usersSection.append(search, usersList);
 
     return usersSection;
@@ -152,4 +152,25 @@ function prepareUserLogoutRequest(userService: UserService): GeneralMessage {
     return userRequest;
 }
 
-export { renderChatPageContent };
+function drawUsers(users: { login: string; isLogined: boolean }[]): void {
+    const usersElements: HTMLElement[] = [];
+    users.forEach((user) => {
+        const item = document.createElement('li');
+        item.className = 'user-chat';
+        item.textContent = user.login;
+        const status = document.createElement('span');
+        status.className = 'user-status';
+        if (user.isLogined) status.classList.add('user-status-active');
+        else status.classList.add('user-status-inactive');
+        item.prepend(status);
+        usersElements.push(item);
+    });
+
+    const usersList = document.querySelector('.users');
+    if (usersList) {
+        usersList.innerHTML = '';
+        usersList.append(...usersElements);
+    }
+}
+
+export { renderChatPageContent, drawUsers };
