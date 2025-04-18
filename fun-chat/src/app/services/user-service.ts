@@ -141,19 +141,23 @@ export class UserService {
         const usersList = document.querySelector('.users');
 
         const item = document.createElement('li');
-        item.textContent = message.user.login;
 
+        item.textContent = message.user.login;
+        item.className = 'user-chat';
         const status = document.createElement('span');
         status.className = 'user-status';
         if (message.user.isLogined) status.classList.add('user-status-active');
         else status.classList.add('user-status-inactive');
         item.prepend(status);
 
-        if (!this.users.some((element) => element.login === message.user.login))
+        if (
+            !this.users.some((element) => element.login === message.user.login)
+        ) {
             this.users.push(message.user);
 
-        if (usersList) {
-            usersList.append(item);
+            if (usersList) {
+                usersList.append(item);
+            }
         }
     }
     public handleExternalLogout(message: UserPayloadServer): void {

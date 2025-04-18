@@ -41,7 +41,7 @@ export class ChatService {
                             isMessagePayloadServer(data.payload) &&
                             this.userService.currentUser.login
                         ) {
-                            handleMessageSend(
+                            this.handleMessageSend(
                                 data.payload,
                                 this.userService.currentUser.login
                             );
@@ -67,10 +67,16 @@ export class ChatService {
             this.connection.connection.send(JSON.stringify(userRequest));
         }
     }
-}
-function handleMessageSend(
-    message: MessagePayloadServer,
-    userName: string
-): void {
-    drawMessage(message.message, userName);
+    public handleMessageSend(
+        message: MessagePayloadServer,
+        userName: string
+    ): void {
+        if (
+            (message.message.from === this.activeChatWith.login &&
+                message.message.to === userName) ||
+            (message.message.from === userName &&
+                message.message.to === this.activeChatWith.login)
+        )
+            drawMessage(message.message, userName);
+    }
 }
