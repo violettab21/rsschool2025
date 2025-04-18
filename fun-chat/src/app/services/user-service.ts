@@ -151,8 +151,27 @@ export class UserService {
         item.prepend(status);
 
         if (
-            !this.users.some((element) => element.login === message.user.login)
+            this.users.some((element) => element.login === message.user.login)
         ) {
+            const affectedUser = this.users.find(
+                (element) => element.login === message.user.login
+            );
+            if (affectedUser) affectedUser.isLogined = true;
+            const usersList = document.querySelector('.users');
+            if (usersList) {
+                const usersElements = [...usersList.children];
+                const userElement = usersElements.find(
+                    (element) => element.textContent === message.user.login
+                );
+                if (userElement) {
+                    const status = userElement.querySelector('.user-status');
+                    if (status) {
+                        status.classList.remove('user-status-inactive');
+                        status.classList.add('user-status-active');
+                    }
+                }
+            }
+        } else {
             this.users.push(message.user);
 
             if (usersList) {
