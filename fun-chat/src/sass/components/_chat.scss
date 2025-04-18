@@ -49,7 +49,10 @@
 }
 
 .chat-messages {
+    display: flex;
     flex: 1 1 auto;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .chat-send-button {

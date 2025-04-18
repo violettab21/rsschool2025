@@ -9,16 +9,23 @@ import {
 import type { Router } from '../components/router';
 import { createErrorMessage } from '../components/modal';
 import { drawMessage } from '../pages/chat';
+import type { UserService } from './user-service';
 export class ChatService {
     public connection: Connection;
     public activeChatWith: Partial<User>;
     public users: { login: string; isLogined: boolean }[];
     public router: Router;
-    constructor(connection: Connection, router: Router) {
+    public userService: UserService;
+    constructor(
+        connection: Connection,
+        router: Router,
+        userService: UserService
+    ) {
         this.connection = connection;
         this.router = router;
         this.activeChatWith = {};
         this.users = [];
+        this.userService = userService;
         this.processChatMessages();
     }
     public processChatMessages(): void {
@@ -30,8 +37,16 @@ export class ChatService {
             if (isGeneralMessage(data)) {
                 switch (data.type) {
                     case 'MSG_SEND': {
-                        if (isMessagePayloadServer(data.payload))
-                            handleMessageSend(data.payload);
+                        if (
+                            isMessagePayloadServer(data.payload) &&
+                            this.userService.currentUser.login
+                        ) {
+                            handleMessageSend(
+                                data.payload,
+                                this.userService.currentUser.login
+                            );
+                        }
+
                         break;
                     }
 
@@ -53,6 +68,9 @@ export class ChatService {
         }
     }
 }
-function handleMessageSend(message: MessagePayloadServer): void {
-    drawMessage(message.message);
+function handleMessageSend(
+    message: MessagePayloadServer,
+    userName: string
+): void {
+    drawMessage(message.message, userName);
 }

@@ -242,7 +242,7 @@ function setChatForSelectedUser(
     }
 }
 
-function drawMessage(message: Message): void {
+function drawMessage(message: Message, currentUser: string): void {
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
 
@@ -252,7 +252,13 @@ function drawMessage(message: Message): void {
     const senderName = document.createElement('p');
     senderName.className = 'message-sender-name';
     const messageFrom = message.from;
-    if (messageFrom) senderName.textContent = messageFrom;
+
+    if (messageFrom) {
+        if (messageFrom === currentUser) {
+            senderName.textContent = 'You';
+            messageContainer.classList.add('chat-current-user-message');
+        } else senderName.textContent = messageFrom;
+    }
 
     const date = document.createElement('p');
     date.className = 'message-date';

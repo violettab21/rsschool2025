@@ -1,0 +1,18 @@
+.message-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #4e91c2;
+}
+
+.message-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chat-current-user-message {
+    align-self: end;
+}

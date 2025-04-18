@@ -14,7 +14,7 @@ export class Router {
         this.connection = connection;
         this.currentUrl = '';
         this.userService = new UserService(connection, this);
-        this.chatService = new ChatService(connection, this);
+        this.chatService = new ChatService(connection, this, this.userService);
         this.routes = this.setRoutes(this.userService);
     }
 
