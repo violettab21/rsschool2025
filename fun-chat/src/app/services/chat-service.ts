@@ -1,10 +1,15 @@
 import type { Connection } from '../connection/connection';
-import type { MessagePayloadServer, User } from '../interfaces';
+import type {
+    MessagePayloadServer,
+    User,
+    MessagesPayloadServer,
+} from '../interfaces';
 import type { GeneralMessage } from '../interfaces';
 import {
     isGeneralMessage,
     isMessagePayloadServer,
     isErrorPayload,
+    isMessagesPayloadServer,
 } from '../utilities';
 import type { Router } from '../components/router';
 import { createErrorMessage } from '../components/modal';
@@ -49,7 +54,19 @@ export class ChatService {
 
                         break;
                     }
+                    case 'MSG_FROM_USER': {
+                        if (
+                            isMessagesPayloadServer(data.payload) &&
+                            this.userService.currentUser.login
+                        ) {
+                            handleHistory(
+                                data.payload,
+                                this.userService.currentUser.login
+                            );
+                        }
 
+                        break;
+                    }
                     case 'ERROR': {
                         if (isErrorPayload(data.payload)) {
                             const errorPayload = data.payload;
@@ -67,6 +84,21 @@ export class ChatService {
             this.connection.connection.send(JSON.stringify(userRequest));
         }
     }
+    public getHistoryMessage(selectedUser: string): void {
+        const id = crypto.randomUUID();
+        const request = {
+            id: id,
+            type: 'MSG_FROM_USER',
+            payload: {
+                user: {
+                    login: selectedUser,
+                },
+            },
+        };
+        if (this.connection.connection) {
+            this.connection.connection.send(JSON.stringify(request));
+        }
+    }
     public handleMessageSend(
         message: MessagePayloadServer,
         userName: string
@@ -77,6 +109,23 @@ export class ChatService {
             (message.message.from === userName &&
                 message.message.to === this.activeChatWith.login)
         )
-            drawMessage(message.message, userName);
+            document
+                .querySelector('.chat-messages')
+                ?.append(drawMessage(message.message, userName));
     }
+}
+function handleHistory(
+    messagesPayload: MessagesPayloadServer,
+    currentUser: string
+): void {
+    const messages = messagesPayload.messages;
+
+    console.log(messages);
+    const messagesHistory = messages;
+    const listOfMessageElements: HTMLElement[] = [];
+    messagesHistory.forEach((message) => {
+        listOfMessageElements.push(drawMessage(message, currentUser));
+    });
+    document.querySelector('.chat-messages')?.append(...listOfMessageElements);
+    console.log(listOfMessageElements);
 }

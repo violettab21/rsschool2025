@@ -5,6 +5,8 @@ import type {
     ErrorTest,
     UserPayloadServerUsers,
     MessagePayloadServer,
+    MessagesPayloadServer,
+    Message,
 } from './interfaces';
 
 function isGeneralMessage(data: unknown): data is GeneralMessage {
@@ -62,6 +64,53 @@ function isUsersPayloadServer(data: unknown): data is UserPayloadServerUsers {
     return typeof userObject.isLogined === 'boolean';
 }
 
+function isMessagesPayloadServer(data: unknown): data is MessagesPayloadServer {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    if (!('messages' in data)) return false;
+
+    const messagesObject = data.messages;
+    if (
+        typeof messagesObject !== 'object' ||
+        messagesObject === null ||
+        !Array.isArray(messagesObject)
+    )
+        return false;
+
+    const messageObject: unknown = messagesObject[0];
+    if (
+        typeof messageObject !== 'object' ||
+        messageObject === null ||
+        !('id' in messageObject) ||
+        !('from' in messageObject) ||
+        !('to' in messageObject) ||
+        !('text' in messageObject) ||
+        !('datetime' in messageObject) ||
+        !('status' in messageObject)
+    )
+        return false;
+    return typeof messageObject.id === 'string';
+}
+function isMessages(data: unknown): data is Message[] {
+    if (typeof data !== 'object' || data === null || !Array.isArray(data)) {
+        return false;
+    }
+    const messageObject: unknown = data[0];
+    if (
+        typeof messageObject !== 'object' ||
+        messageObject === null ||
+        !('id' in messageObject) ||
+        !('from' in messageObject) ||
+        !('to' in messageObject) ||
+        !('text' in messageObject) ||
+        !('datetime' in messageObject) ||
+        !('status' in messageObject)
+    )
+        return false;
+    return typeof messageObject.id === 'string';
+}
 function isUserPayloadClient(data: unknown): data is UserPayloadClient {
     if (typeof data !== 'object' || data === null) {
         return false;
@@ -122,4 +171,6 @@ export {
     isErrorPayload,
     isUsersPayloadServer,
     isMessagePayloadServer,
+    isMessagesPayloadServer,
+    isMessages,
 };

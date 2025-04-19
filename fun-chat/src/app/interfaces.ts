@@ -37,7 +37,8 @@ interface GeneralMessage {
         | null
         | UserPayloadServerUsers
         | MessagePayloadClient
-        | MessagePayloadServer;
+        | MessagePayloadServer
+        | MessagesPayloadServer;
 }
 
 interface MessagePayloadClient {
@@ -60,6 +61,9 @@ interface MessagePayloadServer {
             isEdited: boolean;
         };
     };
+}
+interface MessagesPayloadServer {
+    messages: Message[];
 }
 
 interface Message {
@@ -100,4 +104,5 @@ export {
     MessagePayloadClient,
     MessagePayloadServer,
     Message,
+    MessagesPayloadServer,
 };

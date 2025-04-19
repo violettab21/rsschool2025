@@ -231,18 +231,24 @@ function setChatForSelectedUser(
     chatService: ChatService,
     userService: UserService
 ): void {
+    const chatMessages = document.querySelector('.chat-messages');
+    if (chatMessages) chatMessages.innerHTML = '';
     const selectedUser = userService.users.find(
         (user) => user.login === userName
     );
-    if (selectedUser) chatService.activeChatWith = selectedUser;
+    if (selectedUser) {
+        chatService.activeChatWith = selectedUser;
+        chatService.getHistoryMessage(selectedUser.login);
+    }
 
     const nameElement = document.querySelector('.selected-chat-user-name');
+
     if (nameElement) {
         nameElement.textContent = userName;
     }
 }
 
-function drawMessage(message: Message, currentUser: string): void {
+function drawMessage(message: Message, currentUser: string): HTMLElement {
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
 
@@ -286,7 +292,7 @@ function drawMessage(message: Message, currentUser: string): void {
     messageFooter.append(messageStatus, messageEditState);
 
     messageContainer.append(messageHeader, messageTestContainer, messageFooter);
-    document.querySelector('.chat-messages')?.append(messageContainer);
+    return messageContainer;
 }
 
 export { renderChatPageContent, drawUsers, drawMessage };
