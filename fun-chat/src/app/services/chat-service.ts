@@ -119,13 +119,19 @@ function handleHistory(
     currentUser: string
 ): void {
     const messages = messagesPayload.messages;
-
-    console.log(messages);
     const messagesHistory = messages;
-    const listOfMessageElements: HTMLElement[] = [];
-    messagesHistory.forEach((message) => {
-        listOfMessageElements.push(drawMessage(message, currentUser));
-    });
-    document.querySelector('.chat-messages')?.append(...listOfMessageElements);
-    console.log(listOfMessageElements);
+    const chatElement = document.querySelector('.chat-messages');
+    if (messagesHistory.length > 0) {
+        const listOfMessageElements: HTMLElement[] = [];
+        messagesHistory.forEach((message) => {
+            listOfMessageElements.push(drawMessage(message, currentUser));
+        });
+        chatElement?.append(...listOfMessageElements);
+    } else {
+        const message = document.createElement('p');
+        message.className = 'chat-empty-message';
+        message.textContent = 'Write your first message';
+        chatElement?.append(message);
+        console.log('emlty');
+    }
 }

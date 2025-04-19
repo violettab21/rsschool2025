@@ -78,20 +78,23 @@ function isMessagesPayloadServer(data: unknown): data is MessagesPayloadServer {
         !Array.isArray(messagesObject)
     )
         return false;
-
-    const messageObject: unknown = messagesObject[0];
-    if (
-        typeof messageObject !== 'object' ||
-        messageObject === null ||
-        !('id' in messageObject) ||
-        !('from' in messageObject) ||
-        !('to' in messageObject) ||
-        !('text' in messageObject) ||
-        !('datetime' in messageObject) ||
-        !('status' in messageObject)
-    )
-        return false;
-    return typeof messageObject.id === 'string';
+    if (Array.isArray(messagesObject) && messagesObject.length === 0)
+        return true;
+    else {
+        const messageObject: unknown = messagesObject[0];
+        if (
+            typeof messageObject !== 'object' ||
+            messageObject === null ||
+            !('id' in messageObject) ||
+            !('from' in messageObject) ||
+            !('to' in messageObject) ||
+            !('text' in messageObject) ||
+            !('datetime' in messageObject) ||
+            !('status' in messageObject)
+        )
+            return false;
+        return typeof messageObject.id === 'string';
+    }
 }
 function isMessages(data: unknown): data is Message[] {
     if (typeof data !== 'object' || data === null || !Array.isArray(data)) {
