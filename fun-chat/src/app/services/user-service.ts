@@ -99,8 +99,19 @@ export class UserService {
 
     public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
+        if (
+            this.users.some(
+                (element) => element.login === this.currentUser.login
+            )
+        ) {
+            const index = this.users.findIndex(
+                (element) => element.login === this.currentUser.login
+            );
+            this.users.splice(index, 1);
+        }
         users.forEach((user) => {
             if (user.login === this.currentUser.login) return;
+
             if (!this.users.some((element) => element.login === user.login))
                 this.users.push(user);
         });
