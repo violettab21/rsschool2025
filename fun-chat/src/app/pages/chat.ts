@@ -124,23 +124,7 @@ function createChatSection(chatService: ChatService): HTMLElement {
     sendMessage.className = 'chat-send-button';
     sendMessage.textContent = 'Send';
     sendMessage.addEventListener('click', () => {
-        const id = crypto.randomUUID();
-        const messageToSend = message.value;
-
-        const to = chatService.activeChatWith.login;
-        if (to) {
-            const userRequest = {
-                id: id,
-                type: 'MSG_SEND',
-                payload: {
-                    message: {
-                        to: to,
-                        text: messageToSend,
-                    },
-                },
-            };
-            chatService.sendChatMessage(userRequest);
-        }
+        sendMessageHandler(message, chatService);
     });
 
     chatSendMessageContainer.append(message, sendMessage);
@@ -311,6 +295,11 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
     return messageContainer;
 }
 
+function scrollChatToBottom(): void {
+    const chat = document.querySelector('.chat-messages');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+}
+
 function getDate(milliseconds: number): string {
     return new Intl.DateTimeFormat('default', {
         timeStyle: 'short',
@@ -318,4 +307,27 @@ function getDate(milliseconds: number): string {
     }).format(milliseconds);
 }
 
-export { renderChatPageContent, drawUsers, drawMessage };
+function sendMessageHandler(
+    input: HTMLTextAreaElement,
+    chatService: ChatService
+): void {
+    const id = crypto.randomUUID();
+    const messageToSend = input.value;
+
+    const to = chatService.activeChatWith.login;
+    if (to) {
+        const userRequest = {
+            id: id,
+            type: 'MSG_SEND',
+            payload: {
+                message: {
+                    to: to,
+                    text: messageToSend,
+                },
+            },
+        };
+        chatService.sendChatMessage(userRequest);
+    }
+}
+
+export { renderChatPageContent, drawUsers, drawMessage, scrollChatToBottom };

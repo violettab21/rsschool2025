@@ -13,7 +13,7 @@ import {
 } from '../utilities';
 import type { Router } from '../components/router';
 import { createErrorMessage } from '../components/modal';
-import { drawMessage } from '../pages/chat';
+import { drawMessage, scrollChatToBottom } from '../pages/chat';
 import type { UserService } from './user-service';
 export class ChatService {
     public connection: Connection;
@@ -112,6 +112,7 @@ export class ChatService {
             document
                 .querySelector('.chat-messages')
                 ?.append(drawMessage(message.message, userName));
+        scrollChatToBottom();
     }
 }
 function handleHistory(
@@ -132,6 +133,5 @@ function handleHistory(
         message.className = 'chat-empty-message';
         message.textContent = 'Write your first message';
         chatElement?.append(message);
-        console.log('emlty');
     }
 }
