@@ -259,13 +259,6 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
     senderName.className = 'message-sender-name';
     const messageFrom = message.from;
 
-    if (messageFrom) {
-        if (messageFrom === currentUser) {
-            senderName.textContent = 'You';
-            messageContainer.classList.add('chat-current-user-message');
-        } else senderName.textContent = messageFrom;
-    }
-
     const date = document.createElement('p');
     date.className = 'message-date';
     date.textContent = getDate(message.datetime);
@@ -290,6 +283,13 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
     const messageEditState = document.createElement('p');
     messageEditState.className = 'message-edit-state';
     messageFooter.append(messageStatus, messageEditState);
+    if (messageFrom) {
+        if (messageFrom === currentUser) {
+            senderName.textContent = 'You';
+            messageContainer.classList.add('chat-current-user-message');
+            messageStatus.textContent = getStatus(message.status);
+        } else senderName.textContent = messageFrom;
+    }
 
     messageContainer.append(messageHeader, messageTestContainer, messageFooter);
     return messageContainer;
@@ -329,5 +329,17 @@ function sendMessageHandler(
         chatService.sendChatMessage(userRequest);
     }
 }
-
+function getStatus(statusObject: {
+    isDelivered: boolean;
+    isReaded: boolean;
+    isEdited: boolean;
+}): string {
+    let status: string = '';
+    if (statusObject.isReaded) {
+        status = 'read';
+    } else if (statusObject.isDelivered) {
+        status = 'delivered';
+    } else status = 'sent';
+    return status;
+}
 export { renderChatPageContent, drawUsers, drawMessage, scrollChatToBottom };
