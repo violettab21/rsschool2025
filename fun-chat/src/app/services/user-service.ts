@@ -13,7 +13,7 @@ import {
     isUserPayloadServer,
     isUsersPayloadServer,
 } from '../utilities';
-import { drawUsers } from '../pages/chat';
+import { drawUsers, updateUserStatusHeader } from '../pages/chat';
 
 export class UserService {
     public connection: Connection;
@@ -181,6 +181,7 @@ export class UserService {
                         status.classList.add('user-status-active');
                     }
                 }
+                updateUserStatusHeader(message.user);
             }
         } else {
             this.users.push(message.user);
@@ -210,6 +211,7 @@ export class UserService {
                 }
             }
         }
+        updateUserStatusHeader(message.user);
     }
 
     public searchUsers(searchValue: string): void {

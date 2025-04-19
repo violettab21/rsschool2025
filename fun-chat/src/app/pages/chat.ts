@@ -238,10 +238,16 @@ function setChatForSelectedUser(
                 selectedUserElements[1].classList.add(
                     'selected-user-status-active'
                 );
+                selectedUserElements[1].classList.remove(
+                    'selected-user-status-inactive'
+                );
             } else {
                 selectedUserElements[1].textContent = 'offline';
                 selectedUserElements[1].classList.add(
                     'selected-user-status-inactive'
+                );
+                selectedUserElements[1].classList.remove(
+                    'selected-user-status-active'
                 );
             }
         }
@@ -343,10 +349,41 @@ function getStatus(statusObject: {
     } else status = 'sent';
     return status;
 }
+
+function updateUserStatusHeader(user: {
+    login: string;
+    isLogined: boolean;
+}): void {
+    const chatHeader = document.querySelector('.chat-header');
+    if (chatHeader) {
+        const chatHeaderElements = [...chatHeader.children];
+        if (chatHeaderElements[0].textContent === user.login) {
+            if (user.isLogined) {
+                chatHeaderElements[1].textContent = 'online';
+                chatHeaderElements[1].classList.add(
+                    'selected-user-status-active'
+                );
+                chatHeaderElements[1].classList.remove(
+                    'selected-user-status-inactive'
+                );
+            } else {
+                chatHeaderElements[1].textContent = 'offline';
+                chatHeaderElements[1].classList.add(
+                    'selected-user-status-inactive'
+                );
+                chatHeaderElements[1].classList.remove(
+                    'selected-user-status-active'
+                );
+            }
+        }
+    }
+}
+
 export {
     renderChatPageContent,
     drawUsers,
     drawMessage,
     scrollChatToBottom,
     getStatus,
+    updateUserStatusHeader,
 };
