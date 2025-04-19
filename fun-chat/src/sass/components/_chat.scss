@@ -48,6 +48,14 @@
     background-color: #ecf6fa;
 }
 
+.chat-header {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    padding: 6px;
+    background-color: #234e75;
+}
+
 .chat-messages {
     overflow-y: auto;
     display: flex;
@@ -99,4 +107,12 @@
 
 .user-status-inactive {
     background-color: orange;
+}
+
+.selected-user-status-active {
+    color: green;
+}
+
+.selected-user-status-inactive {
+    color: orange;
 }

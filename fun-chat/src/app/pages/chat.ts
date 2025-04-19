@@ -108,7 +108,10 @@ function createChatSection(chatService: ChatService): HTMLElement {
 
     const userName = document.createElement('p');
     userName.className = 'selected-chat-user-name';
-    chatHeader.append(userName);
+    const status = document.createElement('p');
+    status.className = 'selected-user-status';
+
+    chatHeader.append(userName, status);
 
     const messages = document.createElement('div');
     messages.className = 'chat-messages';
@@ -239,12 +242,25 @@ function setChatForSelectedUser(
     if (selectedUser) {
         chatService.activeChatWith = selectedUser;
         chatService.getHistoryMessage(selectedUser.login);
-    }
 
-    const nameElement = document.querySelector('.selected-chat-user-name');
+        const chatHeader = document.querySelector('.chat-header');
 
-    if (nameElement) {
-        nameElement.textContent = userName;
+        if (chatHeader) {
+            const selectedUserElements = [...chatHeader.children];
+
+            selectedUserElements[0].textContent = userName;
+            if (selectedUser.isLogined) {
+                selectedUserElements[1].textContent = 'online';
+                selectedUserElements[1].classList.add(
+                    'selected-user-status-active'
+                );
+            } else {
+                selectedUserElements[1].textContent = 'offline';
+                selectedUserElements[1].classList.add(
+                    'selected-user-status-inactive'
+                );
+            }
+        }
     }
 }
 
