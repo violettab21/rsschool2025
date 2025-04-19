@@ -268,7 +268,7 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
 
     const date = document.createElement('p');
     date.className = 'message-date';
-    date.textContent = message.datetime.toString();
+    date.textContent = getDate(message.datetime);
 
     messageHeader.append(senderName, date);
 
@@ -293,6 +293,13 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
 
     messageContainer.append(messageHeader, messageTestContainer, messageFooter);
     return messageContainer;
+}
+
+function getDate(milliseconds: number): string {
+    return new Intl.DateTimeFormat('default', {
+        timeStyle: 'short',
+        dateStyle: 'short',
+    }).format(milliseconds);
 }
 
 export { renderChatPageContent, drawUsers, drawMessage };
