@@ -115,6 +115,12 @@ function createChatSection(chatService: ChatService): HTMLElement {
 
     const messages = document.createElement('div');
     messages.className = 'chat-messages';
+    messages.addEventListener('click', () => {
+        console.log(chatService.getNotReadMessagesActiveChat());
+        chatService
+            .getNotReadMessagesActiveChat()
+            .forEach((message) => chatService.sendReadNotification(message));
+    });
 
     const chatSendMessageContainer = document.createElement('div');
     chatSendMessageContainer.className = 'chat-message-container';
@@ -379,6 +385,22 @@ function updateUserStatusHeader(user: {
     }
 }
 
+function drawMessageHistory(messages: Message[], currentUser: string): void {
+    const chatElement = document.querySelector('.chat-messages');
+    if (messages.length > 0) {
+        const listOfMessageElements: HTMLElement[] = [];
+        messages.forEach((message) => {
+            listOfMessageElements.push(drawMessage(message, currentUser));
+        });
+        chatElement?.append(...listOfMessageElements);
+    } else {
+        const message = document.createElement('p');
+        message.className = 'chat-empty-message';
+        message.textContent = 'Write your first message';
+        chatElement?.append(message);
+    }
+}
+
 export {
     renderChatPageContent,
     drawUsers,
@@ -386,4 +408,5 @@ export {
     scrollChatToBottom,
     getStatus,
     updateUserStatusHeader,
+    drawMessageHistory,
 };

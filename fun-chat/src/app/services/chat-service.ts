@@ -4,6 +4,7 @@ import type {
     User,
     MessagesPayloadServer,
     MessagePayloadServerStatus,
+    Message,
 } from '../interfaces';
 import type { GeneralMessage } from '../interfaces';
 import {
@@ -15,11 +16,17 @@ import {
 } from '../utilities';
 import type { Router } from '../components/router';
 import { createErrorMessage } from '../components/modal';
-import { drawMessage, getStatus, scrollChatToBottom } from '../pages/chat';
+import {
+    drawMessage,
+    drawMessageHistory,
+    getStatus,
+    scrollChatToBottom,
+} from '../pages/chat';
 import type { UserService } from './user-service';
 export class ChatService {
     public connection: Connection;
     public activeChatWith: Partial<User>;
+    public activeChatMessages: Message[];
     public users: { login: string; isLogined: boolean }[];
     public router: Router;
     public userService: UserService;
@@ -31,7 +38,9 @@ export class ChatService {
         this.connection = connection;
         this.router = router;
         this.activeChatWith = {};
+        this.activeChatMessages = [];
         this.users = [];
+
         this.userService = userService;
         this.processChatMessages();
     }
@@ -61,7 +70,7 @@ export class ChatService {
                             isMessagesPayloadServer(data.payload) &&
                             this.userService.currentUser.login
                         ) {
-                            handleHistory(
+                            this.handleHistory(
                                 data.payload,
                                 this.userService.currentUser.login
                             );
@@ -72,6 +81,13 @@ export class ChatService {
                     case 'MSG_DELIVER': {
                         if (isMessagePayloadServerStatus(data.payload)) {
                             handleDeliverStatusMessage(data.payload);
+                        }
+
+                        break;
+                    }
+                    case 'MSG_READ': {
+                        if (isMessagePayloadServerStatus(data.payload)) {
+                            this.updateMessages(data.payload);
                         }
 
                         break;
@@ -117,38 +133,79 @@ export class ChatService {
                 message.message.to === userName) ||
             (message.message.from === userName &&
                 message.message.to === this.activeChatWith.login)
-        )
+        ) {
             document
                 .querySelector('.chat-messages')
                 ?.append(drawMessage(message.message, userName));
-        scrollChatToBottom();
+            scrollChatToBottom();
+            this.activeChatMessages.push(message.message);
+        }
     }
-}
-function handleHistory(
-    messagesPayload: MessagesPayloadServer,
-    currentUser: string
-): void {
-    const messages = messagesPayload.messages;
-    const messagesHistory = messages;
-    const chatElement = document.querySelector('.chat-messages');
-    if (messagesHistory.length > 0) {
-        const listOfMessageElements: HTMLElement[] = [];
-        messagesHistory.forEach((message) => {
-            listOfMessageElements.push(drawMessage(message, currentUser));
+    public handleHistory(
+        messagesPayload: MessagesPayloadServer,
+        currentUser: string
+    ): void {
+        const messages = messagesPayload.messages;
+        this.activeChatMessages = [];
+        messages.forEach((message) => this.activeChatMessages.push(message));
+
+        drawMessageHistory(messages, currentUser);
+    }
+    public getNotReadMessagesActiveChat(): Message[] {
+        const notReadMessages = this.activeChatMessages.filter((message) => {
+            return (
+                message.from === this.activeChatWith.login &&
+                message.status.isReaded === false
+            );
         });
-        chatElement?.append(...listOfMessageElements);
-    } else {
-        const message = document.createElement('p');
-        message.className = 'chat-empty-message';
-        message.textContent = 'Write your first message';
-        chatElement?.append(message);
+        return notReadMessages;
+    }
+    public sendReadNotification(message: Message): void {
+        const id = crypto.randomUUID();
+        const request = {
+            id: id,
+            type: 'MSG_READ',
+            payload: {
+                message: {
+                    id: message.id,
+                },
+            },
+        };
+        if (this.connection.connection) {
+            this.connection.connection.send(JSON.stringify(request));
+        }
+    }
+    public updateMessages(messagePayload: MessagePayloadServerStatus): void {
+        this.activeChatMessages.forEach((message) => {
+            if (message.id === messagePayload.message.id) {
+                message.status.isReaded =
+                    messagePayload.message.status.isReaded;
+            }
+        });
+
+        const chat = document.querySelector('.chat-messages');
+        if (chat) {
+            const chatMessagesElements = [...chat.children];
+            const messageToUpdate = chatMessagesElements.find((element) => {
+                if (element instanceof HTMLElement) {
+                    return element.dataset.id === messagePayload.message.id;
+                }
+            });
+            if (messageToUpdate) {
+                const status = messageToUpdate.querySelector('.message-status');
+                if (status)
+                    status.textContent = getStatus(
+                        messagePayload.message.status
+                    );
+            }
+        }
     }
 }
 
 function handleDeliverStatusMessage(
-    messagesPayload: MessagePayloadServerStatus
+    messagePayload: MessagePayloadServerStatus
 ): void {
-    const message = messagesPayload.message;
+    const message = messagePayload.message;
     const chat = document.querySelector('.chat-messages');
     if (chat) {
         const chatMessagesElements = [...chat.children];
