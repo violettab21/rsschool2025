@@ -55,13 +55,23 @@ interface MessagePayloadServer {
         to: string;
         text: string;
         datetime: number;
-        status: {
-            isDelivered: boolean;
-            isReaded: boolean;
-            isEdited: boolean;
-        };
+        status: Status;
     };
 }
+
+interface MessagePayloadServerStatus {
+    message: {
+        id: string;
+        status: Status;
+    };
+}
+
+interface Status {
+    isDelivered?: boolean;
+    isReaded?: boolean;
+    isEdited?: boolean;
+}
+
 interface MessagesPayloadServer {
     messages: Message[];
 }
@@ -72,11 +82,7 @@ interface Message {
     to: string;
     text: string;
     datetime: number;
-    status: {
-        isDelivered: boolean;
-        isReaded: boolean;
-        isEdited: boolean;
-    };
+    status: Status;
 }
 
 interface Listeners {
@@ -105,4 +111,5 @@ export {
     MessagePayloadServer,
     Message,
     MessagesPayloadServer,
+    MessagePayloadServerStatus,
 };

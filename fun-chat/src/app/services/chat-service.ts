@@ -3,6 +3,7 @@ import type {
     MessagePayloadServer,
     User,
     MessagesPayloadServer,
+    MessagePayloadServerStatus,
 } from '../interfaces';
 import type { GeneralMessage } from '../interfaces';
 import {
@@ -10,10 +11,11 @@ import {
     isMessagePayloadServer,
     isErrorPayload,
     isMessagesPayloadServer,
+    isMessagePayloadServerStatus,
 } from '../utilities';
 import type { Router } from '../components/router';
 import { createErrorMessage } from '../components/modal';
-import { drawMessage, scrollChatToBottom } from '../pages/chat';
+import { drawMessage, getStatus, scrollChatToBottom } from '../pages/chat';
 import type { UserService } from './user-service';
 export class ChatService {
     public connection: Connection;
@@ -63,6 +65,13 @@ export class ChatService {
                                 data.payload,
                                 this.userService.currentUser.login
                             );
+                        }
+
+                        break;
+                    }
+                    case 'MSG_DELIVER': {
+                        if (isMessagePayloadServerStatus(data.payload)) {
+                            handleDeliverStatusMessage(data.payload);
                         }
 
                         break;
@@ -133,5 +142,24 @@ function handleHistory(
         message.className = 'chat-empty-message';
         message.textContent = 'Write your first message';
         chatElement?.append(message);
+    }
+}
+
+function handleDeliverStatusMessage(
+    messagesPayload: MessagePayloadServerStatus
+): void {
+    const message = messagesPayload.message;
+    const chat = document.querySelector('.chat-messages');
+    if (chat) {
+        const chatMessagesElements = [...chat.children];
+        const messageToUpdate = chatMessagesElements.find((element) => {
+            if (element instanceof HTMLElement) {
+                return element.dataset.id === message.id;
+            }
+        });
+        if (messageToUpdate) {
+            const status = messageToUpdate.querySelector('.message-status');
+            if (status) status.textContent = getStatus(message.status);
+        }
     }
 }

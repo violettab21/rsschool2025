@@ -251,6 +251,7 @@ function setChatForSelectedUser(
 function drawMessage(message: Message, currentUser: string): HTMLElement {
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
+    messageContainer.dataset.id = message.id;
 
     const messageHeader = document.createElement('div');
     messageHeader.className = 'message-header';
@@ -330,16 +331,22 @@ function sendMessageHandler(
     }
 }
 function getStatus(statusObject: {
-    isDelivered: boolean;
-    isReaded: boolean;
-    isEdited: boolean;
+    isDelivered?: boolean;
+    isReaded?: boolean;
+    isEdited?: boolean;
 }): string {
     let status: string = '';
-    if (statusObject.isReaded) {
+    if (statusObject?.isReaded) {
         status = 'read';
-    } else if (statusObject.isDelivered) {
+    } else if (statusObject?.isDelivered) {
         status = 'delivered';
     } else status = 'sent';
     return status;
 }
-export { renderChatPageContent, drawUsers, drawMessage, scrollChatToBottom };
+export {
+    renderChatPageContent,
+    drawUsers,
+    drawMessage,
+    scrollChatToBottom,
+    getStatus,
+};

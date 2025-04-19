@@ -7,6 +7,7 @@ import type {
     MessagePayloadServer,
     MessagesPayloadServer,
     Message,
+    MessagePayloadServerStatus,
 } from './interfaces';
 
 function isGeneralMessage(data: unknown): data is GeneralMessage {
@@ -96,6 +97,24 @@ function isMessagesPayloadServer(data: unknown): data is MessagesPayloadServer {
         return typeof messageObject.id === 'string';
     }
 }
+
+function isMessagePayloadServerStatus(
+    data: unknown
+): data is MessagePayloadServerStatus {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
+
+    if (!('message' in data)) return false;
+
+    const messageObject = data.message;
+    if (typeof messageObject !== 'object' || messageObject === null)
+        return false;
+
+    if (!('id' in messageObject) || !('status' in messageObject)) return false;
+    return typeof messageObject.id === 'string';
+}
+
 function isMessages(data: unknown): data is Message[] {
     if (typeof data !== 'object' || data === null || !Array.isArray(data)) {
         return false;
@@ -176,4 +195,5 @@ export {
     isMessagePayloadServer,
     isMessagesPayloadServer,
     isMessages,
+    isMessagePayloadServerStatus,
 };
