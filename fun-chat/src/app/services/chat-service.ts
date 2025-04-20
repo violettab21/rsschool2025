@@ -137,7 +137,10 @@ export class ChatService {
             document
                 .querySelector('.chat-messages')
                 ?.append(drawMessage(message.message, userName));
-            scrollChatToBottom();
+            const lineSeparator = document.querySelector(
+                '.new-message-separator'
+            );
+            if (!lineSeparator) scrollChatToBottom();
             this.activeChatMessages.push(message.message);
         }
     }

@@ -115,25 +115,27 @@ function createChatSection(chatService: ChatService): HTMLElement {
 
     const messages = document.createElement('div');
     messages.className = 'chat-messages';
+    const infoMessage = document.createElement('p');
+    infoMessage.className = 'no-user-selected-message';
+    infoMessage.textContent = 'Select User to start chat';
+    messages?.append(infoMessage);
+
     messages.addEventListener('click', () => {
         chatService
             .getNotReadMessagesActiveChat()
             .forEach((message) => chatService.sendReadNotification(message));
         removeNewMessageLine();
     });
-    /*messages.addEventListener('scroll', () => {
-        chatService
-            .getNotReadMessagesActiveChat()
-            .forEach((message) => chatService.sendReadNotification(message));
-        removeNewMessageLine();
-    });*/
+
     const chatSendMessageContainer = document.createElement('div');
     chatSendMessageContainer.className = 'chat-message-container';
     const message = document.createElement('textarea');
     message.className = 'chat-input';
+    message.disabled = true;
     const sendMessage = document.createElement('button');
     sendMessage.className = 'chat-send-button';
     sendMessage.textContent = 'Send';
+    sendMessage.disabled = true;
     sendMessage.addEventListener('click', () => {
         sendMessageHandler(message, chatService);
         chatService
@@ -239,6 +241,7 @@ function setChatForSelectedUser(
         (user) => user.login === userName
     );
     if (selectedUser) {
+        enableSendMessage();
         chatService.activeChatWith = selectedUser;
         chatService.getHistoryMessage(selectedUser.login);
 
@@ -320,6 +323,12 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
 function scrollChatToBottom(): void {
     const chat = document.querySelector('.chat-messages');
     if (chat) chat.scrollTop = chat.scrollHeight;
+}
+
+function scrollChatToSeparator(): void {
+    const chat = document.querySelector('.chat-messages');
+    const separator = document.querySelector('.new-message-separator');
+    if (chat && separator) separator.scrollIntoView(true);
 }
 
 function getDate(milliseconds: number): string {
@@ -412,6 +421,7 @@ function drawMessageHistory(messages: Message[], currentUser: string): void {
             listOfMessageElements.push(drawMessage(message, currentUser));
         });
         chatElement?.append(...listOfMessageElements);
+        if (isSeparatorUsed) scrollChatToSeparator();
     } else {
         const message = document.createElement('p');
         message.className = 'chat-empty-message';
@@ -419,6 +429,7 @@ function drawMessageHistory(messages: Message[], currentUser: string): void {
         chatElement?.append(message);
     }
 }
+
 function drawNewMessageLine(): HTMLElement {
     const lineContainer = document.createElement('div');
     lineContainer.className = 'new-message-separator';
@@ -440,6 +451,21 @@ function removeNewMessageLine(): void {
         }
     }
 }
+function enableSendMessage(): void {
+    const sendMessageElements = document.querySelector(
+        '.chat-message-container'
+    );
+    if (sendMessageElements) {
+        [...sendMessageElements.children].forEach((element) => {
+            if (
+                element instanceof HTMLTextAreaElement ||
+                element instanceof HTMLButtonElement
+            )
+                element.disabled = false;
+        });
+    }
+}
+
 export {
     renderChatPageContent,
     drawUsers,
