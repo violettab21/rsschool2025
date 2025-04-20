@@ -281,6 +281,10 @@ function drawMessage(message: Message, currentUser: string): HTMLElement {
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
     messageContainer.dataset.id = message.id;
+    messageContainer.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        showContextMenu(event.clientX, event.clientY, message.id);
+    });
 
     const messageHeader = document.createElement('div');
     messageHeader.className = 'message-header';
@@ -478,6 +482,49 @@ function enableSendMessage(): void {
     }
 }
 
+function showContextMenu(x: number, y: number, messageid: string): void {
+    closeContextMenu();
+
+    const menuContainer = document.createElement('div');
+    menuContainer.dataset.messageId = messageid;
+    menuContainer.className = 'chat-context-menu';
+    const menuList = document.createElement('ul');
+    menuList.className = 'chat-context-menu-list';
+    const editOption = document.createElement('li');
+    editOption.className = 'edit-message-option';
+    editOption.textContent = 'Edit';
+    const deleteOption = document.createElement('li');
+    deleteOption.className = 'delete-message-option';
+    deleteOption.textContent = 'Delete';
+    menuList.append(editOption, deleteOption);
+    menuContainer.append(menuList);
+    document.querySelector('.chat-messages')?.append(menuContainer);
+    menuContainer.style.top = y + 'px';
+    menuContainer.style.left = x + 'px';
+    menuContainer.addEventListener('mouseout', (event) => {
+        if (
+            event.relatedTarget instanceof Element &&
+            event.target instanceof Element
+        ) {
+            if (event.relatedTarget.closest('.chat-context-menu')) return;
+            if (
+                !event.relatedTarget.closest('.chat-context-menu') &&
+                event.target.closest('.chat-context-menu')
+            )
+                menuContainer.remove();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        if (
+            event.target instanceof Element &&
+            !event.target.closest('.chat-context-menu')
+        )
+            menuContainer.remove();
+    });
+}
+function closeContextMenu(): void {
+    document.querySelector('.chat-context-menu')?.remove();
+}
 export {
     renderChatPageContent,
     drawUsers,

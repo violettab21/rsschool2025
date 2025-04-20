@@ -140,3 +140,20 @@
     z-index: 2;
     background-color: #ecf6fa;
 }
+
+.chat-context-menu {
+    position: absolute;
+    width: 100px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.chat-context-menu-list {
+    list-style-type: none;
+}
+
+.chat-context-menu-list li {
+    padding: 10px 0;
+    text-align: center;
+}
