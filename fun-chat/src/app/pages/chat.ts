@@ -1,5 +1,5 @@
 import image from '../../assets/rss-logo.svg';
-import type { GeneralMessage } from '../interfaces';
+import type { GeneralMessage, Status } from '../interfaces';
 import type { ChatService } from '../services/chat-service';
 import type { UserService } from '../services/user-service';
 import type { Message } from '../interfaces';
@@ -142,10 +142,11 @@ function createChatSection(chatService: ChatService): HTMLElement {
     sendMessage.textContent = 'Send';
     sendMessage.disabled = true;
     sendMessage.addEventListener('click', () => {
-        sendMessageHandler(message, chatService);
+        if (sendMessage.textContent === 'Send')
+            sendMessageHandler(message, chatService);
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && sendMessage.textContent === 'Send') {
             sendMessageHandler(message, chatService);
         }
     });
@@ -285,17 +286,6 @@ function drawMessage(
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
     messageContainer.dataset.id = message.id;
-    messageContainer.addEventListener('contextmenu', (event) => {
-        if (messageFrom === currentUser) {
-            event.preventDefault();
-            showContextMenu(
-                event.clientX,
-                event.clientY,
-                message.id,
-                chatService
-            );
-        }
-    });
 
     const messageHeader = document.createElement('div');
     messageHeader.className = 'message-header';
@@ -335,7 +325,18 @@ function drawMessage(
             messageStatus.textContent = getStatus(message.status);
         } else senderName.textContent = messageFrom;
     }
-
+    messageContainer.addEventListener('contextmenu', (event) => {
+        if (messageFrom === currentUser) {
+            event.preventDefault();
+            showContextMenu(
+                event.clientX,
+                event.clientY,
+                message.id,
+                chatService,
+                message.text
+            );
+        }
+    });
     messageContainer.append(messageHeader, messageTestContainer, messageFooter);
     return messageContainer;
 }
@@ -503,7 +504,8 @@ function showContextMenu(
     x: number,
     y: number,
     messageid: string,
-    chatService: ChatService
+    chatService: ChatService,
+    messageText: string
 ): void {
     closeContextMenu();
 
@@ -515,6 +517,11 @@ function showContextMenu(
     const editOption = document.createElement('li');
     editOption.className = 'edit-message-option';
     editOption.textContent = 'Edit';
+    editOption.addEventListener('click', () => {
+        putMessageTextToInput(messageid, messageText, chatService);
+
+        menuContainer.remove();
+    });
     const deleteOption = document.createElement('li');
     deleteOption.className = 'delete-message-option';
     deleteOption.textContent = 'Delete';
@@ -566,7 +573,52 @@ function removeMessageFromChat(messageId: string): void {
         }
     }
 }
+function updateMessageInChat(message: {
+    id: string;
+    text?: string;
+    status: Status;
+}): void {
+    const chat = document.querySelector('.chat-messages');
+    if (chat) {
+        const chatMessagesElements = [...chat.children];
+        const messageToUpdate = chatMessagesElements.find((element) => {
+            if (element instanceof HTMLElement) {
+                return element.dataset.id === message.id;
+            }
+        });
+        if (messageToUpdate) {
+            const messageText = messageToUpdate.querySelector('.message-text');
+            if (messageText && message.text)
+                messageText.textContent = message.text;
+            const messageState = messageToUpdate.querySelector(
+                '.message-edit-state'
+            );
+            if (messageState && message.status.isEdited)
+                messageState.textContent = 'Edited';
+        }
+    }
+}
 
+function putMessageTextToInput(
+    messageID: string,
+    messageText: string,
+    chatService: ChatService
+): void {
+    const input = document.querySelector('.chat-input');
+    const saveButton = document.createElement('button');
+    document.querySelector('.save-update')?.remove();
+    saveButton.className = 'save-update';
+    saveButton.textContent = 'Save';
+    document.querySelector('.chat-message-container')?.append(saveButton);
+    if (input && input instanceof HTMLTextAreaElement) {
+        input.value = messageText;
+        saveButton.addEventListener('click', () => {
+            chatService.sendMessageUpdateNotification(messageID, input.value);
+            input.value = '';
+            saveButton.remove();
+        });
+    }
+}
 export {
     renderChatPageContent,
     drawUsers,
@@ -576,4 +628,5 @@ export {
     updateUserStatusHeader,
     drawMessageHistory,
     removeMessageFromChat,
+    updateMessageInChat,
 };

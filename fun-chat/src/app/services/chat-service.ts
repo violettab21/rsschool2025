@@ -22,6 +22,7 @@ import {
     getStatus,
     removeMessageFromChat,
     scrollChatToBottom,
+    updateMessageInChat,
 } from '../pages/chat';
 import type { UserService } from './user-service';
 export class ChatService {
@@ -92,6 +93,12 @@ export class ChatService {
                     case 'MSG_DELETE': {
                         if (isMessagePayloadServerStatus(data.payload)) {
                             this.handleMessageDelete(data.payload);
+                        }
+                        break;
+                    }
+                    case 'MSG_EDIT': {
+                        if (isMessagePayloadServerStatus(data.payload)) {
+                            this.handleMessageEdit(data.payload);
                         }
                         break;
                     }
@@ -209,14 +216,33 @@ export class ChatService {
             }
         }
     }
-    public sendMessageDeleteNotification(messaageId: string): void {
+    public sendMessageDeleteNotification(messageId: string): void {
         const id = crypto.randomUUID();
         const request = {
             id: id,
             type: 'MSG_DELETE',
             payload: {
                 message: {
-                    id: messaageId,
+                    id: messageId,
+                },
+            },
+        };
+        if (this.connection.connection) {
+            this.connection.connection.send(JSON.stringify(request));
+        }
+    }
+    public sendMessageUpdateNotification(
+        messageId: string,
+        text: string
+    ): void {
+        const id = crypto.randomUUID();
+        const request = {
+            id: id,
+            type: 'MSG_EDIT',
+            payload: {
+                message: {
+                    id: messageId,
+                    text: text,
                 },
             },
         };
@@ -233,6 +259,20 @@ export class ChatService {
         this.activeChatMessages.splice(messageToDeleteIndex, 1);
 
         removeMessageFromChat(messagePayload.message.id);
+    }
+    public handleMessageEdit(messagePayload: MessagePayloadServerStatus): void {
+        const messageText = messagePayload.message.text;
+        if (messageText) {
+            this.activeChatMessages.forEach((message) => {
+                if (message.id === messagePayload.message.id) {
+                    message.status.isEdited =
+                        messagePayload.message.status.isEdited;
+                    message.text = messageText;
+                }
+            });
+
+            updateMessageInChat(messagePayload.message);
+        }
     }
 }
 

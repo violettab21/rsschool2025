@@ -62,6 +62,7 @@ interface MessagePayloadServer {
 interface MessagePayloadServerStatus {
     message: {
         id: string;
+        text?: string;
         status: Status;
     };
 }
@@ -112,4 +113,5 @@ export {
     Message,
     MessagesPayloadServer,
     MessagePayloadServerStatus,
+    Status,
 };
