@@ -188,7 +188,10 @@ export class ChatService {
             const chatMessagesElements = [...chat.children];
             const messageToUpdate = chatMessagesElements.find((element) => {
                 if (element instanceof HTMLElement) {
-                    return element.dataset.id === messagePayload.message.id;
+                    return (
+                        element.dataset.id === messagePayload.message.id &&
+                        element.classList.contains('chat-current-user-message')
+                    );
                 }
             });
             if (messageToUpdate) {

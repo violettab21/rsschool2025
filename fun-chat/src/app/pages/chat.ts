@@ -116,12 +116,17 @@ function createChatSection(chatService: ChatService): HTMLElement {
     const messages = document.createElement('div');
     messages.className = 'chat-messages';
     messages.addEventListener('click', () => {
-        console.log(chatService.getNotReadMessagesActiveChat());
         chatService
             .getNotReadMessagesActiveChat()
             .forEach((message) => chatService.sendReadNotification(message));
+        removeNewMessageLine();
     });
-
+    /*messages.addEventListener('scroll', () => {
+        chatService
+            .getNotReadMessagesActiveChat()
+            .forEach((message) => chatService.sendReadNotification(message));
+        removeNewMessageLine();
+    });*/
     const chatSendMessageContainer = document.createElement('div');
     chatSendMessageContainer.className = 'chat-message-container';
     const message = document.createElement('textarea');
@@ -131,6 +136,10 @@ function createChatSection(chatService: ChatService): HTMLElement {
     sendMessage.textContent = 'Send';
     sendMessage.addEventListener('click', () => {
         sendMessageHandler(message, chatService);
+        chatService
+            .getNotReadMessagesActiveChat()
+            .forEach((message) => chatService.sendReadNotification(message));
+        removeNewMessageLine();
     });
 
     chatSendMessageContainer.append(message, sendMessage);
@@ -386,10 +395,20 @@ function updateUserStatusHeader(user: {
 }
 
 function drawMessageHistory(messages: Message[], currentUser: string): void {
+    let isSeparatorUsed = false;
     const chatElement = document.querySelector('.chat-messages');
     if (messages.length > 0) {
         const listOfMessageElements: HTMLElement[] = [];
         messages.forEach((message) => {
+            if (
+                message.status.isReaded === false &&
+                isSeparatorUsed === false &&
+                message.to === currentUser
+            ) {
+                listOfMessageElements.push(drawNewMessageLine());
+                isSeparatorUsed = true;
+            }
+
             listOfMessageElements.push(drawMessage(message, currentUser));
         });
         chatElement?.append(...listOfMessageElements);
@@ -400,7 +419,27 @@ function drawMessageHistory(messages: Message[], currentUser: string): void {
         chatElement?.append(message);
     }
 }
+function drawNewMessageLine(): HTMLElement {
+    const lineContainer = document.createElement('div');
+    lineContainer.className = 'new-message-separator';
+    const line = document.createElement('div');
+    line.className = 'new-message-separator-line';
+    const text = document.createElement('p');
+    text.className = 'new-message-separator-text';
+    text.textContent = 'New Messages';
+    lineContainer.append(line, text);
+    return lineContainer;
+}
 
+function removeNewMessageLine(): void {
+    const chat = document.querySelector('.chat-messages');
+    if (chat) {
+        const line = document.querySelector('.new-message-separator');
+        if (line) {
+            line.remove();
+        }
+    }
+}
 export {
     renderChatPageContent,
     drawUsers,
