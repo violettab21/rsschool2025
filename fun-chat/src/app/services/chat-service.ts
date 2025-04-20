@@ -20,6 +20,7 @@ import {
     drawMessage,
     drawMessageHistory,
     getStatus,
+    removeMessageFromChat,
     scrollChatToBottom,
 } from '../pages/chat';
 import type { UserService } from './user-service';
@@ -62,7 +63,6 @@ export class ChatService {
                                 this.userService.currentUser.login
                             );
                         }
-
                         break;
                     }
                     case 'MSG_FROM_USER': {
@@ -75,21 +75,24 @@ export class ChatService {
                                 this.userService.currentUser.login
                             );
                         }
-
                         break;
                     }
                     case 'MSG_DELIVER': {
                         if (isMessagePayloadServerStatus(data.payload)) {
                             handleDeliverStatusMessage(data.payload);
                         }
-
                         break;
                     }
                     case 'MSG_READ': {
                         if (isMessagePayloadServerStatus(data.payload)) {
                             this.updateMessages(data.payload);
                         }
-
+                        break;
+                    }
+                    case 'MSG_DELETE': {
+                        if (isMessagePayloadServerStatus(data.payload)) {
+                            this.handleMessageDelete(data.payload);
+                        }
                         break;
                     }
                     case 'ERROR': {
@@ -136,7 +139,7 @@ export class ChatService {
         ) {
             document
                 .querySelector('.chat-messages')
-                ?.append(drawMessage(message.message, userName));
+                ?.append(drawMessage(message.message, userName, this));
             const lineSeparator = document.querySelector(
                 '.new-message-separator'
             );
@@ -152,7 +155,7 @@ export class ChatService {
         this.activeChatMessages = [];
         messages.forEach((message) => this.activeChatMessages.push(message));
 
-        drawMessageHistory(messages, currentUser);
+        drawMessageHistory(messages, currentUser, this);
     }
     public getNotReadMessagesActiveChat(): Message[] {
         const notReadMessages = this.activeChatMessages.filter((message) => {
@@ -205,6 +208,31 @@ export class ChatService {
                     );
             }
         }
+    }
+    public sendMessageDeleteNotification(messaageId: string): void {
+        const id = crypto.randomUUID();
+        const request = {
+            id: id,
+            type: 'MSG_DELETE',
+            payload: {
+                message: {
+                    id: messaageId,
+                },
+            },
+        };
+        if (this.connection.connection) {
+            this.connection.connection.send(JSON.stringify(request));
+        }
+    }
+    public handleMessageDelete(
+        messagePayload: MessagePayloadServerStatus
+    ): void {
+        const messageToDeleteIndex = this.activeChatMessages.findIndex(
+            (message) => message.id === messagePayload.message.id
+        );
+        this.activeChatMessages.splice(messageToDeleteIndex, 1);
+
+        removeMessageFromChat(messagePayload.message.id);
     }
 }
 

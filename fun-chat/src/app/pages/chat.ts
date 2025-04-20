@@ -277,13 +277,24 @@ function setChatForSelectedUser(
     }
 }
 
-function drawMessage(message: Message, currentUser: string): HTMLElement {
+function drawMessage(
+    message: Message,
+    currentUser: string,
+    chatService: ChatService
+): HTMLElement {
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
     messageContainer.dataset.id = message.id;
     messageContainer.addEventListener('contextmenu', (event) => {
-        event.preventDefault();
-        showContextMenu(event.clientX, event.clientY, message.id);
+        if (messageFrom === currentUser) {
+            event.preventDefault();
+            showContextMenu(
+                event.clientX,
+                event.clientY,
+                message.id,
+                chatService
+            );
+        }
     });
 
     const messageHeader = document.createElement('div');
@@ -419,7 +430,11 @@ function updateUserStatusHeader(user: {
     }
 }
 
-function drawMessageHistory(messages: Message[], currentUser: string): void {
+function drawMessageHistory(
+    messages: Message[],
+    currentUser: string,
+    chatService: ChatService
+): void {
     let isSeparatorUsed = false;
     const chatElement = document.querySelector('.chat-messages');
     if (messages.length > 0) {
@@ -434,7 +449,9 @@ function drawMessageHistory(messages: Message[], currentUser: string): void {
                 isSeparatorUsed = true;
             }
 
-            listOfMessageElements.push(drawMessage(message, currentUser));
+            listOfMessageElements.push(
+                drawMessage(message, currentUser, chatService)
+            );
         });
         chatElement?.append(...listOfMessageElements);
         if (isSeparatorUsed) scrollChatToSeparator();
@@ -482,7 +499,12 @@ function enableSendMessage(): void {
     }
 }
 
-function showContextMenu(x: number, y: number, messageid: string): void {
+function showContextMenu(
+    x: number,
+    y: number,
+    messageid: string,
+    chatService: ChatService
+): void {
     closeContextMenu();
 
     const menuContainer = document.createElement('div');
@@ -496,6 +518,10 @@ function showContextMenu(x: number, y: number, messageid: string): void {
     const deleteOption = document.createElement('li');
     deleteOption.className = 'delete-message-option';
     deleteOption.textContent = 'Delete';
+    deleteOption.addEventListener('click', () => {
+        chatService.sendMessageDeleteNotification(messageid);
+        menuContainer.remove();
+    });
     menuList.append(editOption, deleteOption);
     menuContainer.append(menuList);
     document.querySelector('.chat-messages')?.append(menuContainer);
@@ -525,6 +551,22 @@ function showContextMenu(x: number, y: number, messageid: string): void {
 function closeContextMenu(): void {
     document.querySelector('.chat-context-menu')?.remove();
 }
+
+function removeMessageFromChat(messageId: string): void {
+    const chat = document.querySelector('.chat-messages');
+    if (chat) {
+        const chatMessagesElements = [...chat.children];
+        const messageToDelete = chatMessagesElements.find((element) => {
+            if (element instanceof HTMLElement) {
+                return element.dataset.id === messageId;
+            }
+        });
+        if (messageToDelete) {
+            messageToDelete.remove();
+        }
+    }
+}
+
 export {
     renderChatPageContent,
     drawUsers,
@@ -533,4 +575,5 @@ export {
     getStatus,
     updateUserStatusHeader,
     drawMessageHistory,
+    removeMessageFromChat,
 };
