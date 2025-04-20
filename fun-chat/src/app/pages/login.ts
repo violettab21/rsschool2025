@@ -1,15 +1,17 @@
 import type { Connection } from '../connection/connection';
 import type { UserService } from '../services/user-service';
 import type { GeneralMessage } from '../interfaces';
+import type { Router } from '../components/router';
 
 function renderLoginContent(
     Connection: Connection,
-    UserService: UserService
+    UserService: UserService,
+    router: Router
 ): void {
     const container = document.querySelector('.wrapper');
     if (container) {
         container.innerHTML = '';
-        container.append(createLoginForm(Connection, UserService));
+        container.append(createLoginForm(Connection, UserService, router));
     }
 
     const userName = document.querySelector('.user-name-input');
@@ -30,7 +32,8 @@ function renderLoginContent(
 
 function createLoginForm(
     Connection: Connection,
-    UserService: UserService
+    UserService: UserService,
+    router: Router
 ): HTMLElement {
     const main = document.createElement('main');
     main.className = 'main';
@@ -47,8 +50,14 @@ function createLoginForm(
         const request = prepareUserRequest(Connection, UserService);
         UserService.sendUserMessage(request);
     });
-
-    form.append(userName, password, loginButton);
+    const infoButton = document.createElement('button');
+    infoButton.className = 'login-info-button';
+    infoButton.textContent = 'Info';
+    infoButton.addEventListener('click', (event) => {
+        event?.preventDefault();
+        router.openPage('info');
+    });
+    form.append(userName, password, loginButton, infoButton);
     main.append(form);
     return main;
 }

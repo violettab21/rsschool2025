@@ -3,23 +3,25 @@ import type { GeneralMessage, Status } from '../interfaces';
 import type { ChatService } from '../services/chat-service';
 import type { UserService } from '../services/user-service';
 import type { Message } from '../interfaces';
+import type { Router } from '../components/router';
 
 function renderChatPageContent(
     userService: UserService,
-    chatService: ChatService
+    chatService: ChatService,
+    router: Router
 ): void {
     const container = document.querySelector('.wrapper');
     if (container) {
         container.innerHTML = '';
         container.append(
-            createHeader(userService),
+            createHeader(userService, router),
             createMain(userService, chatService),
             createFooter()
         );
     }
 }
 
-function createHeader(userService: UserService): HTMLElement {
+function createHeader(userService: UserService, router: Router): HTMLElement {
     const header = document.createElement('header');
     header.className = 'header';
 
@@ -34,7 +36,12 @@ function createHeader(userService: UserService): HTMLElement {
     userName.className = 'header-user-name';
     const currentUserName = userService.currentUser.login;
     if (currentUserName) userName.textContent = currentUserName;
-
+    const infoButton = document.createElement('li');
+    infoButton.className = 'chat-info-button';
+    infoButton.textContent = 'Info';
+    infoButton.addEventListener('click', () => {
+        router.openPage('info');
+    });
     const logout = document.createElement('li');
     logout.className = 'logout-button';
     logout.textContent = 'Logout';
@@ -43,7 +50,7 @@ function createHeader(userService: UserService): HTMLElement {
         userService.sendUserMessage(userRequest);
     });
 
-    menu.append(userName, logout);
+    menu.append(userName, infoButton, logout);
     header.append(appName, menu);
 
     return header;

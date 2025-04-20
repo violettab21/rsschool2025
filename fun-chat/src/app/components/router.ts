@@ -3,6 +3,7 @@ import { renderLoginContent } from '../pages/login';
 import { UserService } from '../services/user-service';
 import type { Connection } from '../connection/connection';
 import { renderChatPageContent } from '../pages/chat';
+import { renderInfoContent } from '../pages/info';
 import { ChatService } from '../services/chat-service';
 export class Router {
     public routes: Route[];
@@ -34,7 +35,8 @@ export class Router {
                 handler: renderLoginContent.bind(
                     null,
                     this.connection,
-                    userService
+                    userService,
+                    this
                 ),
             },
             {
@@ -42,19 +44,21 @@ export class Router {
                 handler: renderChatPageContent.bind(
                     null,
                     userService,
-                    this.chatService
+                    this.chatService,
+                    this
                 ),
             },
             {
                 url: 'info',
-                handler: () => console.log('info'),
+                handler: renderInfoContent,
             },
             {
                 url: '',
                 handler: renderLoginContent.bind(
                     null,
                     this.connection,
-                    userService
+                    userService,
+                    this
                 ),
             },
         ];
