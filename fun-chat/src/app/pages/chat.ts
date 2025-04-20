@@ -132,18 +132,23 @@ function createChatSection(chatService: ChatService): HTMLElement {
     const message = document.createElement('textarea');
     message.className = 'chat-input';
     message.disabled = true;
+    message.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
     const sendMessage = document.createElement('button');
     sendMessage.className = 'chat-send-button';
     sendMessage.textContent = 'Send';
     sendMessage.disabled = true;
     sendMessage.addEventListener('click', () => {
         sendMessageHandler(message, chatService);
-        chatService
-            .getNotReadMessagesActiveChat()
-            .forEach((message) => chatService.sendReadNotification(message));
-        removeNewMessageLine();
     });
-
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            sendMessageHandler(message, chatService);
+        }
+    });
     chatSendMessageContainer.append(message, sendMessage);
     chatSection.append(chatHeader, messages, chatSendMessageContainer);
     return chatSection;
@@ -342,6 +347,8 @@ function sendMessageHandler(
     input: HTMLTextAreaElement,
     chatService: ChatService
 ): void {
+    console.log(input.value);
+    if (input.value === '') return;
     const id = crypto.randomUUID();
     const messageToSend = input.value;
 
@@ -359,6 +366,11 @@ function sendMessageHandler(
         };
         chatService.sendChatMessage(userRequest);
     }
+    input.value = '';
+    chatService
+        .getNotReadMessagesActiveChat()
+        .forEach((message) => chatService.sendReadNotification(message));
+    removeNewMessageLine();
 }
 function getStatus(statusObject: {
     isDelivered?: boolean;
