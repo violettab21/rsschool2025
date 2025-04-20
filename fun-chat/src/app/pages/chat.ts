@@ -317,7 +317,8 @@ function drawMessage(
 
     const messageEditState = document.createElement('p');
     messageEditState.className = 'message-edit-state';
-    messageFooter.append(messageStatus, messageEditState);
+    messageEditState.textContent = message.status.isEdited ? 'edited' : '';
+    messageFooter.append(messageEditState, messageStatus);
     if (messageFrom) {
         if (messageFrom === currentUser) {
             senderName.textContent = 'You';
@@ -594,7 +595,7 @@ function updateMessageInChat(message: {
                 '.message-edit-state'
             );
             if (messageState && message.status.isEdited)
-                messageState.textContent = 'Edited';
+                messageState.textContent = 'edited';
         }
     }
 }
