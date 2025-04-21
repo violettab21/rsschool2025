@@ -37,6 +37,7 @@ function createLoginForm(
 ): HTMLElement {
     const main = document.createElement('main');
     main.className = 'main';
+    main.classList.add('main-login');
     const form = document.createElement('form');
     form.className = 'auth-form';
     const userName = createUserNameField();

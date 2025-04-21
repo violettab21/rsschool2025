@@ -1,5 +1,12 @@
 @use '../abstracts/constants';
 
+.main-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .auth-form {
     display: flex;
     flex-direction: column;

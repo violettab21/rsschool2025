@@ -6,7 +6,7 @@ function renderInfoContent(): void {
         const main = document.createElement('main');
         main.classList.add('main', 'main-info');
         const infoSection = document.createElement('section');
-        main.classList.add('main', 'main-info');
+        infoSection.classList.add('info-section');
         const infoApplicationTitle = document.createElement('h2');
         infoApplicationTitle.classList.add('application-info-title');
         infoApplicationTitle.textContent = 'Fun Chat';

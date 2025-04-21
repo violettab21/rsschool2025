@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .header {
     display: flex;
     align-items: center;
@@ -20,6 +22,15 @@
     background-color: #68b7e8;
 }
 
+.chat-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    border: 2px solid #17324fa1;
+    border-radius: 10px;
+    background-color: #ecf6fa;
+}
+
 .chat-info-button {
     padding: 6px 12px;
     border-radius: 10px;
@@ -28,12 +39,14 @@
 
 .chat-message-container {
     display: flex;
+    align-items: flex-end;
     justify-content: space-around;
     width: 100%;
     padding: 15px;
 }
 
 .chat-input {
+    resize: none;
     width: 80%;
 }
 
@@ -42,23 +55,31 @@
     flex-direction: column;
     width: 40%;
     padding: 10px;
-    border: 1px solid black;
-    background-color: #ecf6fa;
+    border-right: 2px solid #17324fa1;
+}
+
+.users {
+    list-style: none;
+}
+
+.user-chat {
+    padding: 5px 3px;
 }
 
 .section-chat {
     display: flex;
     flex-direction: column;
     width: 60%;
-    border: 1px solid black;
-    background-color: #ecf6fa;
 }
 
 .chat-header {
     display: flex;
     gap: 15px;
+    align-items: center;
     justify-content: center;
+    min-height: 45px;
     padding: 6px;
+    color: #edfaff;
     background-color: #234e75;
 }
 
@@ -68,20 +89,31 @@
     flex: 1 1 auto;
     flex-direction: column;
     gap: 10px;
+    padding: 5px;
 }
 
 .chat-send-button {
     padding: 6px 12px;
-}
-
-.users {
-    list-style: none;
+    border: none;
+    border-radius: 10px;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    background-color: #4b7e9e;
 }
 
 .footer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 10px;
+    color: #192228;
+    background-color: #bcccdc;
+}
+
+.author-github-link {
+    color: #192228;
+    text-align: center;
+    text-decoration: none;
 }
 
 .school-icon {
@@ -89,13 +121,22 @@
 }
 
 .footer-content {
+    color: #192228;
     list-style-type: none;
+}
+
+.footer-content li {
+    padding: 10px;
 }
 
 .school-info {
     display: flex;
     gap: 5px;
     align-items: center;
+}
+
+.copyright {
+    text-align: center;
 }
 
 .user-status {
@@ -167,4 +208,13 @@
 .message-footer {
     display: flex;
     justify-content: space-between;
+}
+
+.search-input,
+.chat-input {
+    padding: 3px 6px;
+    border: 1px solid #366e9c;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #f1f6f8;
 }

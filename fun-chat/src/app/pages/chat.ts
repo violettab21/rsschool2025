@@ -65,10 +65,13 @@ function createMain(
     const main = document.createElement('main');
 
     main.classList.add('main', 'main-chat');
-    main.append(
+    const chatContainer = document.createElement('div');
+    chatContainer.className = 'chat-container';
+    chatContainer.append(
         createUsersSection(userService, chatService),
         createChatSection(chatService)
     );
+    main.append(chatContainer);
     return main;
 }
 
@@ -179,23 +182,19 @@ function createFooter(): HTMLElement {
     schoolIcon.src = image;
     schoolInfo.append(schoolIcon);
 
-    const authorName = document.createElement('li');
-    authorName.className = 'author-name';
-    authorName.textContent = 'Violetta Batsura';
-
     const gitHubInfo = document.createElement('li');
     gitHubInfo.className = 'author-github';
 
     const gitHubLink = document.createElement('a');
     gitHubLink.className = 'author-github-link';
     gitHubLink.href = 'https://github.com/violettab21';
-    gitHubLink.textContent = 'Github Link';
+    gitHubLink.textContent = 'Violetta Batsura';
     gitHubInfo.append(gitHubLink);
-    const copyright = document.createElement('p');
+    const copyright = document.createElement('li');
     copyright.className = 'copyright';
-    copyright.textContent = `Copyright Fun Chat, 2025`;
-    listFooterItems.append(schoolInfo, authorName, gitHubInfo);
-    footer.append(listFooterItems, copyright);
+    copyright.textContent = `Fun Chat, 2025`;
+    listFooterItems.append(schoolInfo, gitHubInfo, copyright);
+    footer.append(listFooterItems);
     return footer;
 }
 

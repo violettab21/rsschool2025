@@ -1,5 +1,21 @@
 .main-info {
     display: flex;
-    place-content: center center;
     align-items: center;
+    justify-content: center;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 20px;
+}
+
+.info-back {
+    width: 100px;
+}
+
+.application-info-details {
+    text-align: center;
 }
