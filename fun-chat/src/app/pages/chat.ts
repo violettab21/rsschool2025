@@ -292,6 +292,8 @@ function drawMessage(
     currentUser: string,
     chatService: ChatService
 ): HTMLElement {
+    removeChatInfoMessage();
+
     const messageContainer = document.createElement('div');
     messageContainer.className = 'message-container';
     messageContainer.dataset.id = message.id;
@@ -350,7 +352,10 @@ function drawMessage(
     messageContainer.append(messageHeader, messageTestContainer, messageFooter);
     return messageContainer;
 }
-
+function removeChatInfoMessage(): void {
+    const infoMessage = document.querySelector('.chat-empty-message');
+    if (infoMessage) infoMessage.remove();
+}
 function scrollChatToBottom(): void {
     const chat = document.querySelector('.chat-messages');
     if (chat) chat.scrollTop = chat.scrollHeight;
