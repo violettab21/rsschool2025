@@ -49,6 +49,19 @@ connection.addHandlerPerEvent('close', () => {
         connection.connect();
     }
 });
+connection.addHandlerPerEvent('error', () => {
+    if (document.querySelector('.reconnect-message')) connection.connect();
+    else {
+        createErrorMessage('reconnecting...');
+
+        document.querySelector('.icon-close')?.remove();
+
+        document
+            .querySelector('.dark-view')
+            ?.classList.add('reconnect-message');
+        connection.connect();
+    }
+});
 const connectionValue = connection.connection;
 document.addEventListener('DOMContentLoaded', () => {
     if (connectionValue && connectionValue.readyState === 1) router.openPage();

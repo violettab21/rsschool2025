@@ -10,12 +10,10 @@ import type { GeneralMessage } from '../interfaces';
 import {
     isGeneralMessage,
     isMessagePayloadServer,
-    isErrorPayload,
     isMessagesPayloadServer,
     isMessagePayloadServerStatus,
 } from '../utilities';
 import type { Router } from '../components/router';
-import { createErrorMessage } from '../components/modal';
 import {
     drawMessage,
     drawMessageHistory,
@@ -130,13 +128,6 @@ export class ChatService {
                                     this.handleMessageEdit(data.payload);
                                 }
                                 break;
-                            }
-                            case 'ERROR': {
-                                if (isErrorPayload(data.payload)) {
-                                    const errorPayload = data.payload;
-                                    createErrorMessage(errorPayload.error);
-                                    break;
-                                }
                             }
                         }
                     }
