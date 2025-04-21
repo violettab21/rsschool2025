@@ -14,68 +14,95 @@ import {
     isUsersPayloadServer,
 } from '../utilities';
 import { drawUsers, updateUserStatusHeader } from '../pages/chat';
+import type { State } from '../state/state';
 
 export class UserService {
     public connection: Connection;
     public currentUser: Partial<User>;
     public users: { login: string; isLogined: boolean }[];
     public router: Router;
-    constructor(connection: Connection, router: Router) {
+    public state: State;
+    constructor(connection: Connection, router: Router, state: State) {
         this.connection = connection;
         this.router = router;
         this.currentUser = {};
+        this.state = state;
+        const savedState = state.getChatState();
+        if (
+            typeof savedState === 'object' &&
+            savedState !== null &&
+            'currentUser' in savedState &&
+            'activeChatWith' in savedState
+        ) {
+            const savedCurrentUser = savedState.currentUser;
+            if (
+                typeof savedCurrentUser === 'object' &&
+                savedCurrentUser !== null
+            )
+                this.currentUser = savedCurrentUser;
+        }
+
         this.users = [];
         this.processUserMessages();
     }
 
     public processUserMessages(): void {
-        this.connection.addHandlerPerEvent('message', (event: MessageEvent) => {
-            const receivedData: unknown = event.data;
-            let data: unknown;
-            if (typeof receivedData === 'string')
-                data = JSON.parse(receivedData);
-            if (isGeneralMessage(data)) {
-                switch (data.type) {
-                    case 'USER_LOGIN': {
-                        if (isUserPayloadServer(data.payload))
-                            this.handleUserLoginMessage(data.payload);
-                        break;
-                    }
-                    case 'USER_LOGOUT': {
-                        if (isUserPayloadServer(data.payload))
-                            this.handleUserLogoutMessage(data.payload);
-                        break;
-                    }
-                    case 'USER_ACTIVE': {
-                        if (isUsersPayloadServer(data.payload))
-                            this.handleRegisteredUsersMessage(data.payload);
-                        break;
-                    }
-                    case 'USER_INACTIVE': {
-                        if (isUsersPayloadServer(data.payload))
-                            this.handleRegisteredUsersMessage(data.payload);
-                        break;
-                    }
-                    case 'USER_EXTERNAL_LOGIN': {
-                        if (isUserPayloadServer(data.payload))
-                            this.handleExternalLogin(data.payload);
-                        break;
-                    }
-                    case 'USER_EXTERNAL_LOGOUT': {
-                        if (isUserPayloadServer(data.payload))
-                            this.handleExternalLogout(data.payload);
-                        break;
-                    }
-                    case 'ERROR': {
-                        if (isErrorPayload(data.payload)) {
-                            const errorPayload = data.payload;
-                            createErrorMessage(errorPayload.error);
-                            break;
+        this.connection.addHandlerPerEvent(
+            'message',
+            (event: MessageEvent | Event) => {
+                if (event instanceof MessageEvent) {
+                    const receivedData: unknown = event.data;
+                    let data: unknown;
+                    if (typeof receivedData === 'string')
+                        data = JSON.parse(receivedData);
+                    if (isGeneralMessage(data)) {
+                        switch (data.type) {
+                            case 'USER_LOGIN': {
+                                if (isUserPayloadServer(data.payload))
+                                    this.handleUserLoginMessage(data.payload);
+                                break;
+                            }
+                            case 'USER_LOGOUT': {
+                                if (isUserPayloadServer(data.payload))
+                                    this.handleUserLogoutMessage(data.payload);
+                                break;
+                            }
+                            case 'USER_ACTIVE': {
+                                if (isUsersPayloadServer(data.payload))
+                                    this.handleRegisteredUsersMessage(
+                                        data.payload
+                                    );
+                                break;
+                            }
+                            case 'USER_INACTIVE': {
+                                if (isUsersPayloadServer(data.payload))
+                                    this.handleRegisteredUsersMessage(
+                                        data.payload
+                                    );
+                                break;
+                            }
+                            case 'USER_EXTERNAL_LOGIN': {
+                                if (isUserPayloadServer(data.payload))
+                                    this.handleExternalLogin(data.payload);
+                                break;
+                            }
+                            case 'USER_EXTERNAL_LOGOUT': {
+                                if (isUserPayloadServer(data.payload))
+                                    this.handleExternalLogout(data.payload);
+                                break;
+                            }
+                            case 'ERROR': {
+                                if (isErrorPayload(data.payload)) {
+                                    const errorPayload = data.payload;
+                                    createErrorMessage(errorPayload.error);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
-        });
+        );
     }
     public handleUserLoginMessage(message: UserPayloadServer): void {
         if (
@@ -83,7 +110,11 @@ export class UserService {
             message.user.isLogined
         ) {
             this.router.openPage('chat');
-        } else console.log('other user logged in');
+            this.state.saveChatState({
+                currentUser: this.currentUser,
+                activeChatWith: this.router.chatService.activeChatWith,
+            });
+        }
     }
 
     public handleUserLogoutMessage(message: UserPayloadServer): void {
@@ -91,8 +122,13 @@ export class UserService {
             message.user.login === this.currentUser?.login &&
             !message.user.isLogined
         ) {
-            this.connection.connection?.close();
-            this.connection.connect();
+            /*  this.connection.connection?.close();*/
+            this.currentUser = {};
+            this.state.saveChatState({
+                currentUser: this.currentUser,
+                activeChatWith: this.router.chatService.activeChatWith,
+            });
+
             this.router.openPage('login');
         } else console.log('other user logged in');
     }

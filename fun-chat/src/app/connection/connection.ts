@@ -13,11 +13,11 @@ export class Connection {
     }
     public connect(): void {
         this.connection = new WebSocket(this.url);
-        this.connection.addEventListener('open', () => {
-            console.log('connection is open');
+        this.connection.addEventListener('open', (event: Event) => {
+            this.listeners.open.forEach((callback) => callback(event));
         });
-        this.connection.addEventListener('close', () => {
-            console.log('connection is closed');
+        this.connection.addEventListener('close', (event: Event) => {
+            this.listeners.close.forEach((callback) => callback(event));
         });
         this.connection.addEventListener('message', (event: MessageEvent) => {
             this.listeners.message.forEach((callback) => callback(event));
@@ -26,7 +26,7 @@ export class Connection {
 
     public addHandlerPerEvent(
         event: string,
-        callback: (event: MessageEvent) => void
+        callback: (event: MessageEvent | Event) => void
     ): void {
         if (event in this.listeners) {
             this.listeners[event].push(callback);

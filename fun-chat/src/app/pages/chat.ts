@@ -35,6 +35,8 @@ function createHeader(userService: UserService, router: Router): HTMLElement {
     const userName = document.createElement('li');
     userName.className = 'header-user-name';
     const currentUserName = userService.currentUser.login;
+
+    console.log('currentUserName' + userService.currentUser.login);
     if (currentUserName) userName.textContent = currentUserName;
     const infoButton = document.createElement('li');
     infoButton.className = 'chat-info-button';

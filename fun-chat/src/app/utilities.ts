@@ -8,6 +8,7 @@ import type {
     MessagesPayloadServer,
     Message,
     MessagePayloadServerStatus,
+    ChatState,
 } from './interfaces';
 
 function isGeneralMessage(data: unknown): data is GeneralMessage {
@@ -185,7 +186,24 @@ function isMessagePayloadServer(data: unknown): data is MessagePayloadServer {
         return false;
     return typeof messageObject.text === 'string';
 }
+function isChatState(data: unknown): data is ChatState {
+    if (typeof data !== 'object' || data === null) {
+        return false;
+    }
 
+    if (!('currentUser' in data) || !('activeChatWith' in data)) return false;
+
+    const currentUser = data.currentUser;
+    const activeChatUser = data.activeChatWith;
+    if (
+        typeof currentUser !== 'object' ||
+        currentUser === null ||
+        typeof activeChatUser !== 'object' ||
+        activeChatUser === null
+    )
+        return false;
+    return true;
+}
 export {
     isGeneralMessage,
     isUserPayloadServer,
@@ -196,4 +214,5 @@ export {
     isMessagesPayloadServer,
     isMessages,
     isMessagePayloadServerStatus,
+    isChatState,
 };

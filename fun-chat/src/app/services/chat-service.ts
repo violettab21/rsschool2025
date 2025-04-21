@@ -25,6 +25,7 @@ import {
     updateMessageInChat,
 } from '../pages/chat';
 import type { UserService } from './user-service';
+import type { State } from '../state/state';
 export class ChatService {
     public connection: Connection;
     public activeChatWith: Partial<User>;
@@ -35,11 +36,27 @@ export class ChatService {
     constructor(
         connection: Connection,
         router: Router,
-        userService: UserService
+        userService: UserService,
+        state: State
     ) {
         this.connection = connection;
         this.router = router;
         this.activeChatWith = {};
+        const savedState = state.getChatState();
+        if (
+            typeof savedState === 'object' &&
+            savedState !== null &&
+            'currentUser' in savedState &&
+            'activeChatWith' in savedState
+        ) {
+            const savedCurrentUser = savedState.activeChatWith;
+            if (
+                typeof savedCurrentUser === 'object' &&
+                savedCurrentUser !== null
+            )
+                this.activeChatWith = savedCurrentUser;
+        }
+
         this.activeChatMessages = [];
         this.users = [];
 
@@ -47,71 +64,85 @@ export class ChatService {
         this.processChatMessages();
     }
     public processChatMessages(): void {
-        this.connection.addHandlerPerEvent('message', (event: MessageEvent) => {
-            const receivedData: unknown = event.data;
-            let data: unknown;
-            if (typeof receivedData === 'string')
-                data = JSON.parse(receivedData);
-            if (isGeneralMessage(data)) {
-                switch (data.type) {
-                    case 'MSG_SEND': {
-                        if (
-                            isMessagePayloadServer(data.payload) &&
-                            this.userService.currentUser.login
-                        ) {
-                            this.handleMessageSend(
-                                data.payload,
-                                this.userService.currentUser.login
-                            );
-                        }
-                        break;
-                    }
-                    case 'MSG_FROM_USER': {
-                        if (
-                            isMessagesPayloadServer(data.payload) &&
-                            this.userService.currentUser.login
-                        ) {
-                            this.handleHistory(
-                                data.payload,
-                                this.userService.currentUser.login
-                            );
-                        }
-                        break;
-                    }
-                    case 'MSG_DELIVER': {
-                        if (isMessagePayloadServerStatus(data.payload)) {
-                            handleDeliverStatusMessage(data.payload);
-                        }
-                        break;
-                    }
-                    case 'MSG_READ': {
-                        if (isMessagePayloadServerStatus(data.payload)) {
-                            this.updateMessages(data.payload);
-                        }
-                        break;
-                    }
-                    case 'MSG_DELETE': {
-                        if (isMessagePayloadServerStatus(data.payload)) {
-                            this.handleMessageDelete(data.payload);
-                        }
-                        break;
-                    }
-                    case 'MSG_EDIT': {
-                        if (isMessagePayloadServerStatus(data.payload)) {
-                            this.handleMessageEdit(data.payload);
-                        }
-                        break;
-                    }
-                    case 'ERROR': {
-                        if (isErrorPayload(data.payload)) {
-                            const errorPayload = data.payload;
-                            createErrorMessage(errorPayload.error);
-                            break;
+        this.connection.addHandlerPerEvent(
+            'message',
+            (event: MessageEvent | Event) => {
+                if (event instanceof MessageEvent) {
+                    const receivedData: unknown = event.data;
+
+                    let data: unknown;
+                    if (typeof receivedData === 'string')
+                        data = JSON.parse(receivedData);
+                    if (isGeneralMessage(data)) {
+                        switch (data.type) {
+                            case 'MSG_SEND': {
+                                if (
+                                    isMessagePayloadServer(data.payload) &&
+                                    this.userService.currentUser.login
+                                ) {
+                                    this.handleMessageSend(
+                                        data.payload,
+                                        this.userService.currentUser.login
+                                    );
+                                }
+                                break;
+                            }
+                            case 'MSG_FROM_USER': {
+                                if (
+                                    isMessagesPayloadServer(data.payload) &&
+                                    this.userService.currentUser.login
+                                ) {
+                                    this.handleHistory(
+                                        data.payload,
+                                        this.userService.currentUser.login
+                                    );
+                                }
+                                break;
+                            }
+                            case 'MSG_DELIVER': {
+                                if (
+                                    isMessagePayloadServerStatus(data.payload)
+                                ) {
+                                    handleDeliverStatusMessage(data.payload);
+                                }
+                                break;
+                            }
+                            case 'MSG_READ': {
+                                if (
+                                    isMessagePayloadServerStatus(data.payload)
+                                ) {
+                                    this.updateMessages(data.payload);
+                                }
+                                break;
+                            }
+                            case 'MSG_DELETE': {
+                                if (
+                                    isMessagePayloadServerStatus(data.payload)
+                                ) {
+                                    this.handleMessageDelete(data.payload);
+                                }
+                                break;
+                            }
+                            case 'MSG_EDIT': {
+                                if (
+                                    isMessagePayloadServerStatus(data.payload)
+                                ) {
+                                    this.handleMessageEdit(data.payload);
+                                }
+                                break;
+                            }
+                            case 'ERROR': {
+                                if (isErrorPayload(data.payload)) {
+                                    const errorPayload = data.payload;
+                                    createErrorMessage(errorPayload.error);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
-        });
+        );
     }
 
     public sendChatMessage(userRequest: GeneralMessage): void {

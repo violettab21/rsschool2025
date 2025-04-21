@@ -87,7 +87,7 @@ interface Message {
 }
 
 interface Listeners {
-    [index: string]: ((event: MessageEvent) => void)[];
+    [index: string]: ((event: MessageEvent | Event) => void)[];
 }
 
 type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
@@ -95,7 +95,10 @@ interface Route {
     url: string;
     handler: () => void;
 }
-
+interface ChatState {
+    currentUser: Partial<User>;
+    activeChatWith: Partial<User>;
+}
 export {
     Properties,
     ButtonProperties,
@@ -114,4 +117,5 @@ export {
     MessagesPayloadServer,
     MessagePayloadServerStatus,
     Status,
+    ChatState,
 };

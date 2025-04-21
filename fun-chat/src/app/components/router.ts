@@ -5,17 +5,23 @@ import type { Connection } from '../connection/connection';
 import { renderChatPageContent } from '../pages/chat';
 import { renderInfoContent } from '../pages/info';
 import { ChatService } from '../services/chat-service';
+import type { State } from '../state/state';
 export class Router {
     public routes: Route[];
     public currentUrl: string;
     public connection: Connection;
     public userService: UserService;
     public chatService: ChatService;
-    constructor(connection: Connection) {
+    constructor(connection: Connection, state: State) {
         this.connection = connection;
         this.currentUrl = '';
-        this.userService = new UserService(connection, this);
-        this.chatService = new ChatService(connection, this, this.userService);
+        this.userService = new UserService(connection, this, state);
+        this.chatService = new ChatService(
+            connection,
+            this,
+            this.userService,
+            state
+        );
         this.routes = this.setRoutes(this.userService);
     }
 
