@@ -136,10 +136,18 @@ function createChatSection(chatService: ChatService): HTMLElement {
     messages?.append(infoMessage);
 
     messages.addEventListener('click', () => {
+        console.log('cick');
+        const selectedUser = chatService.activeChatWith;
+        console.log(`active chat wuth ${selectedUser.login}`);
+        console.log(chatService.getNotReadMessagesActiveChat());
+        console.log(chatService.activeChatMessages);
         chatService
             .getNotReadMessagesActiveChat()
             .forEach((message) => chatService.sendReadNotification(message));
         removeNewMessageLine();
+        if (chatService.activeChatWith.login) {
+            removeMessageCount(chatService.activeChatWith.login);
+        }
     });
 
     const chatSendMessageContainer = document.createElement('div');
@@ -275,6 +283,80 @@ function addMessagesCount(messageCount: number, userName: string): void {
 
                 messageCountElement.textContent = messageCount.toString();
                 userToUpdate.append(messageCountElement);
+            }
+        }
+    }
+}
+
+function increaseMessageCount(userName: string): void {
+    const users = document.querySelector('.users');
+    if (users) {
+        const usersElements = [...users.children];
+        const userToUpdate = usersElements.find((element) => {
+            if (element instanceof HTMLElement)
+                return element.dataset.name === userName;
+        });
+        if (userToUpdate) {
+            const existingMessageElement = userToUpdate.querySelector(
+                '.user-message-count'
+            );
+            if (existingMessageElement) {
+                const currentMessageCount = Number(
+                    existingMessageElement.textContent
+                );
+                existingMessageElement.textContent = (
+                    currentMessageCount + 1
+                ).toString();
+            } else {
+                const messageCountElement = document.createElement('span');
+                messageCountElement.className = 'user-message-count';
+
+                messageCountElement.textContent = '1';
+                userToUpdate.append(messageCountElement);
+            }
+        }
+    }
+}
+
+function decreaseMessageCount(userName: string): void {
+    const users = document.querySelector('.users');
+    if (users) {
+        const usersElements = [...users.children];
+        const userToUpdate = usersElements.find((element) => {
+            if (element instanceof HTMLElement)
+                return element.dataset.name === userName;
+        });
+        if (userToUpdate) {
+            const existingMessageElement = userToUpdate.querySelector(
+                '.user-message-count'
+            );
+            if (existingMessageElement) {
+                const currentMessageCount = Number(
+                    existingMessageElement.textContent
+                );
+                if (currentMessageCount === 1) existingMessageElement.remove();
+                else
+                    existingMessageElement.textContent = (
+                        currentMessageCount - 1
+                    ).toString();
+            }
+        }
+    }
+}
+function removeMessageCount(userName: string): void {
+    const users = document.querySelector('.users');
+    if (users) {
+        const usersElements = [...users.children];
+        const userToUpdate = usersElements.find((element) => {
+            if (element instanceof HTMLElement)
+                return element.dataset.name === userName;
+        });
+        if (userToUpdate) {
+            const existingMessageElement = userToUpdate.querySelector(
+                '.user-message-count'
+            );
+            if (existingMessageElement) {
+                existingMessageElement.remove();
             }
         }
     }
@@ -492,25 +574,38 @@ function drawMessageHistory(
         const listOfMessageElements: HTMLElement[] = [];
         messages.forEach((message) => {
             if (
-                message.status.isReaded === false &&
-                isSeparatorUsed === false &&
-                message.to === currentUser
+                (message.from === chatService.activeChatWith.login &&
+                    message.to === currentUser) ||
+                (message.from === currentUser &&
+                    message.to === chatService.activeChatWith.login)
             ) {
-                listOfMessageElements.push(drawNewMessageLine());
-                isSeparatorUsed = true;
-            }
+                if (
+                    message.status.isReaded === false &&
+                    isSeparatorUsed === false &&
+                    message.to === currentUser
+                ) {
+                    listOfMessageElements.push(drawNewMessageLine());
+                    isSeparatorUsed = true;
+                }
 
-            listOfMessageElements.push(
-                drawMessage(message, currentUser, chatService)
-            );
+                listOfMessageElements.push(
+                    drawMessage(message, currentUser, chatService)
+                );
+            }
         });
         chatElement?.append(...listOfMessageElements);
         if (isSeparatorUsed) scrollChatToSeparator();
     } else {
-        const message = document.createElement('p');
-        message.className = 'chat-empty-message';
-        message.textContent = 'Write your first message';
-        chatElement?.append(message);
+        const existingMessages = document.querySelector('.chat-messages');
+        if (existingMessages) {
+            const existingMessagesElements = [...existingMessages.children];
+            if (existingMessagesElements.length === 0) {
+                const message = document.createElement('p');
+                message.className = 'chat-empty-message';
+                message.textContent = 'Write your first message';
+                chatElement?.append(message);
+            }
+        }
     }
 }
 
@@ -680,4 +775,7 @@ export {
     removeMessageFromChat,
     updateMessageInChat,
     addMessagesCount,
+    increaseMessageCount,
+    decreaseMessageCount,
+    removeMessageCount,
 };

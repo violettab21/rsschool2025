@@ -19,6 +19,8 @@ import {
     drawMessage,
     drawMessageHistory,
     getStatus,
+    increaseMessageCount,
+    removeMessageCount,
     removeMessageFromChat,
     scrollChatToBottom,
     updateMessageInChat,
@@ -175,6 +177,10 @@ export class ChatService {
             );
             if (!lineSeparator) scrollChatToBottom();
             this.activeChatMessages.push(message.message);
+        } else {
+            if (message.message.to === userName) {
+                increaseMessageCount(message.message.from);
+            }
         }
     }
     public handleHistory(
@@ -198,6 +204,14 @@ export class ChatService {
         if (notReadMessages.length > 0) {
             addMessagesCount(notReadMessages.length, notReadMessages[0].from);
             console.log(notReadMessages[0].from, notReadMessages.length);
+        } else if (notReadMessages.length === 0) {
+            const readMessages = messages.find((message) => {
+                return (
+                    message.to === currentUser &&
+                    message.status.isReaded === true
+                );
+            });
+            if (readMessages) removeMessageCount(readMessages.from);
         }
     }
     public getNotReadMessagesActiveChat(): Message[] {
@@ -295,6 +309,10 @@ export class ChatService {
         this.activeChatMessages.splice(messageToDeleteIndex, 1);
 
         removeMessageFromChat(messagePayload.message.id);
+        this.router.userService.users.forEach((user) => {
+            if (user.login !== this.activeChatWith.login)
+                this.getHistoryMessage(user.login);
+        });
     }
     public handleMessageEdit(messagePayload: MessagePayloadServerStatus): void {
         const messageText = messagePayload.message.text;

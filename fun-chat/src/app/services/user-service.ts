@@ -191,6 +191,7 @@ export class UserService {
 
         item.textContent = message.user.login;
         item.className = 'user-chat';
+        item.dataset.name = message.user.login;
         const status = document.createElement('span');
         status.className = 'user-status';
         if (message.user.isLogined) status.classList.add('user-status-active');
@@ -236,9 +237,11 @@ export class UserService {
         const usersList = document.querySelector('.users');
         if (usersList) {
             const usersElements = [...usersList.children];
-            const userElement = usersElements.find(
-                (element) => element.textContent === message.user.login
-            );
+            const userElement = usersElements.find((element) => {
+                if (element instanceof HTMLElement)
+                    return element.dataset.name === message.user.login;
+            });
+
             if (userElement) {
                 const status = userElement.querySelector('.user-status');
                 if (status) {
