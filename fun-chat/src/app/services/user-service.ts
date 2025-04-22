@@ -152,7 +152,7 @@ export class UserService {
                 this.users.push(user);
         });
 
-        drawUsers(this.users);
+        drawUsers(this.users, this.router.chatService);
     }
 
     public sendUserMessage(userRequest: GeneralMessage): void {
@@ -255,6 +255,6 @@ export class UserService {
             user.login.includes(searchValue)
         );
 
-        drawUsers(filteredUsers);
+        drawUsers(filteredUsers, this.router.chatService);
     }
 }

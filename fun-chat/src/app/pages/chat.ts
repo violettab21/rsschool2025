@@ -91,12 +91,15 @@ function createUsersSection(
     const usersList = document.createElement('ul');
     usersList.className = 'users';
     usersList.addEventListener('click', (event) => {
+        console.log('hello');
         const clickedItem = event.target;
         if (clickedItem instanceof Element) {
             const clickedUser = clickedItem.closest('.user-chat');
-            if (clickedUser) {
-                const userName = clickedUser.textContent;
+            if (clickedUser && clickedUser instanceof HTMLElement) {
+                console.log('hello1');
+                const userName = clickedUser.dataset.name;
                 if (userName) {
+                    console.log('hello2');
                     setChatForSelectedUser(userName, chatService, userService);
                 }
             }
@@ -223,17 +226,23 @@ function prepareUserLogoutRequest(userService: UserService): GeneralMessage {
     return userRequest;
 }
 
-function drawUsers(users: { login: string; isLogined: boolean }[]): void {
+function drawUsers(
+    users: { login: string; isLogined: boolean }[],
+    chatService: ChatService
+): void {
     const usersElements: HTMLElement[] = [];
     users.forEach((user) => {
         const item = document.createElement('li');
+        item.dataset.name = user.login;
         item.className = 'user-chat';
         item.textContent = user.login;
         const status = document.createElement('span');
         status.className = 'user-status';
+
         if (user.isLogined) status.classList.add('user-status-active');
         else status.classList.add('user-status-inactive');
         item.prepend(status);
+
         usersElements.push(item);
     });
 
@@ -242,8 +251,34 @@ function drawUsers(users: { login: string; isLogined: boolean }[]): void {
         usersList.innerHTML = '';
         usersList.append(...usersElements);
     }
+    users.forEach((user) => {
+        chatService.getHistoryMessage(user.login);
+    });
 }
+function addMessagesCount(messageCount: number, userName: string): void {
+    const users = document.querySelector('.users');
+    if (users) {
+        const usersElements = [...users.children];
+        const userToUpdate = usersElements.find((element) => {
+            if (element instanceof HTMLElement)
+                return element.dataset.name === userName;
+        });
+        if (userToUpdate) {
+            const existingMessageElement = userToUpdate.querySelector(
+                '.user-message-count'
+            );
+            if (existingMessageElement)
+                existingMessageElement.textContent = messageCount.toString();
+            else {
+                const messageCountElement = document.createElement('span');
+                messageCountElement.className = 'user-message-count';
 
+                messageCountElement.textContent = messageCount.toString();
+                userToUpdate.append(messageCountElement);
+            }
+        }
+    }
+}
 function setChatForSelectedUser(
     userName: string,
     chatService: ChatService,
@@ -254,6 +289,7 @@ function setChatForSelectedUser(
     const selectedUser = userService.users.find(
         (user) => user.login === userName
     );
+    console.log(userName);
     if (selectedUser) {
         enableSendMessage();
         chatService.activeChatWith = selectedUser;
@@ -643,4 +679,5 @@ export {
     drawMessageHistory,
     removeMessageFromChat,
     updateMessageInChat,
+    addMessagesCount,
 };

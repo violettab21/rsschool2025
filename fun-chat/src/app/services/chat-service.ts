@@ -15,6 +15,7 @@ import {
 } from '../utilities';
 import type { Router } from '../components/router';
 import {
+    addMessagesCount,
     drawMessage,
     drawMessageHistory,
     getStatus,
@@ -181,10 +182,23 @@ export class ChatService {
         currentUser: string
     ): void {
         const messages = messagesPayload.messages;
-        this.activeChatMessages = [];
-        messages.forEach((message) => this.activeChatMessages.push(message));
+        if (this.activeChatWith.login) {
+            this.activeChatMessages = [];
+            messages.forEach((message) =>
+                this.activeChatMessages.push(message)
+            );
+            drawMessageHistory(messages, currentUser, this);
+        }
 
-        drawMessageHistory(messages, currentUser, this);
+        const notReadMessages = messages.filter((message) => {
+            return (
+                message.to === currentUser && message.status.isReaded === false
+            );
+        });
+        if (notReadMessages.length > 0) {
+            addMessagesCount(notReadMessages.length, notReadMessages[0].from);
+            console.log(notReadMessages[0].from, notReadMessages.length);
+        }
     }
     public getNotReadMessagesActiveChat(): Message[] {
         const notReadMessages = this.activeChatMessages.filter((message) => {
