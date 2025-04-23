@@ -38,21 +38,59 @@ export class Router {
         const routes: Route[] = [
             {
                 url: 'login',
-                handler: renderLoginContent.bind(
-                    null,
-                    this.connection,
-                    userService,
-                    this
-                ),
+                handler: (): void => {
+                    userService.getAllActiveUsers();
+                    userService.getAllInactiveUsers();
+                    console.log(userService.users);
+                    const currentUser = userService.users.find(
+                        (element) =>
+                            element.login === userService.currentUser.login
+                    );
+                    if (currentUser && currentUser.isLogined) {
+                        renderChatPageContent.call(
+                            null,
+                            userService,
+                            this.chatService,
+                            this
+                        );
+                        history.replaceState(null, '', '/chat');
+                    } else
+                        renderLoginContent.call(
+                            null,
+                            this.connection,
+                            userService,
+                            this
+                        );
+                },
             },
             {
                 url: 'chat',
-                handler: renderChatPageContent.bind(
-                    null,
-                    userService,
-                    this.chatService,
-                    this
-                ),
+                handler: (): void => {
+                    userService.getAllActiveUsers();
+                    userService.getAllInactiveUsers();
+                    console.log(userService.users);
+                    const currentUser = userService.users.find(
+                        (element) =>
+                            element.login === userService.currentUser.login
+                    );
+
+                    if (currentUser && currentUser.isLogined) {
+                        renderChatPageContent.call(
+                            null,
+                            userService,
+                            this.chatService,
+                            this
+                        );
+                    } else {
+                        renderLoginContent.call(
+                            null,
+                            this.connection,
+                            userService,
+                            this
+                        );
+                        history.replaceState(null, '', '/login');
+                    }
+                },
             },
             {
                 url: 'info',
@@ -60,12 +98,29 @@ export class Router {
             },
             {
                 url: '',
-                handler: renderLoginContent.bind(
-                    null,
-                    this.connection,
-                    userService,
-                    this
-                ),
+                handler: (): void => {
+                    userService.getAllActiveUsers();
+                    userService.getAllInactiveUsers();
+                    const currentUser = userService.users.find(
+                        (element) =>
+                            element.login === userService.currentUser.login
+                    );
+                    if (currentUser && currentUser.isLogined) {
+                        renderChatPageContent.call(
+                            null,
+                            userService,
+                            this.chatService,
+                            this
+                        );
+                        history.replaceState(null, '', '/chat');
+                    } else
+                        renderLoginContent.call(
+                            null,
+                            this.connection,
+                            userService,
+                            this
+                        );
+                },
             },
         ];
 

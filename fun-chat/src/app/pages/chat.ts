@@ -258,10 +258,10 @@ function drawUsers(
     if (usersList) {
         usersList.innerHTML = '';
         usersList.append(...usersElements);
+        users.forEach((user) => {
+            chatService.getHistoryMessage(user.login);
+        });
     }
-    users.forEach((user) => {
-        chatService.getHistoryMessage(user.login);
-    });
 }
 function addMessagesCount(messageCount: number, userName: string): void {
     const users = document.querySelector('.users');

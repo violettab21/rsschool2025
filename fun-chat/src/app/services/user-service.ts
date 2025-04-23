@@ -109,6 +109,12 @@ export class UserService {
             message.user.login === this.currentUser?.login &&
             message.user.isLogined
         ) {
+            if (
+                !this.users.some(
+                    (element) => element.login === message.user.login
+                )
+            )
+                this.users.push(message.user);
             this.router.openPage('chat');
             this.state.saveChatState({
                 currentUser: this.currentUser,
@@ -122,12 +128,21 @@ export class UserService {
             message.user.login === this.currentUser?.login &&
             !message.user.isLogined
         ) {
-            /*  this.connection.connection?.close();*/
             this.currentUser = {};
             this.state.saveChatState({
                 currentUser: this.currentUser,
                 activeChatWith: this.router.chatService.activeChatWith,
             });
+            if (
+                this.users.some(
+                    (element) => element.login === this.currentUser.login
+                )
+            ) {
+                const index = this.users.findIndex(
+                    (element) => element.login === this.currentUser.login
+                );
+                this.users.splice(index, 1);
+            }
 
             this.router.openPage('login');
         } else console.log('other user logged in');
@@ -135,24 +150,29 @@ export class UserService {
 
     public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
-        if (
+        /* if (
             this.users.some(
                 (element) => element.login === this.currentUser.login
             )
         ) {
-            const index = this.users.findIndex(
+           /* const index = this.users.findIndex(
                 (element) => element.login === this.currentUser.login
             );
-            this.users.splice(index, 1);
-        }
+           this.users.splice(index, 1);
+        }*/
         users.forEach((user) => {
-            if (user.login === this.currentUser.login) return;
+            /* if (user.login === this.currentUser.login) return;*/
 
             if (!this.users.some((element) => element.login === user.login))
                 this.users.push(user);
         });
 
-        drawUsers(this.users, this.router.chatService);
+        drawUsers(
+            this.users.filter(
+                (element) => element.login !== this.currentUser.login
+            ),
+            this.router.chatService
+        );
     }
 
     public sendUserMessage(userRequest: GeneralMessage): void {
@@ -254,7 +274,10 @@ export class UserService {
     }
 
     public searchUsers(searchValue: string): void {
-        const filteredUsers = this.users.filter((user) =>
+        const usersWithoutCurrent = this.users.filter(
+            (element) => element.login !== this.currentUser.login
+        );
+        const filteredUsers = usersWithoutCurrent.filter((user) =>
             user.login.includes(searchValue)
         );
 

@@ -309,7 +309,11 @@ export class ChatService {
         this.activeChatMessages.splice(messageToDeleteIndex, 1);
 
         removeMessageFromChat(messagePayload.message.id);
-        this.router.userService.users.forEach((user) => {
+        const users = this.router.userService.users.filter(
+            (element) =>
+                element.login !== this.router.userService.currentUser.login
+        );
+        users.forEach((user) => {
             if (user.login !== this.activeChatWith.login)
                 this.getHistoryMessage(user.login);
         });
