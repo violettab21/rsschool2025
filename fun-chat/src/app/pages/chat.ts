@@ -84,6 +84,7 @@ function createUsersSection(
 
     const search = document.createElement('input');
     search.className = 'search-input';
+    search.placeholder = 'Search';
     search.addEventListener('input', () => {
         userService.searchUsers(search.value);
     });
@@ -136,11 +137,6 @@ function createChatSection(chatService: ChatService): HTMLElement {
     messages?.append(infoMessage);
 
     messages.addEventListener('click', () => {
-        console.log('click');
-        const selectedUser = chatService.activeChatWith;
-        console.log(`active chat with ${selectedUser.login}`);
-        console.log(chatService.getNotReadMessagesActiveChat());
-        console.log(chatService.activeChatMessages);
         chatService
             .getNotReadMessagesActiveChat()
             .forEach((message) => chatService.sendReadNotification(message));
@@ -153,6 +149,7 @@ function createChatSection(chatService: ChatService): HTMLElement {
     const chatSendMessageContainer = document.createElement('div');
     chatSendMessageContainer.className = 'chat-message-container';
     const message = document.createElement('textarea');
+    message.placeholder = 'Type your message here...';
     message.className = 'chat-input';
     message.disabled = true;
     message.addEventListener('keydown', (event) => {

@@ -121,8 +121,8 @@ export class UserService {
             } else {
                 this.users.push(message.user);
             }
-
-            this.router.openPage('chat');
+            if (globalThis.location.pathname.slice(1) === 'login')
+                this.router.openPage('chat');
             this.state.saveChatState({
                 currentUser: this.currentUser,
             });
@@ -158,8 +158,14 @@ export class UserService {
         const users = message.users;
 
         users.forEach((user) => {
-            if (!this.users.some((element) => element.login === user.login))
+            if (this.users.some((element) => element.login === user.login)) {
+                const index = this.users.findIndex(
+                    (element) => element.login === user.login
+                );
+                this.users[index].isLogined = user.isLogined;
+            } else {
                 this.users.push(user);
+            }
         });
 
         drawUsers(

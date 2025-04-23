@@ -11,7 +11,7 @@ createBaseContainer();
 const state = new State();
 const router = new Router(connection, state);
 console.log(connection.listeners.open);
-
+/*const connectionValue = connection.connection;*/
 connection.addHandlerPerEvent('open', () => {
     console.log(connection.listeners.open);
 
@@ -27,6 +27,7 @@ connection.addHandlerPerEvent('open', () => {
     if (currentUserDetails?.isLogined) {
         router.openPage();
     } else {
+        console.log('blaaaaaaa');
         if (
             'login' in currentUser &&
             currentUser.login &&
@@ -43,8 +44,9 @@ connection.addHandlerPerEvent('open', () => {
                     },
                 },
             };
-            router.openPage();
+
             router.userService.sendUserMessage(userRequest);
+            router.openPage();
         }
         router.openPage();
     }

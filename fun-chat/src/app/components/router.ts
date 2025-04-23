@@ -26,6 +26,7 @@ export class Router {
             history.pushState(null, '', path);
         }
         this.currentUrl = globalThis.location.pathname.slice(1);
+        console.log(this.currentUrl);
         if (this.currentUrl === '') history.pushState(null, '', 'login');
         this.routes.find((route) => route.url === this.currentUrl)?.handler();
     }

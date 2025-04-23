@@ -191,13 +191,13 @@ function prepareUserRequest(
 
 function disableLoginButton(): void {
     const button = document.querySelector('.login-button');
-    console.log(button);
+
     if (button instanceof HTMLButtonElement) button.disabled = true;
 }
 
 function enableLoginButton(): void {
     const button = document.querySelector('.login-button');
-    console.log(button);
+
     if (button instanceof HTMLButtonElement) button.disabled = false;
 }
 
