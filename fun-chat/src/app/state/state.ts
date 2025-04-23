@@ -6,10 +6,7 @@ export class State {
     constructor() {
         this.chatState = new SessionStorage('chat_state');
     }
-    public saveChatState(chatState: {
-        currentUser: Partial<User>;
-        activeChatWith: Partial<User>;
-    }): void {
+    public saveChatState(chatState: { currentUser: Partial<User> }): void {
         this.chatState.saveData(chatState);
     }
 

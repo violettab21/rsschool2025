@@ -37,8 +37,15 @@
     background-color: #68b7e8;
 }
 
+.chat-info-button:hover,
+.logout-button:hover {
+    cursor: pointer;
+    background-color: #ecf6fa;
+}
+
 .chat-message-container {
     display: flex;
+    gap: 10px;
     align-items: flex-end;
     justify-content: space-around;
     width: 100%;
@@ -59,11 +66,17 @@
 }
 
 .users {
+    padding-top: 10px;
     list-style: none;
 }
 
 .user-chat {
+    cursor: pointer;
     padding: 5px 3px;
+}
+
+.user-chat:hover {
+    background-color: #bcccdc;
 }
 
 .section-chat {
@@ -103,12 +116,17 @@
 }
 
 .chat-send-button {
+    cursor: pointer;
     padding: 6px 12px;
     border: none;
     border-radius: 10px;
     font-family: Roboto, sans-serif;
     font-size: 16px;
     background-color: #4b7e9e;
+}
+
+.chat-send-button:hover {
+    background-color: #99bbd1;
 }
 
 .footer {
@@ -118,6 +136,10 @@
     padding: 10px;
     color: #192228;
     background-color: #bcccdc;
+}
+
+.author-github {
+    text-align: center;
 }
 
 .author-github-link {
@@ -211,8 +233,13 @@
 }
 
 .chat-context-menu-list li {
+    cursor: pointer;
     padding: 10px 0;
     text-align: center;
+}
+
+.chat-context-menu-list li:hover {
+    background-color: #bdd4ea;
 }
 
 .message-footer {
@@ -227,4 +254,17 @@
     border-radius: 6px;
     font-size: 16px;
     background-color: #f1f6f8;
+}
+
+.save-update {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 10px;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    background-color: #4b7e9e;
+}
+
+.save-update:hover {
+    background-color: #99bbd1;
 }

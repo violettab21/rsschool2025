@@ -136,9 +136,9 @@ function createChatSection(chatService: ChatService): HTMLElement {
     messages?.append(infoMessage);
 
     messages.addEventListener('click', () => {
-        console.log('cick');
+        console.log('click');
         const selectedUser = chatService.activeChatWith;
-        console.log(`active chat wuth ${selectedUser.login}`);
+        console.log(`active chat with ${selectedUser.login}`);
         console.log(chatService.getNotReadMessagesActiveChat());
         console.log(chatService.activeChatMessages);
         chatService
@@ -167,10 +167,16 @@ function createChatSection(chatService: ChatService): HTMLElement {
     sendMessage.addEventListener('click', () => {
         if (sendMessage.textContent === 'Send')
             sendMessageHandler(message, chatService);
+        if (chatService.activeChatWith.login) {
+            removeMessageCount(chatService.activeChatWith.login);
+        }
     });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' && sendMessage.textContent === 'Send') {
             sendMessageHandler(message, chatService);
+            if (chatService.activeChatWith.login) {
+                removeMessageCount(chatService.activeChatWith.login);
+            }
         }
     });
     chatSendMessageContainer.append(message, sendMessage);

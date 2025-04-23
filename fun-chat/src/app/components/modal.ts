@@ -25,7 +25,6 @@ function createErrorMessage(text: string): void {
     modal.append(cross, modalText);
     document.body.append(modalContainer);
     closeModalOnEsc();
-    closeModalOutsideClick();
 }
 
 function closeModal(): void {
@@ -39,17 +38,6 @@ function closeModalOnEsc(): void {
             closeModal();
         }
     });
-}
-
-function closeModalOutsideClick(): void {
-    const modalContainer = document.querySelector('.dark-view');
-    if (modalContainer) {
-        modalContainer.addEventListener('click', (event) => {
-            if (event.target === event.currentTarget) {
-                modalContainer.remove();
-            }
-        });
-    }
 }
 
 export { createErrorMessage };

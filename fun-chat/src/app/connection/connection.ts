@@ -19,22 +19,19 @@ export class Connection {
         this.connection.addEventListener('close', (event: Event) => {
             this.listeners.close.forEach((callback) => callback(event));
         });
-        this.connection.addEventListener('error', (event: Event) => {
-            this.listeners.error.forEach((callback) => callback(event));
-        });
         this.connection.addEventListener('message', (event: MessageEvent) => {
             this.listeners.message.forEach((callback) => callback(event));
         });
     }
 
     public addHandlerPerEvent(
-        event: string,
+        eventType: string,
         callback: (event: MessageEvent | Event) => void
     ): void {
-        if (event in this.listeners) {
-            this.listeners[event].push(callback);
+        if (eventType in this.listeners) {
+            this.listeners[eventType].push(callback);
         } else {
-            this.listeners[event] = [callback];
+            this.listeners[eventType] = [callback];
         }
     }
 }

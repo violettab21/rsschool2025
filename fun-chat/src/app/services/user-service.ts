@@ -31,8 +31,7 @@ export class UserService {
         if (
             typeof savedState === 'object' &&
             savedState !== null &&
-            'currentUser' in savedState &&
-            'activeChatWith' in savedState
+            'currentUser' in savedState
         ) {
             const savedCurrentUser = savedState.currentUser;
             if (
@@ -110,15 +109,22 @@ export class UserService {
             message.user.isLogined
         ) {
             if (
-                !this.users.some(
+                this.users.some(
                     (element) => element.login === message.user.login
                 )
-            )
+            ) {
+                const index = this.users.findIndex(
+                    (element) => element.login === message.user.login
+                );
+
+                this.users[index].isLogined = message.user.isLogined;
+            } else {
                 this.users.push(message.user);
+            }
+
             this.router.openPage('chat');
             this.state.saveChatState({
                 currentUser: this.currentUser,
-                activeChatWith: this.router.chatService.activeChatWith,
             });
         }
     }
@@ -129,9 +135,9 @@ export class UserService {
             !message.user.isLogined
         ) {
             this.currentUser = {};
+            this.router.chatService.activeChatWith = {};
             this.state.saveChatState({
                 currentUser: this.currentUser,
-                activeChatWith: this.router.chatService.activeChatWith,
             });
             if (
                 this.users.some(
@@ -150,19 +156,8 @@ export class UserService {
 
     public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
-        /* if (
-            this.users.some(
-                (element) => element.login === this.currentUser.login
-            )
-        ) {
-           /* const index = this.users.findIndex(
-                (element) => element.login === this.currentUser.login
-            );
-           this.users.splice(index, 1);
-        }*/
-        users.forEach((user) => {
-            /* if (user.login === this.currentUser.login) return;*/
 
+        users.forEach((user) => {
             if (!this.users.some((element) => element.login === user.login))
                 this.users.push(user);
         });

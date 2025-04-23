@@ -41,6 +41,11 @@
     background-color: constants.$color-login-button;
 }
 
+.login-button:hover,
+.login-info-button:hover {
+    background-color: #edfaff;
+}
+
 .user-name-input,
 .password-input {
     padding: 6px 12px;

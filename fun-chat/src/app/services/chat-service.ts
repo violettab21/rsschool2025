@@ -26,41 +26,21 @@ import {
     updateMessageInChat,
 } from '../pages/chat';
 import type { UserService } from './user-service';
-import type { State } from '../state/state';
 export class ChatService {
     public connection: Connection;
     public activeChatWith: Partial<User>;
     public activeChatMessages: Message[];
-    public users: { login: string; isLogined: boolean }[];
     public router: Router;
     public userService: UserService;
     constructor(
         connection: Connection,
         router: Router,
-        userService: UserService,
-        state: State
+        userService: UserService
     ) {
         this.connection = connection;
         this.router = router;
         this.activeChatWith = {};
-        const savedState = state.getChatState();
-        if (
-            typeof savedState === 'object' &&
-            savedState !== null &&
-            'currentUser' in savedState &&
-            'activeChatWith' in savedState
-        ) {
-            const savedCurrentUser = savedState.activeChatWith;
-            if (
-                typeof savedCurrentUser === 'object' &&
-                savedCurrentUser !== null
-            )
-                this.activeChatWith = savedCurrentUser;
-        }
-
         this.activeChatMessages = [];
-        this.users = [];
-
         this.userService = userService;
         this.processChatMessages();
     }
