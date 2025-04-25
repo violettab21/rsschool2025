@@ -1,35 +1,7 @@
-interface Properties {
-    tag: string;
-    className: string[];
-    textContent?: string;
-}
-interface ButtonProperties {
-    className: string[];
-    textContent: string;
-    handlerFunction: (event?: Event) => void;
-}
-
-interface UserPayloadClient {
-    user: User;
-}
-interface UserPayloadServer {
-    user: { login: string; isLogined: boolean };
-}
-
-interface UserPayloadServerUsers {
-    users: { login: string; isLogined: boolean }[];
-}
-
-interface ErrorTest {
-    error: string;
-}
-interface User {
-    login: string;
-    password: string;
-}
+import type { ResponseTypesChat, ResponseTypesUsers } from '../types';
 interface GeneralMessage {
     id: string;
-    type: string;
+    type: ResponseTypesUsers | ResponseTypesChat;
     payload:
         | UserPayloadClient
         | UserPayloadServer
@@ -40,7 +12,28 @@ interface GeneralMessage {
         | MessagePayloadServer
         | MessagesPayloadServer;
 }
+interface UserPayloadClient {
+    user: UserClient;
+}
+interface UserPayloadServer {
+    user: UserServer;
+}
 
+interface UserPayloadServerUsers {
+    users: UserServer[];
+}
+
+interface ErrorTest {
+    error: string;
+}
+interface User {
+    login: string;
+    password?: string;
+    isLogined?: boolean;
+}
+
+type UserClient = Required<Pick<User, 'login' | 'password'>>;
+type UserServer = Required<Pick<User, 'login' | 'isLogined'>>;
 interface MessagePayloadClient {
     message: {
         to: string;
@@ -49,14 +42,7 @@ interface MessagePayloadClient {
 }
 
 interface MessagePayloadServer {
-    message: {
-        id: string;
-        from: string;
-        to: string;
-        text: string;
-        datetime: number;
-        status: Status;
-    };
+    message: Message;
 }
 
 interface MessagePayloadServerStatus {
@@ -90,19 +76,14 @@ interface Listeners {
     [index: string]: ((event: MessageEvent | Event) => void)[];
 }
 
-type CustomElement = HTMLElement | HTMLInputElement | HTMLButtonElement;
 interface Route {
     url: string;
     handler: () => void;
 }
 interface ChatState {
     currentUser: Partial<User>;
-    activeChatWith: Partial<User>;
 }
 export {
-    Properties,
-    ButtonProperties,
-    CustomElement,
     GeneralMessage,
     UserPayloadClient,
     UserPayloadServer,
@@ -118,4 +99,5 @@ export {
     MessagePayloadServerStatus,
     Status,
     ChatState,
+    UserServer,
 };

@@ -1,7 +1,14 @@
 import type { Connection } from '../connection/connection';
 import type { UserService } from '../services/user-service';
-import type { GeneralMessage } from '../interfaces';
 import type { Router } from '../components/router';
+import {
+    disableLoginButton,
+    enableLoginButton,
+    infoButtonHandlerLogin,
+    loginHandler,
+    passwordFieldHandler,
+    userNameFieldHandler,
+} from './login-handlers';
 
 function renderLoginContent(
     Connection: Connection,
@@ -46,18 +53,13 @@ function createLoginForm(
     const loginButton = document.createElement('button');
     loginButton.className = 'login-button';
     loginButton.textContent = 'Login';
-    loginButton.addEventListener('click', (event) => {
-        event?.preventDefault();
-        const request = prepareUserRequest(Connection, UserService);
-        UserService.sendUserMessage(request);
-    });
+    const loginButtonHandler = loginHandler(Connection, UserService);
+    loginButton.addEventListener('click', loginButtonHandler);
     const infoButton = document.createElement('button');
     infoButton.className = 'login-info-button';
     infoButton.textContent = 'Info';
-    infoButton.addEventListener('click', (event) => {
-        event?.preventDefault();
-        router.openPage('info');
-    });
+    const infoHandler = infoButtonHandlerLogin(router);
+    infoButton.addEventListener('click', infoHandler);
     form.append(userName, password, loginButton, infoButton);
     main.append(form);
     return main;
@@ -81,9 +83,11 @@ function createUserNameField(): HTMLElement {
         inputUserName.required = true;
         inputUserName.minLength = 2;
         inputUserName.maxLength = 10;
-        inputUserName.addEventListener('input', () => {
-            validateUserName(inputUserName, errorMessage);
-        });
+        const userNameHandler = userNameFieldHandler(
+            inputUserName,
+            errorMessage
+        );
+        inputUserName.addEventListener('input', userNameHandler);
     }
     userNameContainer.append(labelUserName, inputUserName, errorMessage);
 
@@ -109,96 +113,15 @@ function createPasswordField(): HTMLElement {
         inputPassword.minLength = 6;
         inputPassword.maxLength = 10;
         inputPassword.pattern = `[a-zA-Z0-9]{6,10}`;
-        inputPassword.addEventListener('input', () => {
-            validatePassword(inputPassword, errorMessage);
-        });
+        const passwordHandler = passwordFieldHandler(
+            inputPassword,
+            errorMessage
+        );
+        inputPassword.addEventListener('input', passwordHandler);
     }
     passwordContainer.append(labelPassword, inputPassword, errorMessage);
 
     return passwordContainer;
-}
-
-function validatePassword(
-    inputPassword: HTMLInputElement,
-    errorMessage: HTMLElement
-): void {
-    if (inputPassword.validity.valid === false) {
-        if (inputPassword.validity.valueMissing) {
-            errorMessage.textContent = 'Password is required';
-        } else if (inputPassword.validity.tooShort) {
-            errorMessage.textContent =
-                'Password should have at least 6 characters';
-        } else if (inputPassword.validity.tooLong) {
-            errorMessage.textContent = 'Password should have 10 characters max';
-        } else if (inputPassword.validity.patternMismatch) {
-            errorMessage.textContent =
-                'Password can contain low letters, capital Letters and numbers';
-        }
-        disableLoginButton();
-    } else {
-        errorMessage.textContent = '';
-        enableLoginButton();
-    }
-}
-
-function validateUserName(
-    inputUserName: HTMLInputElement,
-    errorMessage: HTMLElement
-): void {
-    if (inputUserName.validity.valid === false) {
-        if (inputUserName.validity.valueMissing)
-            errorMessage.textContent = 'User Name is required';
-        else if (inputUserName.validity.tooShort)
-            errorMessage.textContent =
-                'User Name should have at least 2 characters';
-        else if (inputUserName.validity.tooLong)
-            errorMessage.textContent =
-                'User Name should have 10 characters max';
-        disableLoginButton();
-    } else {
-        errorMessage.textContent = '';
-        enableLoginButton();
-    }
-}
-
-function prepareUserRequest(
-    connection: Connection,
-    userService: UserService
-): GeneralMessage {
-    const loginElement = document.querySelector('.user-name-input');
-    const loginValue =
-        loginElement instanceof HTMLInputElement ? loginElement.value : '';
-    const passwordElement = document.querySelector('.password-input');
-    const passwordValue =
-        passwordElement instanceof HTMLInputElement
-            ? passwordElement.value
-            : '';
-    connection.userIdRequest = crypto.randomUUID();
-    const userRequest: GeneralMessage = {
-        id: connection.userIdRequest,
-        type: 'USER_LOGIN',
-        payload: {
-            user: {
-                login: loginValue,
-                password: passwordValue,
-            },
-        },
-    };
-    userService.currentUser = { login: loginValue, password: passwordValue };
-
-    return userRequest;
-}
-
-function disableLoginButton(): void {
-    const button = document.querySelector('.login-button');
-
-    if (button instanceof HTMLButtonElement) button.disabled = true;
-}
-
-function enableLoginButton(): void {
-    const button = document.querySelector('.login-button');
-
-    if (button instanceof HTMLButtonElement) button.disabled = false;
 }
 
 export { renderLoginContent };

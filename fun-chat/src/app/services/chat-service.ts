@@ -18,14 +18,17 @@ import {
     addMessagesCount,
     drawMessage,
     drawMessageHistory,
-    getStatus,
     increaseMessageCount,
     removeMessageCount,
+} from '../pages/chat';
+import { getStatus } from '../helpers';
+import type { UserService } from './user-service';
+import { ResponseTypesChat } from '../../types';
+import {
     removeMessageFromChat,
     scrollChatToBottom,
     updateMessageInChat,
-} from '../pages/chat';
-import type { UserService } from './user-service';
+} from '../pages/chat-handlers';
 export class ChatService {
     public connection: Connection;
     public activeChatWith: Partial<User>;
@@ -50,75 +53,70 @@ export class ChatService {
             (event: MessageEvent | Event) => {
                 if (event instanceof MessageEvent) {
                     const receivedData: unknown = event.data;
-
                     let data: unknown;
                     if (typeof receivedData === 'string')
                         data = JSON.parse(receivedData);
                     if (isGeneralMessage(data)) {
-                        switch (data.type) {
-                            case 'MSG_SEND': {
-                                if (
-                                    isMessagePayloadServer(data.payload) &&
-                                    this.userService.currentUser.login
-                                ) {
-                                    this.handleMessageSend(
-                                        data.payload,
-                                        this.userService.currentUser.login
-                                    );
-                                }
-                                break;
-                            }
-                            case 'MSG_FROM_USER': {
-                                if (
-                                    isMessagesPayloadServer(data.payload) &&
-                                    this.userService.currentUser.login
-                                ) {
-                                    this.handleHistory(
-                                        data.payload,
-                                        this.userService.currentUser.login
-                                    );
-                                }
-                                break;
-                            }
-                            case 'MSG_DELIVER': {
-                                if (
-                                    isMessagePayloadServerStatus(data.payload)
-                                ) {
-                                    handleDeliverStatusMessage(data.payload);
-                                }
-                                break;
-                            }
-                            case 'MSG_READ': {
-                                if (
-                                    isMessagePayloadServerStatus(data.payload)
-                                ) {
-                                    this.updateMessages(data.payload);
-                                }
-                                break;
-                            }
-                            case 'MSG_DELETE': {
-                                if (
-                                    isMessagePayloadServerStatus(data.payload)
-                                ) {
-                                    this.handleMessageDelete(data.payload);
-                                }
-                                break;
-                            }
-                            case 'MSG_EDIT': {
-                                if (
-                                    isMessagePayloadServerStatus(data.payload)
-                                ) {
-                                    this.handleMessageEdit(data.payload);
-                                }
-                                break;
-                            }
-                        }
+                        this.sendMessageHandler(data);
+                        this.messageHistoryHandler(data);
+                        deliveryMessageHandler(data);
+                        this.readMessageHandler(data);
+                        this.deleteMessageHandler(data);
+                        this.editMessageHandler(data);
                     }
                 }
             }
         );
     }
+    public sendMessageHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesChat.MSG_SEND &&
+            isMessagePayloadServer(data.payload) &&
+            this.userService.currentUser.login
+        ) {
+            this.handleMessageSend(
+                data.payload,
+                this.userService.currentUser.login
+            );
+        }
+    }
+    public messageHistoryHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesChat.MSG_FROM_USER &&
+            isMessagesPayloadServer(data.payload) &&
+            this.userService.currentUser.login
+        ) {
+            this.handleHistory(
+                data.payload,
+                this.userService.currentUser.login
+            );
+        }
+    }
 
+    public readMessageHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesChat.MSG_READ &&
+            isMessagePayloadServerStatus(data.payload)
+        ) {
+            this.updateMessages(data.payload);
+        }
+    }
+    public deleteMessageHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesChat.MSG_DELETE &&
+            isMessagePayloadServerStatus(data.payload)
+        ) {
+            this.handleMessageDelete(data.payload);
+        }
+    }
+    public editMessageHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesChat.MSG_EDIT &&
+            isMessagePayloadServerStatus(data.payload)
+        ) {
+            this.handleMessageEdit(data.payload);
+        }
+    }
     public sendChatMessage(userRequest: GeneralMessage): void {
         if (this.connection.connection) {
             this.connection.connection.send(JSON.stringify(userRequest));
@@ -128,7 +126,7 @@ export class ChatService {
         const id = crypto.randomUUID();
         const request = {
             id: id,
-            type: 'MSG_FROM_USER',
+            type: ResponseTypesChat.MSG_FROM_USER,
             payload: {
                 user: {
                     login: selectedUser,
@@ -207,7 +205,7 @@ export class ChatService {
         const id = crypto.randomUUID();
         const request = {
             id: id,
-            type: 'MSG_READ',
+            type: ResponseTypesChat.MSG_READ,
             payload: {
                 message: {
                     id: message.id,
@@ -250,7 +248,7 @@ export class ChatService {
         const id = crypto.randomUUID();
         const request = {
             id: id,
-            type: 'MSG_DELETE',
+            type: ResponseTypesChat.MSG_DELETE,
             payload: {
                 message: {
                     id: messageId,
@@ -268,7 +266,7 @@ export class ChatService {
         const id = crypto.randomUUID();
         const request = {
             id: id,
-            type: 'MSG_EDIT',
+            type: ResponseTypesChat.MSG_EDIT,
             payload: {
                 message: {
                     id: messageId,
@@ -312,8 +310,33 @@ export class ChatService {
             updateMessageInChat(messagePayload.message);
         }
     }
+    public sendMessageRequest(text: string): void {
+        const id = crypto.randomUUID();
+        const messageToSend = text;
+        const to = this.activeChatWith.login;
+        if (to) {
+            const userRequest = {
+                id: id,
+                type: ResponseTypesChat.MSG_SEND,
+                payload: {
+                    message: {
+                        to: to,
+                        text: messageToSend,
+                    },
+                },
+            };
+            this.sendChatMessage(userRequest);
+        }
+    }
 }
-
+function deliveryMessageHandler(data: GeneralMessage): void {
+    if (
+        data.type === ResponseTypesChat.MSG_DELIVER &&
+        isMessagePayloadServerStatus(data.payload)
+    ) {
+        handleDeliverStatusMessage(data.payload);
+    }
+}
 function handleDeliverStatusMessage(
     messagePayload: MessagePayloadServerStatus
 ): void {

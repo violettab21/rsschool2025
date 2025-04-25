@@ -17,7 +17,7 @@ export class Router {
         this.currentUrl = '';
         this.userService = new UserService(connection, this, state);
         this.chatService = new ChatService(connection, this, this.userService);
-        this.routes = this.setRoutes(this.userService);
+        this.routes = this.setRoutes();
     }
 
     public openPage(path?: string): void {
@@ -30,63 +30,15 @@ export class Router {
         if (this.currentUrl === '') history.pushState(null, '', 'login');
         this.routes.find((route) => route.url === this.currentUrl)?.handler();
     }
-    protected setRoutes(userService: UserService): Route[] {
+    protected setRoutes(): Route[] {
         const routes: Route[] = [
             {
                 url: 'login',
-                handler: (): void => {
-                    userService.getAllActiveUsers();
-                    userService.getAllInactiveUsers();
-                    console.log(userService.users);
-                    const currentUser = userService.users.find(
-                        (element) =>
-                            element.login === userService.currentUser.login
-                    );
-                    if (currentUser && currentUser.isLogined) {
-                        renderChatPageContent.call(
-                            null,
-                            userService,
-                            this.chatService,
-                            this
-                        );
-                        history.replaceState(null, '', '/chat');
-                    } else
-                        renderLoginContent.call(
-                            null,
-                            this.connection,
-                            userService,
-                            this
-                        );
-                },
+                handler: this.openLoginPage.bind(this),
             },
             {
                 url: 'chat',
-                handler: (): void => {
-                    userService.getAllActiveUsers();
-                    userService.getAllInactiveUsers();
-                    console.log(userService.users);
-                    const currentUser = userService.users.find(
-                        (element) =>
-                            element.login === userService.currentUser.login
-                    );
-
-                    if (currentUser && currentUser.isLogined) {
-                        renderChatPageContent.call(
-                            null,
-                            userService,
-                            this.chatService,
-                            this
-                        );
-                    } else {
-                        renderLoginContent.call(
-                            null,
-                            this.connection,
-                            userService,
-                            this
-                        );
-                        history.replaceState(null, '', '/login');
-                    }
-                },
+                handler: this.openChatPage.bind(this),
             },
             {
                 url: 'info',
@@ -94,32 +46,42 @@ export class Router {
             },
             {
                 url: '',
-                handler: (): void => {
-                    userService.getAllActiveUsers();
-                    userService.getAllInactiveUsers();
-                    const currentUser = userService.users.find(
-                        (element) =>
-                            element.login === userService.currentUser.login
-                    );
-                    if (currentUser && currentUser.isLogined) {
-                        renderChatPageContent.call(
-                            null,
-                            userService,
-                            this.chatService,
-                            this
-                        );
-                        history.replaceState(null, '', '/chat');
-                    } else
-                        renderLoginContent.call(
-                            null,
-                            this.connection,
-                            userService,
-                            this
-                        );
-                },
+                handler: this.openLoginPage.bind(this),
             },
         ];
 
         return routes;
+    }
+    protected openLoginPage(): void {
+        this.userService.getAllActiveUsers();
+        this.userService.getAllInactiveUsers();
+        const currentUser = this.userService.users.find(
+            (element) => element.login === this.userService.currentUser.login
+        );
+        if (currentUser && currentUser.isLogined) {
+            this.redirectToChat();
+        } else renderLoginContent(this.connection, this.userService, this);
+    }
+    protected openChatPage(): void {
+        this.userService.getAllActiveUsers();
+        this.userService.getAllInactiveUsers();
+        const currentUser = this.userService.users.find(
+            (element) => element.login === this.userService.currentUser.login
+        );
+
+        if (currentUser && currentUser.isLogined) {
+            renderChatPageContent(this.userService, this.chatService, this);
+        } else {
+            this.redirectToLogin();
+        }
+    }
+
+    protected redirectToChat(): void {
+        renderChatPageContent(this.userService, this.chatService, this);
+        history.replaceState(null, '', '/chat');
+    }
+    protected redirectToLogin(): void {
+        renderLoginContent(this.connection, this.userService, this);
+        history.replaceState(null, '', '/login');
     }
 }

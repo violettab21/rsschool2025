@@ -9,9 +9,7 @@ function createErrorMessage(text: string): void {
     const cross = document.createElement('span');
     cross.className = 'icon-close';
 
-    cross.addEventListener('click', () => {
-        closeModal();
-    });
+    cross.addEventListener('click', closeModal);
 
     const crossImage = new Image();
     crossImage.src = image;

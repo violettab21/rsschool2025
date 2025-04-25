@@ -5,6 +5,7 @@ import { State } from './app/state/state';
 import { Router } from './app/components/router';
 import type { GeneralMessage } from './app/interfaces';
 import { createErrorMessage } from './app/components/modal';
+import { ResponseTypesUsers } from './types';
 const connection = new Connection();
 
 createBaseContainer();
@@ -36,7 +37,7 @@ connection.addHandlerPerEvent('open', () => {
         ) {
             const userRequest: GeneralMessage = {
                 id: crypto.randomUUID(),
-                type: 'USER_LOGIN',
+                type: ResponseTypesUsers.USER_LOGIN,
                 payload: {
                     user: {
                         login: currentUser.login,

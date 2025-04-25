@@ -4,6 +4,7 @@ import type {
     UserPayloadServer,
     User,
     UserPayloadServerUsers,
+    UserServer,
 } from '../interfaces';
 import { createErrorMessage } from '../components/modal';
 import type { Router } from '../components/router';
@@ -13,9 +14,13 @@ import {
     isUserPayloadServer,
     isUsersPayloadServer,
 } from '../utilities';
-import { drawUsers, updateUserStatusHeader } from '../pages/chat';
+import { drawUser, drawUsers } from '../pages/chat';
 import type { State } from '../state/state';
-
+import { ResponseTypesUsers } from '../../types';
+import {
+    updateUserStatusHeader,
+    updateUserStatusUsersList,
+} from '../pages/chat-handlers';
 export class UserService {
     public connection: Connection;
     public currentUser: Partial<User>;
@@ -55,77 +60,103 @@ export class UserService {
                     if (typeof receivedData === 'string')
                         data = JSON.parse(receivedData);
                     if (isGeneralMessage(data)) {
-                        switch (data.type) {
-                            case 'USER_LOGIN': {
-                                if (isUserPayloadServer(data.payload))
-                                    this.handleUserLoginMessage(data.payload);
-                                break;
-                            }
-                            case 'USER_LOGOUT': {
-                                if (isUserPayloadServer(data.payload))
-                                    this.handleUserLogoutMessage(data.payload);
-                                break;
-                            }
-                            case 'USER_ACTIVE': {
-                                if (isUsersPayloadServer(data.payload))
-                                    this.handleRegisteredUsersMessage(
-                                        data.payload
-                                    );
-                                break;
-                            }
-                            case 'USER_INACTIVE': {
-                                if (isUsersPayloadServer(data.payload))
-                                    this.handleRegisteredUsersMessage(
-                                        data.payload
-                                    );
-                                break;
-                            }
-                            case 'USER_EXTERNAL_LOGIN': {
-                                if (isUserPayloadServer(data.payload))
-                                    this.handleExternalLogin(data.payload);
-                                break;
-                            }
-                            case 'USER_EXTERNAL_LOGOUT': {
-                                if (isUserPayloadServer(data.payload))
-                                    this.handleExternalLogout(data.payload);
-                                break;
-                            }
-                            case 'ERROR': {
-                                if (isErrorPayload(data.payload)) {
-                                    const errorPayload = data.payload;
-                                    createErrorMessage(errorPayload.error);
-                                    break;
-                                }
-                            }
-                        }
+                        this.userLoginHandler(data);
+                        this.userLogoutHandler(data);
+                        this.activeUsersHandler(data);
+                        this.inactiveUsersHandler(data);
+                        this.externalLoginHandler(data);
+                        this.externalLogoutHandler(data);
+                        errorHandler(data);
                     }
                 }
             }
         );
     }
+    public userLoginHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_LOGIN &&
+            isUserPayloadServer(data.payload)
+        ) {
+            this.handleUserLoginMessage(data.payload);
+        }
+    }
+    public userLogoutHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_LOGOUT &&
+            isUserPayloadServer(data.payload)
+        ) {
+            this.handleUserLogoutMessage(data.payload);
+        }
+    }
+    public activeUsersHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_ACTIVE &&
+            isUsersPayloadServer(data.payload)
+        ) {
+            this.handleRegisteredUsersMessage(data.payload);
+        }
+    }
+
+    public inactiveUsersHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_INACTIVE &&
+            isUsersPayloadServer(data.payload)
+        ) {
+            this.handleRegisteredUsersMessage(data.payload);
+        }
+    }
+
+    public externalLoginHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_EXTERNAL_LOGIN &&
+            isUserPayloadServer(data.payload)
+        ) {
+            this.handleExternalLogin(data.payload);
+        }
+    }
+    public externalLogoutHandler(data: GeneralMessage): void {
+        if (
+            data.type === ResponseTypesUsers.USER_EXTERNAL_LOGOUT &&
+            isUserPayloadServer(data.payload)
+        ) {
+            this.handleExternalLogout(data.payload);
+        }
+    }
+
     public handleUserLoginMessage(message: UserPayloadServer): void {
         if (
             message.user.login === this.currentUser?.login &&
             message.user.isLogined
         ) {
-            if (
-                this.users.some(
-                    (element) => element.login === message.user.login
-                )
-            ) {
-                const index = this.users.findIndex(
-                    (element) => element.login === message.user.login
-                );
-
-                this.users[index].isLogined = message.user.isLogined;
-            } else {
-                this.users.push(message.user);
-            }
+            this.updateUsersListAfterLogin(message.user);
             if (globalThis.location.pathname.slice(1) === 'login')
                 this.router.openPage('chat');
             this.state.saveChatState({
                 currentUser: this.currentUser,
             });
+        }
+    }
+    public updateUsersListAfterLogin(user: UserServer): void {
+        if (this.users.some((element) => element.login === user.login)) {
+            const index = this.users.findIndex(
+                (element) => element.login === user.login
+            );
+
+            this.users[index].isLogined = user.isLogined;
+        } else {
+            this.users.push(user);
+        }
+    }
+    public updateUsersListAfterLogout(): void {
+        if (
+            this.users.some(
+                (element) => element.login === this.currentUser.login
+            )
+        ) {
+            const index = this.users.findIndex(
+                (element) => element.login === this.currentUser.login
+            );
+            this.users.splice(index, 1);
         }
     }
 
@@ -139,33 +170,17 @@ export class UserService {
             this.state.saveChatState({
                 currentUser: this.currentUser,
             });
-            if (
-                this.users.some(
-                    (element) => element.login === this.currentUser.login
-                )
-            ) {
-                const index = this.users.findIndex(
-                    (element) => element.login === this.currentUser.login
-                );
-                this.users.splice(index, 1);
-            }
+            this.updateUsersListAfterLogout();
 
             this.router.openPage('login');
-        } else console.log('other user logged in');
+        }
     }
 
     public handleRegisteredUsersMessage(message: UserPayloadServerUsers): void {
         const users = message.users;
 
         users.forEach((user) => {
-            if (this.users.some((element) => element.login === user.login)) {
-                const index = this.users.findIndex(
-                    (element) => element.login === user.login
-                );
-                this.users[index].isLogined = user.isLogined;
-            } else {
-                this.users.push(user);
-            }
+            this.updateUsersListAfterLogin(user);
         });
 
         drawUsers(
@@ -186,7 +201,7 @@ export class UserService {
         const id = crypto.randomUUID();
         const request: GeneralMessage = {
             id: id,
-            type: 'USER_ACTIVE',
+            type: ResponseTypesUsers.USER_ACTIVE,
             payload: null,
         };
         if (this.connection.connection) {
@@ -198,7 +213,7 @@ export class UserService {
         const id = crypto.randomUUID();
         const request: GeneralMessage = {
             id: id,
-            type: 'USER_INACTIVE',
+            type: ResponseTypesUsers.USER_INACTIVE,
             payload: null,
         };
         if (this.connection.connection) {
@@ -206,19 +221,6 @@ export class UserService {
         }
     }
     public handleExternalLogin(message: UserPayloadServer): void {
-        const usersList = document.querySelector('.users');
-
-        const item = document.createElement('li');
-
-        item.textContent = message.user.login;
-        item.className = 'user-chat';
-        item.dataset.name = message.user.login;
-        const status = document.createElement('span');
-        status.className = 'user-status';
-        if (message.user.isLogined) status.classList.add('user-status-active');
-        else status.classList.add('user-status-inactive');
-        item.prepend(status);
-
         if (
             this.users.some((element) => element.login === message.user.login)
         ) {
@@ -226,27 +228,11 @@ export class UserService {
                 (element) => element.login === message.user.login
             );
             if (affectedUser) affectedUser.isLogined = true;
-            const usersList = document.querySelector('.users');
-            if (usersList) {
-                const usersElements = [...usersList.children];
-                const userElement = usersElements.find(
-                    (element) => element.textContent === message.user.login
-                );
-                if (userElement) {
-                    const status = userElement.querySelector('.user-status');
-                    if (status) {
-                        status.classList.remove('user-status-inactive');
-                        status.classList.add('user-status-active');
-                    }
-                }
-                updateUserStatusHeader(message.user);
-            }
+            updateUserStatusUsersList(message.user);
+            updateUserStatusHeader(message.user);
         } else {
             this.users.push(message.user);
-
-            if (usersList) {
-                usersList.append(item);
-            }
+            drawUser(message.user);
         }
     }
     public handleExternalLogout(message: UserPayloadServer): void {
@@ -255,22 +241,7 @@ export class UserService {
         );
         if (affectedUser) affectedUser.isLogined = false;
 
-        const usersList = document.querySelector('.users');
-        if (usersList) {
-            const usersElements = [...usersList.children];
-            const userElement = usersElements.find((element) => {
-                if (element instanceof HTMLElement)
-                    return element.dataset.name === message.user.login;
-            });
-
-            if (userElement) {
-                const status = userElement.querySelector('.user-status');
-                if (status) {
-                    status.classList.remove('user-status-active');
-                    status.classList.add('user-status-inactive');
-                }
-            }
-        }
+        updateUserStatusUsersList(message.user);
         updateUserStatusHeader(message.user);
     }
 
@@ -285,3 +256,66 @@ export class UserService {
         drawUsers(filteredUsers, this.router.chatService);
     }
 }
+
+function errorHandler(data: GeneralMessage): void {
+    if (
+        data.type === ResponseTypesUsers.ERROR &&
+        isErrorPayload(data.payload)
+    ) {
+        const errorPayload = data.payload;
+        createErrorMessage(errorPayload.error);
+    }
+}
+function prepareUserLogoutRequest(userService: UserService): GeneralMessage {
+    const currentUserName = userService.currentUser.login;
+    const currentUserPassword = userService.currentUser.password;
+    let loginValue = '';
+    let passwordValue = '';
+    if (currentUserName && currentUserPassword) {
+        loginValue = currentUserName;
+        passwordValue = currentUserPassword;
+    }
+
+    const id = crypto.randomUUID();
+    const userRequest: GeneralMessage = {
+        id: id,
+        type: ResponseTypesUsers.USER_LOGOUT,
+        payload: {
+            user: {
+                login: loginValue,
+                password: passwordValue,
+            },
+        },
+    };
+
+    return userRequest;
+}
+
+function prepareUserRequest(
+    connection: Connection,
+    userService: UserService
+): GeneralMessage {
+    const loginElement = document.querySelector('.user-name-input');
+    const loginValue =
+        loginElement instanceof HTMLInputElement ? loginElement.value : '';
+    const passwordElement = document.querySelector('.password-input');
+    const passwordValue =
+        passwordElement instanceof HTMLInputElement
+            ? passwordElement.value
+            : '';
+    connection.userIdRequest = crypto.randomUUID();
+    const userRequest: GeneralMessage = {
+        id: connection.userIdRequest,
+        type: ResponseTypesUsers.USER_LOGIN,
+        payload: {
+            user: {
+                login: loginValue,
+                password: passwordValue,
+            },
+        },
+    };
+    userService.currentUser = { login: loginValue, password: passwordValue };
+
+    return userRequest;
+}
+export { prepareUserLogoutRequest, prepareUserRequest };

@@ -68,7 +68,7 @@ export default [
             ],
             'unicorn/prefer-logical-operator-over-ternary': 'off',
             'unicorn/prefer-blob-reading-methods': 'off',
-            'max-lines-per-function': ['error', 100],
+            'max-lines-per-function': ['error', 40],
         },
     },
     {
