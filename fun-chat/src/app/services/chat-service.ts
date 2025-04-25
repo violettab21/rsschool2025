@@ -181,7 +181,6 @@ export class ChatService {
         });
         if (notReadMessages.length > 0) {
             addMessagesCount(notReadMessages.length, notReadMessages[0].from);
-            console.log(notReadMessages[0].from, notReadMessages.length);
         } else if (notReadMessages.length === 0) {
             const readMessages = messages.find((message) => {
                 return (

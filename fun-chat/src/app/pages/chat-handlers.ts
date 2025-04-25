@@ -121,7 +121,6 @@ function setChatForSelectedUser(
     if (selectedUser) {
         enableSendMessage();
         chatService.activeChatWith = selectedUser;
-        console.log(selectedUser.login);
         chatService.getHistoryMessage(selectedUser.login);
         const chatHeader = document.querySelector('.chat-header');
 
