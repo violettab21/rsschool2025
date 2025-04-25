@@ -1,10 +1,12 @@
+@use '../abstracts/constants';
+
 .message-container {
     display: flex;
     flex-direction: column;
     width: 70%;
     padding: 10px;
     border-radius: 10px;
-    background-color: #4e91c2;
+    background-color: constants.$color-chat-page-message-background;
 }
 
 .message-header {
@@ -15,4 +17,71 @@
 
 .chat-current-user-message {
     align-self: end;
+}
+
+.chat-messages {
+    overflow-y: auto;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+}
+
+.user-message-count {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    border: 1px solid;
+    border-radius: 50%;
+    color: constants.$color-chat-page-users-message-count-text;
+    text-align: center;
+    background-color: constants.$color-chat-page-users-message-count;
+}
+
+.chat-empty-message,
+.no-user-selected-message {
+    margin: auto;
+}
+
+.new-message-separator {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.new-message-separator-line {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    border-top: 1px solid;
+}
+
+.new-message-separator-text {
+    z-index: 2;
+    background-color: constants.$color-chat-container-background;
+}
+
+.chat-context-menu {
+    position: absolute;
+    width: 100px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: constants.$color-chat-page-message-context-menu;
+}
+
+.chat-context-menu-list {
+    list-style-type: none;
+}
+
+.chat-context-menu-list li {
+    cursor: pointer;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.chat-context-menu-list li:hover {
+    background-color: constants.$color-chat-page-message-context-menu-hover;
 }

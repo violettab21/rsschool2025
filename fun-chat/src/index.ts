@@ -11,24 +11,18 @@ const connection = new Connection();
 createBaseContainer();
 const state = new State();
 const router = new Router(connection, state);
-console.log(connection.listeners.open);
-/*const connectionValue = connection.connection;*/
 connection.addHandlerPerEvent('open', () => {
-    console.log(connection.listeners.open);
-
     const reconnectMessage = document.querySelector('.reconnect-message');
     if (reconnectMessage) reconnectMessage.remove();
     const currentUser = router.userService.currentUser;
     router.userService.getAllActiveUsers();
     router.userService.getAllInactiveUsers();
-    console.log(currentUser.login);
     const currentUserDetails = router.userService.users.find(
         (element) => element.login === router.userService.currentUser.login
     );
     if (currentUserDetails?.isLogined) {
         router.openPage();
     } else {
-        console.log('blaaaaaaa');
         if (
             'login' in currentUser &&
             currentUser.login &&
@@ -69,7 +63,3 @@ connection.addHandlerPerEvent('close', () => {
 });
 
 connection.connect();
-
-globalThis.addEventListener('popstate', () => {
-    router.openPage();
-});

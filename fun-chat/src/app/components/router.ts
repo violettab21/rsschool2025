@@ -18,6 +18,9 @@ export class Router {
         this.userService = new UserService(connection, this, state);
         this.chatService = new ChatService(connection, this, this.userService);
         this.routes = this.setRoutes();
+        globalThis.addEventListener('popstate', () => {
+            this.openPage();
+        });
     }
 
     public openPage(path?: string): void {

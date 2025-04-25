@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .dark-view {
     position: fixed;
     top: 0;
@@ -8,7 +10,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background-color: #b8b8b873;
+    background-color: constants.$color-error-message-background-outside;
 }
 
 .modal {
@@ -17,7 +19,7 @@
     margin: 0 auto;
     padding: 20px;
     border-radius: 20px;
-    background-color: white;
+    background-color: constants.$color-error-message-background;
 }
 
 .icon-close {

@@ -1,3 +1,5 @@
+@use '../abstracts/constants';
+
 .main-info {
     display: flex;
     align-items: center;
@@ -18,7 +20,7 @@
     padding: 6px;
     border: none;
     border-radius: 6px;
-    background-color: #4b7e9e;
+    background-color: constants.$color-info-page-back-button;
 }
 
 .application-info-details {

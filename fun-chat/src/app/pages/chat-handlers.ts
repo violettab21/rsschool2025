@@ -54,11 +54,11 @@ function readMessagesHandler(chatService: ChatService): () => void {
 }
 
 function searchUsersHandler(
-    searchParameter: string,
+    search: HTMLInputElement,
     userService: UserService
 ): () => void {
     return () => {
-        userService.searchUsers(searchParameter);
+        userService.searchUsers(search.value);
     };
 }
 

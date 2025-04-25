@@ -95,7 +95,7 @@ function createUsersSection(
     const search = document.createElement('input');
     search.className = 'search-input';
     search.placeholder = 'Search';
-    const searchHandler = searchUsersHandler(search.value, userService);
+    const searchHandler = searchUsersHandler(search, userService);
     search.addEventListener('input', searchHandler);
 
     const usersList = document.createElement('ul');

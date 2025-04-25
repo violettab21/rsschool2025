@@ -43,7 +43,7 @@
 
 .login-button:hover,
 .login-info-button:hover {
-    background-color: #edfaff;
+    background-color: constants.$color-login-input-background;
 }
 
 .user-name-input,

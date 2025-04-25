@@ -6,7 +6,7 @@
     justify-content: space-between;
     padding: 30px 60px;
     border-radius: 10px;
-    background-color: #c4ecff;
+    background-color: constants.$color-chat-page-header;
 }
 
 .header-menu {
@@ -19,28 +19,28 @@
 .logout-button {
     padding: 6px 12px;
     border-radius: 10px;
-    background-color: #68b7e8;
+    background-color: constants.$color-chat-page-header-logout;
 }
 
 .chat-container {
     display: flex;
     width: 90%;
     max-width: 1200px;
-    border: 2px solid #17324fa1;
+    border: 2px solid constants.$color-chat-container-border;
     border-radius: 10px;
-    background-color: #ecf6fa;
+    background-color: constants.$color-chat-container-background;
 }
 
 .chat-info-button {
     padding: 6px 12px;
     border-radius: 10px;
-    background-color: #68b7e8;
+    background-color: constants.$color-chat-page-header-info;
 }
 
 .chat-info-button:hover,
 .logout-button:hover {
     cursor: pointer;
-    background-color: #ecf6fa;
+    background-color: constants.$color-chat-page-header-buttons-hover;
 }
 
 .chat-message-container {
@@ -62,7 +62,7 @@
     flex-direction: column;
     width: 40%;
     padding: 10px;
-    border-right: 2px solid #17324fa1;
+    border-right: 2px solid constants.$color-chat-container-border;
 }
 
 .users {
@@ -76,7 +76,7 @@
 }
 
 .user-chat:hover {
-    background-color: #bcccdc;
+    background-color: constants.$color-chat-page-users-hover;
 }
 
 .section-chat {
@@ -92,29 +92,8 @@
     justify-content: center;
     min-height: 45px;
     padding: 6px;
-    color: #edfaff;
-    background-color: #234e75;
-}
-
-.chat-messages {
-    overflow-y: auto;
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    gap: 10px;
-    padding: 5px;
-}
-
-.user-message-count {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-left: 10px;
-    border: 1px solid;
-    border-radius: 50%;
-    color: #edfaff;
-    text-align: center;
-    background-color: #234e75;
+    color: constants.$color-chat-page-dialog-header-text;
+    background-color: constants.$color-chat-page-dialog-header;
 }
 
 .chat-send-button {
@@ -124,11 +103,11 @@
     border-radius: 10px;
     font-family: Roboto, sans-serif;
     font-size: 16px;
-    background-color: #4b7e9e;
+    background-color: constants.$color-chat-page-dialog-send-button;
 }
 
 .chat-send-button:hover {
-    background-color: #99bbd1;
+    background-color: constants.$color-chat-page-dialog-send-button-hover;
 }
 
 .footer {
@@ -136,8 +115,8 @@
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    color: #192228;
-    background-color: #bcccdc;
+    color: constants.$color-chat-page-footer-text;
+    background-color: constants.$color-chat-page-footer;
 }
 
 .author-github {
@@ -145,7 +124,7 @@
 }
 
 .author-github-link {
-    color: #192228;
+    color: constants.$color-chat-page-footer-text;
     text-align: center;
     text-decoration: none;
 }
@@ -155,7 +134,7 @@
 }
 
 .footer-content {
-    color: #192228;
+    color: constants.$color-chat-page-footer-text;
     list-style-type: none;
 }
 
@@ -178,70 +157,23 @@
     width: 10px;
     height: 10px;
     margin-right: 10px;
-    border: 1px solid #000;
     border-radius: 50%;
 }
 
 .user-status-active {
-    background-color: green;
+    background-color: constants.$color-chat-page-users-active;
 }
 
 .user-status-inactive {
-    background-color: orange;
+    background-color: constants.$color-chat-page-users-inactive;
 }
 
 .selected-user-status-active {
-    color: green;
+    color: constants.$color-chat-page-users-active;
 }
 
 .selected-user-status-inactive {
-    color: orange;
-}
-
-.chat-empty-message,
-.no-user-selected-message {
-    margin: auto;
-}
-
-.new-message-separator {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.new-message-separator-line {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    border-top: 1px solid;
-}
-
-.new-message-separator-text {
-    z-index: 2;
-    background-color: #ecf6fa;
-}
-
-.chat-context-menu {
-    position: absolute;
-    width: 100px;
-    padding: 10px;
-    border-radius: 6px;
-    background-color: white;
-}
-
-.chat-context-menu-list {
-    list-style-type: none;
-}
-
-.chat-context-menu-list li {
-    cursor: pointer;
-    padding: 10px 0;
-    text-align: center;
-}
-
-.chat-context-menu-list li:hover {
-    background-color: #bdd4ea;
+    color: constants.$color-chat-page-users-inactive;
 }
 
 .message-footer {
@@ -252,10 +184,10 @@
 .search-input,
 .chat-input {
     padding: 3px 6px;
-    border: 1px solid #366e9c;
+    border: 1px solid constants.$color-chat-page-input-border;
     border-radius: 6px;
     font-size: 16px;
-    background-color: #f1f6f8;
+    background-color: constants.$color-chat-page-input-background;
 }
 
 .save-update {
@@ -264,9 +196,9 @@
     border-radius: 10px;
     font-family: Roboto, sans-serif;
     font-size: 16px;
-    background-color: #4b7e9e;
+    background-color: constants.$color-chat-page-save-button;
 }
 
 .save-update:hover {
-    background-color: #99bbd1;
+    background-color: constants.$color-chat-page-save-button-hover;
 }
